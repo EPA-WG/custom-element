@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>custom-element Declarative Custom Element implementation demo</title>
+    <script type="module" src="custom-element.js"></script>
+    <style>
+        body{ display: flex; flex-wrap: wrap; align-content: stretch; gap: 1rem; }
+        dce-link,dce-1-slot,dce-2-slots,greet-element,pokemon-tile
+            { box-shadow: 0 0 0.5rem lime; padding: 1rem; display: inline-block;}
+    </style>
+</head>
+<body>
+<html-demo-element legend="1. simple payload"
+                   description="payload is ignored as in DCE definition there is no default slot">
+    <template>
+        <custom-element tag="dce-link" hidden>
+          <a href="#">link 😃</a>
+        </custom-element>
+        <dce-link><i>🍋</i></dce-link>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="2. payload with slot definition and slot value"
+                   description="slots are filled as in template+shadow root">
+    <template>
+        <custom-element tag="dce-1-slot" hidden>
+           <slot name="slot1"> 😃</slot>
+        </custom-element>
+        <dce-1-slot><i slot="slot1">🥕</i></dce-1-slot>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="2a. payload with slot definition and slot value"
+                   description="same slot can be used multiple times unlike in TEMPLATE">
+    <template>
+        <custom-element tag="dce-2-slots" hidden>
+           <slot name="slot2"> 😃</slot> and again:
+           <slot name="slot2"> 😃</slot>
+        </custom-element>
+        <dce-2-slots><i slot="slot2">🥕</i></dce-2-slots>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="2b. default slot"
+                   description="slot without `name` attribute or with blank value `name=''` use whole payload">
+    <template>
+
+        <custom-element tag="greet-element" hidden>
+          <slot> Hello </slot> World!
+        </custom-element>
+        <greet-element>👋</greet-element>
+        NOT IMPLEMENTED YET!
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="3. 💪 DCE template "
+                   description="Complex case with slots, attributes, dataset, conditional render">
+    <template>
+
+        <custom-element tag="pokemon-tile" hidden>
+            <h3><xsl:value-of select="title"/></h3> <!-- title is an attribute in instance
+                                                         mapped into /*/attributes/title -->
+            <xsl:if test="//smile">                 <!-- data-smile DCE instance attribute,
+                                                         mapped into /*/dataset/smile
+                                                         used in condition -->
+                                                    <!-- data-smile DCE instance attribute, used as HTML -->
+                <div>Smile as: <xsl:value-of select='//smile'/></div>
+            </xsl:if>
+            <img src="{image-src}" alt="{title}"/>  <!-- image-src and title are DCE instance attributes,
+                                                         mapped into /*/attributes/
+                                                         used within output attribute via curly brackets -->
+                                                    <!-- `slot name=xxx` replaced with elements with `slot=xxx` attribute -->
+            <p><slot name="description"><i>description is not available</i></slot></p>
+        </custom-element>
+        <pokemon-tile title="bulbasaur"
+                    data-smile="👼"
+                    image-src="https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/1.svg">
+
+            <p slot="description">Bulbasaur is a cute Pokémon born with a large seed firmly affixed to its back;
+                the seed grows in size as the Pokémon  does.</p>
+
+        </pokemon-tile>
+
+        <pokemon-tile title="ninetales"
+                    image-src="https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/38.svg">
+        </pokemon-tile>
+    </template>
+</html-demo-element>
+
+<script type="module" src="https://unpkg.com/html-demo-element@1.0/html-demo-element.js"></script>
+
+</body>
+</html>
