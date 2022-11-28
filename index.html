@@ -5,13 +5,23 @@
     <title>custom-element Declarative Custom Element implementation demo</title>
     <script type="module" src="custom-element.js"></script>
     <style>
-        body{ display: flex; flex-wrap: wrap; align-content: stretch; gap: 1rem; }
+        body,nav{ display: flex; flex-wrap: wrap; align-content: stretch; gap: 1rem; }
+        nav{ flex-direction: column;}
         dce-link,dce-1-slot,dce-2-slot,dce-3-slot,dce-4-slot,dce-2-slots,greet-element,pokemon-tile
             { box-shadow: 0 0 0.5rem lime; padding: 1rem; display: inline-block;}
         dd{ padding: 1rem;}
     </style>
 </head>
 <body>
+<nav>
+    <h3><code>custom-element</code> demo</h3>
+<a href="https://github.com/EPA-WG/custom-element"
+    ><img src="https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg">GIT</a>
+    <p>
+        This <em>Declarative Custom Element</em> allows to define<br/>
+        custom HTML tag with template filled from slots and attributes.
+    </p>
+</nav>
 <html-demo-element legend="1. simple payload"
                    description="payload is ignored as in DCE definition there is no default slot">
     <template>
