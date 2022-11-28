@@ -1,10 +1,8 @@
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>'
 , XSL_NS_URL = 'http://www.w3.org/1999/XSL/Transform';
 
-export const log =
-{   string: s => console.debug( s ),
-    xml: x => console.debug( x, { xml: new XMLSerializer().serializeToString( x ) } )
-};
+export const log = x => console.debug( new XMLSerializer().serializeToString( x ) );
+
 const create = ( tag, t='' ) =>
 {
     const e = document.createElement( tag );
@@ -26,7 +24,6 @@ function slot2xsl( s )
 }
 function injectData( root, sectionName, arr, cb  )
 {
-    const create = tag => document.createElement( tag );
     const inject = ( tag, parent, s ) =>
                 {
                     parent.append( s = create( tag ) );
@@ -43,7 +40,7 @@ function assureSlot( e )
     }
     return e;
 }
-class CustomElement extends HTMLElement
+export class CustomElement extends HTMLElement
 {
     constructor()
     {   super();
@@ -81,3 +78,4 @@ class CustomElement extends HTMLElement
 }
 
 window.customElements.define( 'custom-element', CustomElement );
+export default CustomElement;

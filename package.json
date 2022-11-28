@@ -1,0 +1,46 @@
+{
+    "name": "@epa-wg/custom-element",
+    "version": "0.0.1",
+    "description": "Declarative Custom Element as W3C proposal PoC with native(XSLT) based templating",
+    "browser": "custom-element.js",
+    "module": "custom-element.js",
+    "exports": {
+        ".": "./custom-element.js",
+        "./package.json": "./package.json",
+        "./CustomElement": "./custom-element.js"
+    },
+    "files": [
+        "*"
+    ],
+    "type": "module",
+    "types": "./custom-element.d.ts",
+    "scripts": {
+        "test": "echo \"test would reside in https://github.com/EPA-WG/custom-element-test\" && exit 0",
+        "typings": "npx -p typescript tsc custom-element.js --declaration --allowJs --emitDeclarationOnly "
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/EPA-WG/custom-element.git"
+    },
+    "keywords": [
+        "WebComponent",
+        "Declarative Custom Element",
+        "XSLT",
+        "JS",
+        "javascript"
+    ],
+    "author": {
+        "name": "Sasha Firsov",
+        "email": "suns@simulationworks.com",
+        "url": "https://blog.firsov.net/"
+    },
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/EPA-WG/custom-element/issues"
+    },
+    "homepage": "https://github.com/EPA-WG/custom-element#readme",
+    "funding": {
+        "type": "patreon",
+        "url": "https://www.patreon.com/sashafirsov"
+    }
+}
