@@ -6,8 +6,9 @@
     <script type="module" src="custom-element.js"></script>
     <style>
         body{ display: flex; flex-wrap: wrap; align-content: stretch; gap: 1rem; }
-        dce-link,dce-1-slot,dce-2-slots,greet-element,pokemon-tile
+        dce-link,dce-1-slot,dce-2-slot,dce-3-slot,dce-4-slot,dce-2-slots,greet-element,pokemon-tile
             { box-shadow: 0 0 0.5rem lime; padding: 1rem; display: inline-block;}
+        dd{ padding: 1rem;}
     </style>
 </head>
 <body>
@@ -42,15 +43,39 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="2b. default slot"
+<html-demo-element legend="2b. named default slot"
                    description="slot without `name` attribute or with blank value `name=''` use whole payload">
+    <template>
+        <custom-element tag="dce-3-slot" hidden>
+           #1
+            <slot name=""> 😃</slot>
+           and
+           <slot> 😃</slot>
+        </custom-element>
+        <dce-3-slot><i slot="">🥕</i></dce-3-slot>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="2c. named default slot"
+                   description="slot without `name` attribute or with blank value `name=''` use whole payload">
+    <template>
+        <custom-element tag="dce-4-slot" hidden>
+           #2
+            <slot name=""> 😃</slot>
+           and
+           <slot> 😃</slot>
+        </custom-element>
+        <dce-4-slot>🥕</dce-4-slot>
+    </template>
+</html-demo-element>
+<html-demo-element legend="2d. default slot"
+                   description="slot without `name` attribute use whole payload">
     <template>
 
         <custom-element tag="greet-element" hidden>
           <slot> Hello </slot> World!
         </custom-element>
         <greet-element>👋</greet-element>
-        NOT IMPLEMENTED YET!
     </template>
 </html-demo-element>
 

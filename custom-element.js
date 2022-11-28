@@ -35,7 +35,14 @@ function injectData( root, sectionName, arr, cb  )
     const l = inject( sectionName, root );
     [ ...arr ].forEach( e => l.append( cb(e) ) );
 }
-
+function assureSlot( e )
+{   if( !e.slot )
+    {   if( !e.setAttribute )
+            e = create( 'span', e.textContent.replaceAll('\n','') );
+        e.setAttribute( 'slot', '' )
+    }
+    return e;
+}
 class CustomElement extends HTMLElement
 {
     constructor()
@@ -56,22 +63,20 @@ class CustomElement extends HTMLElement
 
 </xsl:stylesheet>` ) );
 
-        class CustomTag extends HTMLElement
+        window.customElements.define( this.getAttribute( 'tag' ), class extends HTMLElement
         {
             constructor()
             {
                 super();
                 const x = create( 'div' );
-                injectData( x, 'payload'    , this.childNodes, e=>e  );
+                injectData( x, 'payload'    , this.childNodes, assureSlot );
                 injectData( x, 'attributes' , this.attributes, e=>create( e.nodeName, e.value ) );
                 injectData( x, 'dataset'    , Object.keys( this.dataset ), k=>create( k, this.dataset[ k ] )  );
                 const f = p.transformToFragment( x, document );
                 this.innerHTML = '';
                 [...f.childNodes].forEach(e=>this.appendChild(e));
             }
-        }
-
-        window.customElements.define( this.getAttribute( 'tag' ), CustomTag );
+        });
     }
 }
 
