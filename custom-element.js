@@ -1,7 +1,7 @@
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>'
 , XSL_NS_URL = 'http://www.w3.org/1999/XSL/Transform';
 
-export const log = x => console.debug( new XMLSerializer().serializeToString( x ) );
+// const log = x => console.debug( new XMLSerializer().serializeToString( x ) );
 
 const create = ( tag, t='' ) =>
 {

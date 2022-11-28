@@ -1,6 +1,11 @@
 # custom-element
 `Declarative Custom Element` proof of concept as a part of [WCCG in Declarative custom elements](https://github.com/w3c/webcomponents-cg/issues/32#issuecomment-1321037301) 
 discussion.
+[![git][github-image] GitHub][git-url]
+| Live demo: [custom-element][demo-url]
+| [tests project][git-test-url]
+
+[![NPM version][npm-image]][npm-url] [![coverage][coverage-image]][coverage-url]
 
 # use
 [Live demo][demo-url]
@@ -114,4 +119,11 @@ within template
 <b title="{name(*)} : {text()}">xml tag name:<xsl:value-of select='name()'/></b>
 ```
 
-[demo-url]:   https://unpkg.com/@epa-wg/custom-element/@0.0/index.html
+[git-url]:        https://github.com/EPA-WG/custom-element
+[git-test-url]:   https://github.com/EPA-WG/custom-element-test
+[demo-url]:       https://unpkg.com/@epa-wg/custom-element/@0.0/index.html
+[github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
+[npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
+[npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
+[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.2/coverage/coverage.svg
+[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.2/coverage/lcov-report/index.html
