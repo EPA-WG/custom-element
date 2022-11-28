@@ -9,6 +9,7 @@ It allows to define custom HTML tag with template filled from slots and attribut
 | [tests project][git-test-url]
 
 [![NPM version][npm-image]][npm-url] 
+
 [//]: # ([![coverage][coverage-image]][coverage-url])
 
 # use
