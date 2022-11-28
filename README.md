@@ -146,4 +146,4 @@ within template
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
 [coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.2/coverage/coverage.svg
 [coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.2/coverage/lcov-report/index.html
-[sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element
+[sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
