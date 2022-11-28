@@ -1,6 +1,7 @@
 # custom-element
 `Declarative Custom Element` proof of concept as a part of [WCCG in Declarative custom elements](https://github.com/w3c/webcomponents-cg/issues/32#issuecomment-1321037301) 
 discussion.
+
 [![git][github-image] GitHub][git-url]
 | Live demo: [custom-element][demo-url]
 | [tests project][git-test-url]
