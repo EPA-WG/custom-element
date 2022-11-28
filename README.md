@@ -9,7 +9,21 @@ discussion.
 [![NPM version][npm-image]][npm-url] [![coverage][coverage-image]][coverage-url]
 
 # use
-[Live demo][demo-url]
+## install
+use via CDN
+```html
+<script type="module" src="https://unpkg.com/@epa-wg/custom-element/@0.0/custom-element.js"></script>
+```
+NPM
+```shell
+npm i -P @epa-wg/custom-element
+```
+yarn
+```shell
+yarn add @epa-wg/custom-element
+```
+
+## [Live demo][demo-url]
 ```html
         <custom-element tag="pokemon-tile" hidden>
             <h3><xsl:value-of select="title"/></h3> <!-- title is an attribute in instance
@@ -26,13 +40,12 @@ discussion.
                                                     <!-- `slot name=xxx` replaced with elements with `slot=xxx` attribute -->
             <p><slot name="description"><i>description is not available</i></slot></p>
         </custom-element>
+
         <pokemon-tile title="bulbasaur"
                     data-smile="👼"
                     image-src="https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/1.svg">
-
             <p slot="description">Bulbasaur is a cute Pokémon born with a large seed firmly affixed to its back;
                 the seed grows in size as the Pokémon  does.</p>
-
         </pokemon-tile>
 
         <pokemon-tile title="ninetales"
