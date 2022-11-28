@@ -8,13 +8,14 @@ It allows to define custom HTML tag with template filled from slots and attribut
 | Live demo: [custom-element][demo-url]
 | [tests project][git-test-url]
 
-[![NPM version][npm-image]][npm-url] [![coverage][coverage-image]][coverage-url]
+[![NPM version][npm-image]][npm-url] 
+[//]: # ([![coverage][coverage-image]][coverage-url])
 
 # use
 ## install
 use via CDN
 ```html
-<script type="module" src="https://unpkg.com/@epa-wg/custom-element/@0.0/custom-element.js"></script>
+<script type="module" src="https://unpkg.com/@epa-wg/custom-element@0.0/custom-element.js"></script>
 ```
 NPM
 ```shell
@@ -137,7 +138,7 @@ within template
 
 [git-url]:        https://github.com/EPA-WG/custom-element
 [git-test-url]:   https://github.com/EPA-WG/custom-element-test
-[demo-url]:       https://unpkg.com/@epa-wg/custom-element/@0.0/index.html
+[demo-url]:       https://unpkg.com/@epa-wg/custom-element@0.0/index.html
 [github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
 [npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
