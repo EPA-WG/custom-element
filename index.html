@@ -102,9 +102,12 @@
                                                     <!-- data-smile DCE instance attribute, used as HTML -->
                 <div>Smile as: <xsl:value-of select='//smile'/></div>
             </xsl:if>
-            <img src="{image-src}" alt="{title}"/>  <!-- image-src and title are DCE instance attributes,
+            <!-- image would not be visible in sandbox, see live demo -->
+            <img src="{image-src}" alt="{title} image"/>
+                                                    <!-- image-src and title are DCE instance attributes,
                                                          mapped into /*/attributes/
                                                          used within output attribute via curly brackets -->
+
                                                     <!-- `slot name=xxx` replaced with elements with `slot=xxx` attribute -->
             <p><slot name="description"><i>description is not available</i></slot></p>
         </custom-element>
