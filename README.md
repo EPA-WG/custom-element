@@ -30,32 +30,32 @@ yarn add @epa-wg/custom-element
 
 ## [Live demo][demo-url]
 ```html
-        <custom-element tag="pokemon-tile" hidden>
-            <h3><xsl:value-of select="title"/></h3> <!-- title is an attribute in instance
-                                                         mapped into /*/attributes/title -->
-            <xsl:if test="//smile">                 <!-- data-smile DCE instance attribute,
-                                                         mapped into /*/dataset/smile
-                                                         used in condition -->
-                                                    <!-- data-smile DCE instance attribute, used as HTML -->
-                <div>Smile as: <xsl:value-of select='//smile'/></div>
-            </xsl:if>
-            <img src="{image-src}" alt="{title}"/>  <!-- image-src and title are DCE instance attributes,
-                                                         mapped into /*/attributes/
-                                                         used within output attribute via curly brackets -->
-                                                    <!-- `slot name=xxx` replaced with elements with `slot=xxx` attribute -->
-            <p><slot name="description"><i>description is not available</i></slot></p>
-        </custom-element>
+<custom-element tag="pokemon-tile" hidden>
+    <h3><xsl:value-of select="title"/></h3> <!-- title is an attribute in instance
+                                                 mapped into /*/attributes/title -->
+    <xsl:if test="//smile">                 <!-- data-smile DCE instance attribute,
+                                                 mapped into /*/dataset/smile
+                                                 used in condition -->
+                                            <!-- data-smile DCE instance attribute, used as HTML -->
+        <div>Smile as: <xsl:value-of select='//smile'/></div>
+    </xsl:if>
+    <!-- image would not be visible in sandbox, see live demo -->
+    <img src="https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/{pokemon-id}.svg"
+         alt="{title} image"/>
+                                            <!-- image-src and title are DCE instance attributes,
+                                                 mapped into /*/attributes/
+                                                 used within output attribute via curly brackets -->
 
-        <pokemon-tile title="bulbasaur"
-                    data-smile="👼"
-                    image-src="https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/1.svg">
-            <p slot="description">Bulbasaur is a cute Pokémon born with a large seed firmly affixed to its back;
-                the seed grows in size as the Pokémon  does.</p>
-        </pokemon-tile>
+                                            <!-- `slot name=xxx` replaced with elements with `slot=xxx` attribute -->
+    <p><slot name="description"><i>description is not available</i></slot></p>
+</custom-element>
 
-        <pokemon-tile title="ninetales"
-                    image-src="https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/38.svg">
-        </pokemon-tile>
+<pokemon-tile title="bulbasaur" data-smile="👼" pokemon-id="1" >
+    <p slot="description">Bulbasaur is a cute Pokémon born with a large seed firmly affixed to its back;
+        the seed grows in size as the Pokémon  does.</p>
+</pokemon-tile>
+
+<pokemon-tile title="ninetales" pokemon-id="38" ></pokemon-tile>        
 ```
 generates HTML
 ```html
