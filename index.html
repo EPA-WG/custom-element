@@ -10,17 +10,20 @@
         dce-link,dce-1-slot,dce-2-slot,dce-3-slot,dce-4-slot,dce-2-slots,greet-element,pokemon-tile
             { box-shadow: 0 0 0.5rem lime; padding: 1rem; display: inline-block;}
         dd{ padding: 1rem;}
+        p{ margin: 0;}
     </style>
 </head>
 <body>
 <nav>
     <h3><code>custom-element</code> demo</h3>
-<a href="https://github.com/EPA-WG/custom-element"
+    <a href="https://github.com/EPA-WG/custom-element"
     ><img src="https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg">GIT</a>
     <p>
         This <em>Declarative Custom Element</em> allows to define<br/>
-        custom HTML tag with template filled from slots and attributes.
-    </p>
+        custom HTML tag with template filled from slots, attributes, dataset. </p>
+    <p>The template is fully loaded with variables, conditions, loops, etc. <br/>
+        The data query is powered by XPath. </p>
+    <p>Try in <a href="https://stackblitz.com/github/EPA-WG/custom-element?file=index.html" >Sandbox</a> </p>
 </nav>
 <html-demo-element legend="1. simple payload"
                    description="payload is ignored as in DCE definition there is no default slot">
