@@ -59,8 +59,8 @@ export class CustomElement extends HTMLElement
   </xsl:template>
 
 </xsl:stylesheet>` ) );
-
-        window.customElements.define( this.getAttribute( 'tag' ), class extends HTMLElement
+        const tag =  this.getAttribute( 'tag' );
+        tag && window.customElements.define( tag, class extends HTMLElement
         {
             constructor()
             {

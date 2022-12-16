@@ -144,6 +144,6 @@ within template
 [github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
 [npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
-[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.2/coverage/coverage.svg
-[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.2/coverage/lcov-report/index.html
+[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.3/coverage/coverage.svg
+[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.3/coverage/lcov-report/index.html
 [sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
