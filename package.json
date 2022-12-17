@@ -15,8 +15,7 @@
     "type": "module",
     "types": "./custom-element.d.ts",
     "scripts": {
-        "stackblitz": "bash bin/stackblitz.sh",
-        "dev": "bash bin/start.sh",
+        "dev": "bash bin/stackblitz.sh",
         "start": "npm i --no-save @web/dev-server && web-dev-server --node-resolve",
         "test": "echo \"test would reside in https://github.com/EPA-WG/custom-element-test\" && exit 0",
         "typings": "npx -p typescript tsc custom-element.js --declaration --allowJs --emitDeclarationOnly "
