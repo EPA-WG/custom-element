@@ -18,16 +18,13 @@ use via CDN
 ```html
 <script type="module" src="https://unpkg.com/@epa-wg/custom-element@0.0/custom-element.js"></script>
 ```
-NPM
+NPM, yarn
 ```shell
 npm i -P @epa-wg/custom-element
-```
-yarn
-```shell
 yarn add @epa-wg/custom-element
 ```
 
-## [Live demo][demo-url]
+## [Live demo 🔗][demo-url]
 ```html
 <custom-element tag="pokemon-tile" hidden>
     <h3><xsl:value-of select="title"/></h3> <!-- title is an attribute in instance
