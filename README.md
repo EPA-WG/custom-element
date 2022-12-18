@@ -11,7 +11,7 @@ It allows to define custom HTML tag with template filled from slots and attribut
 
 [![NPM version][npm-image]][npm-url] 
 
-[//]: # ([![coverage][coverage-image]][coverage-url])
+[![coverage][coverage-image]][coverage-url]
 
 # use
 ## install
@@ -144,6 +144,7 @@ within template
 [github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
 [npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
-[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.4/coverage/coverage.svg
-[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.4/coverage/lcov-report/index.html
+[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.5/coverage/coverage.svg
+[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.5/coverage/lcov-report/index.html
 [sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
+[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.5/storybook-static/index.html?path=/story/welcome--introduction
