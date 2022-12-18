@@ -8,7 +8,9 @@ It allows to define custom HTML tag with template filled from slots and attribut
 | Live demo: [custom-element][demo-url]
 | Try in [Sandbox][sandbox-url]
 | [tests project][git-test-url]
-[![NPM version][npm-image]][npm-url] [![coverage][coverage-image]][coverage-url]
+[![NPM version][npm-image]][npm-url] 
+[![coverage][coverage-image]][coverage-url] 
+[![Published on webcomponents.org][webcomponents-img]][webcomponents-url]
 
 # use
 ## install
@@ -145,3 +147,5 @@ within template
 [coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.6/coverage/lcov-report/index.html
 [storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.6/storybook-static/index.html?path=/story/welcome--introduction
 [sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
+[webcomponents-url]: https://www.webcomponents.org/element/@epa-wg/custom-element
+[webcomponents-img]: https://img.shields.io/badge/webcomponents.org-published-blue.svg
