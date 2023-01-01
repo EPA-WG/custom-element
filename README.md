@@ -8,6 +8,7 @@ It allows to define custom HTML tag with template filled from slots and attribut
 | Live demo: [custom-element][demo-url]
 | Try in [Sandbox][sandbox-url]
 | [tests project][git-test-url]
+| [Chrome devtools pugin][plugin-url]
 
 [![NPM version][npm-image]][npm-url] 
 [![coverage][coverage-image]][coverage-url] 
@@ -128,6 +129,24 @@ is available in `{}` in attributes, in `xsl:for-each`, `xsl:if`, `xsl:value-of`,
 XPath is a selector language to navigate over custom element instance data, attributes, and payload.
 
 # troubleshooting
+## Chrome devtools plugin
+[@epa-wg/custom-element plugin][plugin-url] gives the view into
+
+* `current` selected in DOM inspector node
+* Parent `customElement`
+* Declarative Custom Element `dce` for custom element ^^
+
+* `datadom` for easier inspection
+* `xml` as a string
+* `xslt` as a string
+
+## template debugging
+`xml` and `xslt` can be saved to file via for "_copy string contents_" into clipboard.
+
+The XSLT debugger from your favorite IDE can set the breakpoints withing those files and 
+run transformation under debugger.
+
+
 ## `{}` does not give a value
 * try to add as attribute you could observe and put the value of node name or text to identify the current location in data 
 within template
@@ -147,3 +166,4 @@ within template
 [sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
 [webcomponents-url]: https://www.webcomponents.org/element/@epa-wg/custom-element
 [webcomponents-img]: https://img.shields.io/badge/webcomponents.org-published-blue.svg
+[plugin-url]:     https://chrome.google.com/webstore/detail/epa-wgcustom-element/hiofgpmmkdembdogjpagmbbbmefefhbl
