@@ -20,8 +20,8 @@ resides within template with the parameters populated by expression from templat
 </custom-element>
 ```
 
-## 2. Rendering iterations
-DS initiated by "pre-render" event. It starts its lifecycle as async process which emitted to itself as "process" event which bubbles uo to template holder. 
+## 2. DataRequest Rendering iterations
+DS initiated as DataRequest(**DR**) by "pre-render" event. It starts its lifecycle as async process which emitted to itself as "process" event which bubbles uo to template holder. 
 
 The process event passes 3 parameters:
 * DS name
