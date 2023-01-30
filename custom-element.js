@@ -71,9 +71,25 @@ export class CustomElement extends HTMLElement
                 injectData( x, 'attributes', this.attributes, e => create( e.nodeName, e.value ) );
                 injectData( x, 'dataset', Object.keys( this.dataset ), k => create( k, this.dataset[ k ] ) );
                 this.xml = x;
-                const f = p.transformToFragment( x, document );
-                this.innerHTML = '';
-                [ ...f.childNodes ].forEach( e => this.appendChild( e ) );
+                const sliceEvents=[];
+                this.addEventListener('loadend', ev=>{ ev.stopPropagation(); sliceEvents.push(ev) });
+                const transform = ()=>
+                {
+                    const f = p.transformToFragment( x, document );
+                    this.innerHTML = '';
+                    [ ...f.childNodes ].forEach( e => this.appendChild( e ) );
+                }
+                transform();
+                this.dispatchEvent( new Event('load',{  bubbles: true, target: this }));
+                if(sliceEvents.length)
+                {   sliceEvents.forEach( ev=>
+                    {
+
+                    })
+                    transform();
+                    sliceEvents.length = 0;
+                }
+                // todo check
             }
             get dce(){ return dce;}
         } );

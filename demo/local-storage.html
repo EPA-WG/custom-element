@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>custom-element Declarative Custom Element implementation demo</title>
+    <script type="module" src="custom-element.js"></script>
+    <style>
+        body,nav{ display: flex; flex-wrap: wrap; align-content: stretch; gap: 1rem; }
+        nav{ flex-direction: column;}
+        dce-link,dce-1-slot,dce-2-slot,dce-3-slot,dce-4-slot,dce-2-slots,greet-element,pokemon-tile
+            { box-shadow: 0 0 0.5rem lime; padding: 1rem; display: inline-block;}
+        dd{ padding: 1rem;}
+        p{ margin: 0;}
+    </style>
+</head>
+<body>
+<nav>
+    <h3><code>custom-element</code> demo</h3>
+    <div><a href="https://github.com/EPA-WG/custom-element"
+        ><img src="https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg" alt="icon">GIT</a>
+        | <a href="https://stackblitz.com/github/EPA-WG/custom-element?file=index.html">Sandbox</a>
+        | <a href="https://chrome.google.com/webstore/detail/epa-wgcustom-element/hiofgpmmkdembdogjpagmbbbmefefhbl"
+            >Chrome devtools plugin</a>
+    </div>
+    <p>
+        This <em>Declarative Custom Element</em> allows to define<br/>
+        custom HTML tag with template filled from slots, attributes, dataset. </p>
+    <p>The template is fully loaded with variables, conditions, loops, etc. <br/>
+        The data query is powered by XPath. </p>
+    <p>Try in <a href="https://stackblitz.com/github/EPA-WG/custom-element?file=index.html" >Sandbox</a> </p>
+</nav>
+<html-demo-element legend="1. localStorage"
+                   description="the key comes from ID">
+    <template>
+        <custom-element tag="local-storage-demo1" hidden>
+            <local-storage key="dce-local-storage-{//id}" slice="data-{//id}"></local-storage>
+            <slot></slot>
+            <xsl:value-of select="slice/data-{//id}"/>
+        </custom-element>
+        <local-storage-demo1 id="dce1"><i>🍋</i></local-storage-demo1>
+        <local-storage-demo1 id="dce2"><i>🍒</i></local-storage-demo1>
+    </template>
+</html-demo-element>
+<fieldset>
+    <legend>Click to increment the localStorage value</legend>
+    <p>The demo should display count 0 initially and increment on click as <code>localStorage</code> value is incremented
+        when clicked on matching button:
+    </p>
+    <button id="btn1">🍋</button>
+    <button id="btn2">🍒</button>
+</fieldset>
+<script>
+    localStorage.setItem('dce-local-storage-dce1',0);
+    localStorage.setItem('dce-local-storage-dce2',0);
+    btn1.onclick = ()=> localStorage.setItem('dce-local-storage-dce1',localStorage.getItem('dce-local-storage-dce1'));
+    btn2.onclick = ()=> localStorage.setItem('dce-local-storage-dce2',localStorage.getItem('dce-local-storage-dce2'));
+</script>
+
+<script type="module" src="https://unpkg.com/html-demo-element@1.0/html-demo-element.js"></script>
+
+</body>
+</html>

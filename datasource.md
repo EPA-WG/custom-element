@@ -21,7 +21,8 @@ resides within template with the parameters populated by expression from templat
 ```
 
 ## 2. DataRequest Rendering iterations
-DS initiated as DataRequest(**DR**) by "pre-render" event. It starts its lifecycle as async process which emitted to itself as "process" event which bubbles uo to template holder. 
+DS initiated as DataRequest(**DR**) by [load](https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event)
+event. It starts its lifecycle as async process which emitted to itself as "process" event which bubbles uo to template holder. 
 
 The process event passes 3 parameters:
 * DS name
