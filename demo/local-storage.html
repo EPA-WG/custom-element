@@ -3,7 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>custom-element Declarative Custom Element implementation demo</title>
-    <script type="module" src="custom-element.js"></script>
+    <script type="module" src="../custom-element.js"></script>
+    <script type="module" src="../local-storage.js"></script>
     <style>
         body,nav{ display: flex; flex-wrap: wrap; align-content: stretch; gap: 1rem; }
         nav{ flex-direction: column;}
@@ -29,18 +30,34 @@
         The data query is powered by XPath. </p>
     <p>Try in <a href="https://stackblitz.com/github/EPA-WG/custom-element?file=index.html" >Sandbox</a> </p>
 </nav>
-<html-demo-element legend="1. localStorage"
-                   description="the key comes from ID">
+
+
+
+<html-demo-element legend="2c. named default slot"
+                   description="slot without `name` attribute or with blank value `name=''` use whole payload">
     <template>
-        <custom-element tag="local-storage-demo1" hidden>
-            <local-storage key="dce-local-storage-{//id}" slice="data-{//id}"></local-storage>
-            <slot></slot>
-            <xsl:value-of select="slice/data-{//id}"/>
+        <custom-element tag="dce-4-slot" hidden>
+           #2
+            <slot name=""> 😃</slot>
+            <xsl:value-of select="//slice/s1/text()"></xsl:value-of>
+           <slot> 😃</slot>
+            <local-storage key="aa" slice="s1"></local-storage>
         </custom-element>
-        <local-storage-demo1 id="dce1"><i>🍋</i></local-storage-demo1>
-        <local-storage-demo1 id="dce2"><i>🍒</i></local-storage-demo1>
+        <dce-4-slot>🥕</dce-4-slot>
     </template>
 </html-demo-element>
+
+<!--<html-demo-element legend="1. localStorage"-->
+<!--                   description="the key comes from ID">-->
+<!--    <template>-->
+<!--        <custom-element tag="local-storage-demo1" hidden>-->
+<!--            <slot> Hello </slot> World!-->
+<!--            <xsl:value-of select="slice/data-{//id}"/>-->
+<!--        </custom-element>-->
+<!--        <local-storage-demo1 id="dce1"><i>🍋</i></local-storage-demo1>-->
+<!--        <local-storage-demo1 id="dce2"><i>🍒</i></local-storage-demo1>-->
+<!--    </template>-->
+<!--</html-demo-element>-->
 <fieldset>
     <legend>Click to increment the localStorage value</legend>
     <p>The demo should display count 0 initially and increment on click as <code>localStorage</code> value is incremented
@@ -52,8 +69,8 @@
 <script>
     localStorage.setItem('dce-local-storage-dce1',0);
     localStorage.setItem('dce-local-storage-dce2',0);
-    btn1.onclick = ()=> localStorage.setItem('dce-local-storage-dce1',localStorage.getItem('dce-local-storage-dce1'));
-    btn2.onclick = ()=> localStorage.setItem('dce-local-storage-dce2',localStorage.getItem('dce-local-storage-dce2'));
+    btn1.onclick = ()=> localStorage.setItem('dce-local-storage-dce1',1+1*localStorage.getItem('dce-local-storage-dce1'));
+    btn2.onclick = ()=> localStorage.setItem('dce-local-storage-dce2',1+1*localStorage.getItem('dce-local-storage-dce2'));
 </script>
 
 <script type="module" src="https://unpkg.com/html-demo-element@1.0/html-demo-element.js"></script>
