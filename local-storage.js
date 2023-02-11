@@ -21,7 +21,7 @@ export class LocalStorageElement extends HTMLElement
             const zz = this.dispatchEvent( new CustomEvent('loadend',
                 {  bubbles: true
                 , cancelable: true
-                ,   detail: v.startsWith('{') ? JSON.parse( v ) : v
+                ,   detail: v?.startsWith('{') ? JSON.parse( v ) : v
                 }));
 
             return data || {}

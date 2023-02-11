@@ -12,6 +12,9 @@
             { box-shadow: 0 0 0.5rem lime; padding: 1rem; display: inline-block;}
         dd{ padding: 1rem;}
         p{ margin: 0;}
+        table{ min-width: 16rem; }
+        tr td{ border-bottom: 1px solid silver; text-align: right; }
+        caption{ padding: 1rem; font-weight: bolder; font-family: sans-serif; }
     </style>
 </head>
 <body>
@@ -37,13 +40,12 @@
                    description="slot without `name` attribute or with blank value `name=''` use whole payload">
     <template>
         <custom-element tag="dce-4-slot" hidden>
-           #2
             <slot name=""> 😃</slot>
-            <xsl:value-of select="//slice/s1/text()"></xsl:value-of>
+            <xsl:value-of select="//slice/fruits/text()"></xsl:value-of>
            <slot> 😃</slot>
-            <local-storage key="aa" slice="s1"></local-storage>
+            <local-storage key="cherries" slice="fruits"></local-storage>
         </custom-element>
-        <dce-4-slot>🥕</dce-4-slot>
+        <dce-4-slot>🍒</dce-4-slot>
     </template>
 </html-demo-element>
 
@@ -61,16 +63,36 @@
 <fieldset>
     <legend>Click to increment the localStorage value</legend>
     <p>The demo should display count 0 initially and increment on click as <code>localStorage</code> value is incremented
-        when clicked on matching button:
+        when clicked on matching button
     </p>
-    <button id="btn1">🍋</button>
-    <button id="btn2">🍒</button>
+    <button id="btn1" name="lemons" value="1">🍋</button>
+    <button id="btn2" name="cherries" value="12">🍒</button>
+    <table>
+        <caption> localStorage content </caption>
+        <thead><tr><th>key</th><th>value</th></tr></thead>
+        <tbody id="local-storage-values"></tbody>
+    </table>
 </fieldset>
-<script>
-    localStorage.setItem('dce-local-storage-dce1',0);
-    localStorage.setItem('dce-local-storage-dce2',0);
-    btn1.onclick = ()=> localStorage.setItem('dce-local-storage-dce1',1+1*localStorage.getItem('dce-local-storage-dce1'));
-    btn2.onclick = ()=> localStorage.setItem('dce-local-storage-dce2',1+1*localStorage.getItem('dce-local-storage-dce2'));
+<script type="module">
+    import $ from 'https://unpkg.com/css-chain@1/CssChain.js';
+
+    $('button[name]')
+        .forEach( b=> localStorage.setItem( b.name, b.value ) )
+        .addEventListener( 'click', e => localStorage.setItem( e.target.name, 1+1*localStorage.getItem(e.target.name) ) );
+
+    const renderStorage = () =>
+        window[ 'local-storage-values' ].innerHTML = [...Array(localStorage.length).keys()]
+            .map( k => `<tr><th>${ localStorage.key(k) }</th><td>${ localStorage.getItem( localStorage.key(k) ) }</td>` ).join( '\n' );
+    window.addEventListener( 'storage', renderStorage );
+    window.addEventListener( 'local-storage', renderStorage );
+    renderStorage();
+
+const originalSetItem = localStorage.setItem;
+localStorage.setItem = function( key, value, ...rest )
+    {   originalSetItem.apply(this, [ key, value, ...rest ]);
+        window.dispatchEvent( new CustomEvent('local-storage',{detail:{key,value}}) );
+    };
+
 </script>
 
 <script type="module" src="https://unpkg.com/html-demo-element@1.0/html-demo-element.js"></script>
