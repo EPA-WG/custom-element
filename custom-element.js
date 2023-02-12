@@ -19,7 +19,9 @@ function xml2dom( xmlString )
 function bodyXml( dce )
 {
     const s = new XMLSerializer().serializeToString( dce );
-    return s.substring( s.indexOf( '>' ) + 1, s.lastIndexOf( '<' ) );
+    return s.substring( s.indexOf( '>' ) + 1, s.lastIndexOf( '<' ) )
+        .replaceAll("<html:","<")
+        .replaceAll("</html:","</");
 }
 
 function slot2xsl( s )
@@ -86,7 +88,7 @@ function injectSlice( x, s, data )
 {
     const   el = create(s)
     , isString = typeof data === 'string' ;
-    el.innerHTML = isString? data : Json2Xml( data, 'slice' );
+    el.innerHTML = isString? data : Json2Xml( data, s );
     const slice = isString? el : el.firstChild;
     const d = [...x.children].find( e=>e.localName === s )?.remove();
     if( d )

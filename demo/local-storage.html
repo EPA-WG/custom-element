@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:html="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>custom-element Declarative Custom Element implementation demo</title>
-    <script type="module" src="../custom-element.js"></script>
     <script type="module" src="../local-storage.js"></script>
+    <script type="module" src="../custom-element.js"></script>
     <style>
         body,nav{ display: flex; flex-wrap: wrap; align-content: stretch; gap: 1rem; }
         nav{ flex-direction: column;}
@@ -18,36 +18,52 @@
     </style>
 </head>
 <body>
-<nav>
-    <h3><code>custom-element</code> demo</h3>
-    <div><a href="https://github.com/EPA-WG/custom-element"
-        ><img src="https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg" alt="icon">GIT</a>
-        | <a href="https://stackblitz.com/github/EPA-WG/custom-element?file=index.html">Sandbox</a>
-        | <a href="https://chrome.google.com/webstore/detail/epa-wgcustom-element/hiofgpmmkdembdogjpagmbbbmefefhbl"
-            >Chrome devtools plugin</a>
-    </div>
-    <p>
-        This <em>Declarative Custom Element</em> allows to define<br/>
-        custom HTML tag with template filled from slots, attributes, dataset. </p>
-    <p>The template is fully loaded with variables, conditions, loops, etc. <br/>
-        The data query is powered by XPath. </p>
-    <p>Try in <a href="https://stackblitz.com/github/EPA-WG/custom-element?file=index.html" >Sandbox</a> </p>
-</nav>
 
 
+<!--<html-demo-element legend="1. localStorage simplest"-->
+<!--                   description="local-storage read only during initial and only render, does not track the changes.">-->
+<!--    <p>Has to produce 12🍒</p>-->
+<!--    <template>-->
+<!--        <custom-element tag="dce-1" hidden>-->
+<!--            <xsl:value-of select="//slice/fruits/text()"></xsl:value-of>-->
+<!--           <slot>🤔</slot>-->
+<!--            <local-storage key="cherries" slice="fruits"></local-storage>-->
+<!--        </custom-element>-->
+<!--        <dce-1>🍒</dce-1>-->
+<!--    </template>-->
+<!--</html-demo-element>-->
 
-<html-demo-element legend="2c. named default slot"
-                   description="slot without `name` attribute or with blank value `name=''` use whole payload">
-    <template>
-        <custom-element tag="dce-4-slot" hidden>
-            <slot name=""> 😃</slot>
-            <xsl:value-of select="//slice/fruits/text()"></xsl:value-of>
-           <slot> 😃</slot>
-            <local-storage key="cherries" slice="fruits"></local-storage>
-        </custom-element>
-        <dce-4-slot>🍒</dce-4-slot>
-    </template>
-</html-demo-element>
+<!--<html-demo-element legend="2. localStorage JSON"-->
+<!--                   description="local-storage read only during initial and only render, does not track the changes.">-->
+<!--    <p>Has to produce 12🍒</p>-->
+<!--    <template>-->
+<!--        <custom-element tag="dce-2" hidden>-->
+<!--            <xsl:for-each select="//slice/basket/@*">-->
+<!--                <xsl:value-of select="local-name()"/>-->
+<!--            </xsl:for-each>-->
+<!--           <slot>🤔</slot>-->
+<!--            count:<xsl:value-of select="count(//slice/basket/@*)"/>-->
+
+<!--            <local-storage key="basket" slice="basket"></local-storage>-->
+<!--        </custom-element>-->
+<!--        <dce-2>🍒</dce-2>-->
+<!--    </template>-->
+<!--</html-demo-element>-->
+
+<custom-element tag="dce-2" hidden>
+    <local-storage key="basket" slice="basket"></local-storage>
+    <html:table>
+        <xsl:for-each select="//slice/basket/@*">
+            <html:tr>
+                <html:th><xsl:value-of select="name()"/></html:th>
+                <html:td><xsl:value-of select="."/></html:td>
+            </html:tr>
+        </xsl:for-each>
+    </html:table>
+   <slot>🤔</slot>
+    count:<xsl:value-of select="count(//slice/basket/@*)"/>
+</custom-element>
+<dce-2>🍒</dce-2>
 
 <!--<html-demo-element legend="1. localStorage"-->
 <!--                   description="the key comes from ID">-->
@@ -62,7 +78,8 @@
 <!--</html-demo-element>-->
 <fieldset>
     <legend>Click to increment the localStorage value</legend>
-    <p>The demo should display count 0 initially and increment on click as <code>localStorage</code> value is incremented
+    <p>The demo should display count 1🍋 and 12🍒 initially.
+        The value in <code>localStorage</code> is incremented
         when clicked on matching button
     </p>
     <button id="btn1" name="lemons" value="1">🍋</button>
@@ -76,13 +93,21 @@
 <script type="module">
     import $ from 'https://unpkg.com/css-chain@1/CssChain.js';
 
+    const basket = {cherries: 12, lemons:1 };
+    localStorage.setItem( 'basket', JSON.stringify(basket) );
+
     $('button[name]')
         .forEach( b=> localStorage.setItem( b.name, b.value ) )
-        .addEventListener( 'click', e => localStorage.setItem( e.target.name, 1+1*localStorage.getItem(e.target.name) ) );
+        .addEventListener( 'click', e =>
+        {   const k = e.target.name;
+            localStorage.setItem( k, basket[k] = 1+1*localStorage[k] )
+            localStorage.setItem( 'basket', JSON.stringify(basket) );
+        } );
 
     const renderStorage = () =>
         window[ 'local-storage-values' ].innerHTML = [...Array(localStorage.length).keys()]
             .map( k => `<tr><th>${ localStorage.key(k) }</th><td>${ localStorage.getItem( localStorage.key(k) ) }</td>` ).join( '\n' );
+
     window.addEventListener( 'storage', renderStorage );
     window.addEventListener( 'local-storage', renderStorage );
     renderStorage();
