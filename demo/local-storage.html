@@ -12,6 +12,7 @@
             { box-shadow: 0 0 0.5rem lime; padding: 1rem; display: inline-block;}
         dd{ padding: 1rem;}
         p{ margin: 0;}
+        button{ background: forestgreen; }
         table{ min-width: 16rem; }
         tr td{ border-bottom: 1px solid silver; text-align: right; }
         caption{ padding: 1rem; font-weight: bolder; font-family: sans-serif; }
@@ -20,72 +21,52 @@
 <body>
 
 
-<!--<html-demo-element legend="1. localStorage simplest"-->
-<!--                   description="local-storage read only during initial and only render, does not track the changes.">-->
-<!--    <p>Has to produce 12🍒</p>-->
-<!--    <template>-->
-<!--        <custom-element tag="dce-1" hidden>-->
-<!--            <xsl:value-of select="//slice/fruits/text()"></xsl:value-of>-->
-<!--           <slot>🤔</slot>-->
-<!--            <local-storage key="cherries" slice="fruits"></local-storage>-->
-<!--        </custom-element>-->
-<!--        <dce-1>🍒</dce-1>-->
-<!--    </template>-->
-<!--</html-demo-element>-->
+<html-demo-element legend="1. localStorage simplest"
+                   description="local-storage read only during initial and only render, does not track the changes.">
+    <p>Has to produce 12🍒</p>
+    <template>
+        <custom-element tag="dce-1" hidden>
+            <xsl:value-of select="//slice/fruits/text()"></xsl:value-of>
+           <slot>🤔</slot>
+            <local-storage key="cherries" slice="fruits"></local-storage>
+        </custom-element>
+        <dce-1>🍒</dce-1>
+    </template>
+</html-demo-element>
 
-<!--<html-demo-element legend="2. localStorage JSON"-->
-<!--                   description="local-storage read only during initial and only render, does not track the changes.">-->
-<!--    <p>Has to produce 12🍒</p>-->
-<!--    <template>-->
-<!--        <custom-element tag="dce-2" hidden>-->
-<!--            <xsl:for-each select="//slice/basket/@*">-->
-<!--                <xsl:value-of select="local-name()"/>-->
-<!--            </xsl:for-each>-->
-<!--           <slot>🤔</slot>-->
-<!--            count:<xsl:value-of select="count(//slice/basket/@*)"/>-->
+<html-demo-element legend="2. localStorage basket JSON "
+                   description="local-storage tracks changes">
+    <p>Click the fruits button to add into cart </p>
+    <template>
+        <custom-element tag="dce-2" hidden>
+            <local-storage key="basket" slice="basket" live type="json"></local-storage>
+            <html:table>
+                <xsl:for-each select="//slice/basket/@*">
+                    <html:tr>
+                        <html:th><xsl:value-of select="name()"/></html:th>
+                        <html:td><xsl:value-of select="."/></html:td>
+                    </html:tr>
+                </xsl:for-each>
+            </html:table>
+           <slot>🤔</slot>
+           total:<xsl:value-of select="sum(//slice/basket/@*)"/>
+        </custom-element>
+        <dce-2>🛒</dce-2>
+    </template>
+</html-demo-element>
 
-<!--            <local-storage key="basket" slice="basket"></local-storage>-->
-<!--        </custom-element>-->
-<!--        <dce-2>🍒</dce-2>-->
-<!--    </template>-->
-<!--</html-demo-element>-->
-
-<custom-element tag="dce-2" hidden>
-    <local-storage key="basket" slice="basket"></local-storage>
-    <html:table>
-        <xsl:for-each select="//slice/basket/@*">
-            <html:tr>
-                <html:th><xsl:value-of select="name()"/></html:th>
-                <html:td><xsl:value-of select="."/></html:td>
-            </html:tr>
-        </xsl:for-each>
-    </html:table>
-   <slot>🤔</slot>
-    count:<xsl:value-of select="count(//slice/basket/@*)"/>
-</custom-element>
-<dce-2>🍒</dce-2>
-
-<!--<html-demo-element legend="1. localStorage"-->
-<!--                   description="the key comes from ID">-->
-<!--    <template>-->
-<!--        <custom-element tag="local-storage-demo1" hidden>-->
-<!--            <slot> Hello </slot> World!-->
-<!--            <xsl:value-of select="slice/data-{//id}"/>-->
-<!--        </custom-element>-->
-<!--        <local-storage-demo1 id="dce1"><i>🍋</i></local-storage-demo1>-->
-<!--        <local-storage-demo1 id="dce2"><i>🍒</i></local-storage-demo1>-->
-<!--    </template>-->
-<!--</html-demo-element>-->
 <fieldset>
-    <legend>Click to increment the localStorage value</legend>
+    <legend>localStorage content</legend>
     <p>The demo should display count 1🍋 and 12🍒 initially.
         The value in <code>localStorage</code> is incremented
         when clicked on matching button
     </p>
-    <button id="btn1" name="lemons" value="1">🍋</button>
-    <button id="btn2" name="cherries" value="12">🍒</button>
+    <button name="lemons" value="1"     >🍋</button>
+    <button name="cherries" value="12"  >🍒</button>
+    <button name="apple"                >🍏</button>
+    <button name="banana"               >🍌</button>
     <table>
-        <caption> localStorage content </caption>
+        <caption> Click to add the localStorage value </caption>
         <thead><tr><th>key</th><th>value</th></tr></thead>
         <tbody id="local-storage-values"></tbody>
     </table>
@@ -100,6 +81,7 @@
         .forEach( b=> localStorage.setItem( b.name, b.value ) )
         .addEventListener( 'click', e =>
         {   const k = e.target.name;
+            basket[k] || (basket[k] = 1);
             localStorage.setItem( k, basket[k] = 1+1*localStorage[k] )
             localStorage.setItem( 'basket', JSON.stringify(basket) );
         } );
@@ -111,16 +93,9 @@
     window.addEventListener( 'storage', renderStorage );
     window.addEventListener( 'local-storage', renderStorage );
     renderStorage();
-
-const originalSetItem = localStorage.setItem;
-localStorage.setItem = function( key, value, ...rest )
-    {   originalSetItem.apply(this, [ key, value, ...rest ]);
-        window.dispatchEvent( new CustomEvent('local-storage',{detail:{key,value}}) );
-    };
-
 </script>
 
-<script type="module" src="https://unpkg.com/html-demo-element@1.0/html-demo-element.js"></script>
+<script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
 
 </body>
 </html>

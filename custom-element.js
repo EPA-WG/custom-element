@@ -18,6 +18,7 @@ function xml2dom( xmlString )
 
 function bodyXml( dce )
 {
+
     const s = new XMLSerializer().serializeToString( dce );
     return s.substring( s.indexOf( '>' ) + 1, s.lastIndexOf( '<' ) )
         .replaceAll("<html:","<")
@@ -132,28 +133,32 @@ export class CustomElement extends HTMLElement
                     }
                 }
                 let timeoutID;
-                this.addEventListener('loadend', ev=>
-                {   ev.stopPropagation();
-                    sliceEvents.push(ev);
 
+                const onSlice = ev=>
+                {   ev.stopPropagation?.();
+                    sliceEvents.push(ev);
                     if( !timeoutID )
                         timeoutID = setTimeout(()=>
                         {   applySlices();
                             timeoutID =0;
                         })
-                });
+                };
+                this.addEventListener('loadend', onSlice);
+                this.addEventListener('progress1', onSlice);
+                this.onSlice = onSlice;
                 const transform = ()=>
                 {
                     const f = p.transformToFragment( x, document );
                     this.innerHTML = '';
                     [ ...f.childNodes ].forEach( e => this.appendChild( e ) );
+
+                    for( let el of this.querySelectorAll('[slice]') )
+                        if( 'function' === typeof el.sliceInit )
+                        {   const s = attr(el,'slice');
+                            slices[s] = el.sliceInit( slices[s] );
+                        }
                 };
                 transform();
-                for( let el of this.querySelectorAll('[slice]') )
-                    if( 'function' === typeof el.sliceInit )
-                    {   const s = attr(el,'slice');
-                        slices[s] = el.sliceInit( slices[s] );
-                    }
                 applySlices();
             }
             get dce(){ return dce;}

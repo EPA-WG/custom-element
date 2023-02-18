@@ -128,7 +128,32 @@ is available in `{}` in attributes, in `xsl:for-each`, `xsl:if`, `xsl:value-of`,
 
 XPath is a selector language to navigate over custom element instance data, attributes, and payload.
 
+## XSLT 1.0
+The in-browser native implementation as of now supports [XSLT 1.0](https://www.w3.org/TR/xslt-10/). 
+File the [change request](https://github.com/EPA-WG/custom-element/issues) for support of another XSLT version or 
+template engine.
+
 # troubleshooting
+## HTML parser is not compatible with templates
+On many tags like `table`, or link `a` the attempt to use XSLT operations could lead to DOM order missmatch to given 
+in template. In such cases the `html:` prefix in front of troubled tag would solve the parsing.
+
+```html
+<custom-element tag="dce-2" hidden>
+    <local-storage key="basket" slice="basket"></local-storage>
+    <html:table>
+        <xsl:for-each select="//slice/basket/@*">
+            <html:tr>
+                <html:th><xsl:value-of select="name()"/></html:th>
+                <html:td><xsl:value-of select="."/></html:td>
+            </html:tr>
+        </xsl:for-each>
+    </html:table>
+    count:<xsl:value-of select="count(//slice/basket/@*)"/>
+</custom-element>
+```
+See [demo source](demo/local-storage.html) for detailed sample.
+
 ## Chrome devtools plugin
 [@epa-wg/custom-element plugin][plugin-url] gives the view into
 
