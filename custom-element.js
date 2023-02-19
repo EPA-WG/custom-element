@@ -9,6 +9,7 @@ const create = ( tag, t = '' ) =>
     if( t ) e.innerText = t;
     return e;
 }
+const attr = (el, attr)=> el.getAttribute(attr);
 
 function xml2dom( xmlString )
 {
@@ -17,8 +18,11 @@ function xml2dom( xmlString )
 
 function bodyXml( dce )
 {
+
     const s = new XMLSerializer().serializeToString( dce );
-    return s.substring( s.indexOf( '>' ) + 1, s.lastIndexOf( '<' ) );
+    return s.substring( s.indexOf( '>' ) + 1, s.lastIndexOf( '<' ) )
+        .replaceAll("<html:","<")
+        .replaceAll("</html:","</");
 }
 
 function slot2xsl( s )
@@ -37,6 +41,7 @@ function injectData( root, sectionName, arr, cb )
     };
     const l = inject( sectionName, root );
     [ ...arr ].forEach( e => l.append( cb( e ) ) );
+    return l;
 }
 
 function assureSlot( e )
@@ -50,6 +55,49 @@ function assureSlot( e )
     return e;
 }
 
+    export function
+Json2Xml( o, tag )
+{
+    if( typeof o === 'string' )
+        return o;
+
+    const noTag = "string" != typeof tag;
+
+    if( o instanceof Array )
+    {   noTag &&  (tag = 'array');
+        return "<"+tag+">"+o.map(function(el){ return Json2Xml(el,tag); }).join()+"</"+tag+">";
+    }
+    noTag &&  (tag = 'r');
+    tag=tag.replace( /[^a-z0-9]/gi,'_' );
+    var oo  = {}
+        ,   ret = [ "<"+tag+" "];
+    for( var k in o )
+        if( typeof o[k] == "object" )
+            oo[k] = o[k];
+        else
+            ret.push( k.replace( /[^a-z0-9]/gi,'_' ) + '="'+o[k].toString().replace(/&/gi,'&#38;')+'"');
+    if( oo )
+    {   ret.push(">");
+        for( var k in oo )
+            ret.push( Json2Xml( oo[k], k ) );
+        ret.push("</"+tag+">");
+    }else
+        ret.push("/>");
+    return ret.join('\n');
+}
+function injectSlice( x, s, data )
+{
+    const   el = create(s)
+    , isString = typeof data === 'string' ;
+    el.innerHTML = isString? data : Json2Xml( data, s );
+    const slice = isString? el : el.firstChild;
+    const d = [...x.children].find( e=>e.localName === s )?.remove();
+    if( d )
+        d.replaceWith( slice );
+    else
+        x.append(slice);
+}
+
 export class CustomElement extends HTMLElement
 {
     constructor()
@@ -59,8 +107,9 @@ export class CustomElement extends HTMLElement
         [ ...this.getElementsByTagName( 'slot' ) ].forEach( slot2xsl );
         const p = new XSLTProcessor();
         p.importStylesheet( this.xslt );
-        const tag = this.getAttribute( 'tag' );
+        const tag = attr( this, 'tag' );
         const dce = this;
+        const sliceNames = [...this.querySelectorAll('[slice]')].map(e=>attr(e,'slice'));
         tag && window.customElements.define( tag, class extends HTMLElement
         {
             constructor()
@@ -70,26 +119,47 @@ export class CustomElement extends HTMLElement
                 injectData( x, 'payload', this.childNodes, assureSlot );
                 injectData( x, 'attributes', this.attributes, e => create( e.nodeName, e.value ) );
                 injectData( x, 'dataset', Object.keys( this.dataset ), k => create( k, this.dataset[ k ] ) );
+                const sliceRoot = injectData( x, 'slice', sliceNames, k => create( k, '' ) );
                 this.xml = x;
+                const slices = {};
+
+
                 const sliceEvents=[];
-                this.addEventListener('loadend', ev=>{ ev.stopPropagation(); sliceEvents.push(ev) });
+                const applySlices = ()=>
+                {   if( sliceEvents.length )
+                    {   sliceEvents.forEach( ev=> injectSlice( sliceRoot, attr( ev.target, 'slice'), ev.detail ) );
+                        transform();
+                        sliceEvents.length = 0;
+                    }
+                }
+                let timeoutID;
+
+                const onSlice = ev=>
+                {   ev.stopPropagation?.();
+                    sliceEvents.push(ev);
+                    if( !timeoutID )
+                        timeoutID = setTimeout(()=>
+                        {   applySlices();
+                            timeoutID =0;
+                        })
+                };
+                this.addEventListener('loadend', onSlice);
+                this.addEventListener('progress1', onSlice);
+                this.onSlice = onSlice;
                 const transform = ()=>
                 {
                     const f = p.transformToFragment( x, document );
                     this.innerHTML = '';
                     [ ...f.childNodes ].forEach( e => this.appendChild( e ) );
-                }
-                transform();
-                this.dispatchEvent( new Event('load',{  bubbles: true, target: this }));
-                if(sliceEvents.length)
-                {   sliceEvents.forEach( ev=>
-                    {
 
-                    })
-                    transform();
-                    sliceEvents.length = 0;
-                }
-                // todo check
+                    for( let el of this.querySelectorAll('[slice]') )
+                        if( 'function' === typeof el.sliceInit )
+                        {   const s = attr(el,'slice');
+                            slices[s] = el.sliceInit( slices[s] );
+                        }
+                };
+                transform();
+                applySlices();
             }
             get dce(){ return dce;}
         } );
