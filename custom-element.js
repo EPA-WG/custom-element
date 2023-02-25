@@ -18,18 +18,14 @@ function xml2dom( xmlString )
 
 function bodyXml( dce )
 {
-    const t = dce.firstElementChild;
+    const t = dce.firstElementChild
+    , sanitize = s => s.replaceAll("<html:","<")
+                       .replaceAll("</html:","</");
     if( t.tagName === 'TEMPLATE')
-    {
-        const s = new XMLSerializer().serializeToString( t.content );
-        return s.replaceAll("<html:","<")
-                .replaceAll("</html:","</");
+        return sanitize( new XMLSerializer().serializeToString( t.content ) );
 
-    }
     const s = new XMLSerializer().serializeToString( dce );
-    return s.substring( s.indexOf( '>' ) + 1, s.lastIndexOf( '<' ) )
-        .replaceAll("<html:","<")
-        .replaceAll("</html:","</");
+    return sanitize( s.substring( s.indexOf( '>' ) + 1, s.lastIndexOf( '<' ) ) );
 }
 
 function slot2xsl( s )
