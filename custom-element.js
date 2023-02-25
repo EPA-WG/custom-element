@@ -18,7 +18,14 @@ function xml2dom( xmlString )
 
 function bodyXml( dce )
 {
+    const t = dce.firstElementChild;
+    if( t.tagName === 'TEMPLATE')
+    {
+        const s = new XMLSerializer().serializeToString( t.content );
+        return s.replaceAll("<html:","<")
+                .replaceAll("</html:","</");
 
+    }
     const s = new XMLSerializer().serializeToString( dce );
     return s.substring( s.indexOf( '>' ) + 1, s.lastIndexOf( '<' ) )
         .replaceAll("<html:","<")
@@ -143,8 +150,6 @@ export class CustomElement extends HTMLElement
                             timeoutID =0;
                         },1000);
                 };
-                // this.addEventListener('loadend', onSlice);
-                // this.addEventListener('progress1', onSlice);
                 this.onSlice = onSlice;
                 const transform = ()=>
                 {

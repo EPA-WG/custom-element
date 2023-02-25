@@ -9,6 +9,7 @@
         body,nav{ display: flex; flex-wrap: wrap; align-content: stretch; gap: 1rem; }
         body>*{flex: auto;}
         nav{ flex-direction: column;}
+        custom-element{display: none;}
         dce-link,dce-1-slot,dce-2-slot,dce-3-slot,dce-4-slot,dce-2-slots,greet-element,pokemon-tile
             { box-shadow: 0 0 0.5rem lime; padding: 1rem; display: inline-block; }
         dd{ padding: 1rem;}
@@ -18,7 +19,7 @@
             box-shadow: inset silver 0px 0px 1rem; min-width: 12rem; padding: 1rem;
             color: coral; text-shadow: 1px 1px silver; font-weight: bolder;
         }
-        button img{ max-height: 10vw;}
+        button img{ max-height: 10vw; min-height: 4rem;}
         table{ min-width: 16rem; }
         td{ border-bottom: 1px solid silver; }
         tfoot td{ border-bottom: none; }
@@ -36,17 +37,19 @@
     <p>Should display 10 image buttons with pokemon name </p>
     <template>
 <custom-element tag="dce-1" hidden>
-    <http-request url="https://pokeapi.co/api/v2/pokemon?limit=10&offset=0" slice="page"></http-request>
-    <xsl:for-each select="//slice/page/data/results/*">
-        <xsl:variable name="pokeid"
-            select="substring-before( substring-after( @url, 'https://pokeapi.co/api/v2/pokemon/'),'/')"
-            ></xsl:variable>
-        <button>
-            <img src="https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/{$pokeid}.svg"
-                 alt="{@name}"/>
-            <xsl:value-of select='@name'/>
-        </button>
-    </xsl:for-each>
+    <template><!-- wrapping into template to prevent images loading within DCE declaration -->
+        <http-request url="https://pokeapi.co/api/v2/pokemon?limit=10&offset=0" slice="page"></http-request>
+        <xsl:for-each select="//slice/page/data/results/*">
+            <xsl:variable name="pokeid"
+                select="substring-before( substring-after( @url, 'https://pokeapi.co/api/v2/pokemon/'),'/')"
+                ></xsl:variable>
+            <button>
+                <img src="https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/{$pokeid}.svg"
+                     alt="{@name}"/>
+                <xsl:value-of select='@name'/>
+            </button>
+        </xsl:for-each>
+    </template>
 </custom-element>
 <dce-1></dce-1>
     </template>
