@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>http-request Declarative Custom Element implementation demo</title>
-    <script type="module" src="../local-storage.js"></script>
+    <script type="module" src="../http-request.js"></script>
     <script type="module" src="../custom-element.js"></script>
     <style>
         body,nav{ display: flex; flex-wrap: wrap; align-content: stretch; gap: 1rem; }
@@ -19,87 +19,45 @@
         tfoot td{ border-bottom: none; }
         td,th{text-align: right; }
         caption{ padding: 1rem; font-weight: bolder; font-family: sans-serif; }
+        ul{ padding: 0; }
+        li{ display: flex; gap: 1rem;}
+        code{ text-align: right; min-width: 3rem;}
     </style>
 </head>
 <body>
 
 
-<html-demo-element legend="1. localStorage simplest"
-                   description="local-storage read only during initial and only render, does not track the changes.">
+<html-demo-element legend="1. http-request simplest"
+                   description="load the list of pokemons">
     <p>Has to produce 12🍒</p>
     <template>
         <custom-element tag="dce-1" hidden>
+
             <xsl:value-of select="//slice/fruits/text()"></xsl:value-of>
-           <slot>🤔</slot>
-            <local-storage key="cherries" slice="fruits"></local-storage>
+            <http-request url="https://pokeapi.co/api/v2/pokemon?limit=10&offset=0" slice="page"></http-request>
+            List:
+            <html:ul>
+                <xsl:for-each select="//slice/page/data/results/*">
+                    <html:li>
+                        <code><xsl:value-of select="substring-before( substring-after( @url, 'https://pokeapi.co/api/v2/pokemon/'),'/')"/></code>
+                        <html:b><xsl:value-of select="@name"/></html:b>
+                    </html:li>
+                </xsl:for-each>
+            </html:ul>
         </custom-element>
         <dce-1>🍒</dce-1>
     </template>
 </html-demo-element>
 
-<html-demo-element legend="2. localStorage basket JSON "
-                   description="local-storage tracks changes">
-    <p>Click the fruits button to add into cart </p>
-    <template>
-        <custom-element tag="dce-2" hidden>
-            <local-storage key="basket" slice="basket" live type="json"></local-storage>
-            <html:table>
-                <xsl:for-each select="//slice/basket/@*">
-                    <html:tr>
-                        <html:th><xsl:value-of select="name()"/></html:th>
-                        <html:td><xsl:value-of select="."/></html:td>
-                    </html:tr>
-                </xsl:for-each>
-                <html:tfoot>
-                    <html:tr>
-                        <html:td><slot>🤔</slot></html:td>
-                        <html:th><xsl:value-of select="sum(//slice/basket/@*)"/></html:th>
-                    </html:tr>
-                </html:tfoot>
-            </html:table>
-        </custom-element>
-        <dce-2>🛒total</dce-2>
-    </template>
-</html-demo-element>
-
 <fieldset>
     <legend>localStorage content</legend>
-    <p>The demo should display count 1🍋 and 12🍒 initially.
-        The value in <code>localStorage</code> is incremented
-        when clicked on matching button
-    </p>
+
     <button name="lemons" value="1"     >🍋</button>
-    <button name="cherries" value="12"  >🍒</button>
-    <button name="apple"                >🍏</button>
-    <button name="banana"               >🍌</button>
-    <table>
-        <caption> Click to add the localStorage value </caption>
-        <thead><tr><th>key</th><th>value</th></tr></thead>
-        <tbody id="local-storage-values"></tbody>
-    </table>
 </fieldset>
 <script type="module">
     import $ from 'https://unpkg.com/css-chain@1/CssChain.js';
 
-    const basket = {cherries: 12, lemons:1 };
-    localStorage.setItem( 'basket', JSON.stringify(basket) );
 
-    $('button[name]')
-        .forEach( b=> localStorage.setItem( b.name, b.value ) )
-        .addEventListener( 'click', e =>
-        {   const k = e.target.name;
-            basket[k] || (basket[k] = 1);
-            localStorage.setItem( k, basket[k] = 1+1*localStorage[k] )
-            localStorage.setItem( 'basket', JSON.stringify(basket) );
-        } );
-
-    const renderStorage = () =>
-        window[ 'local-storage-values' ].innerHTML = [...Array(localStorage.length).keys()]
-            .map( k => `<tr><th>${ localStorage.key(k) }</th><td>${ localStorage.getItem( localStorage.key(k) ) }</td>` ).join( '\n' );
-
-    window.addEventListener( 'storage', renderStorage );
-    window.addEventListener( 'local-storage', renderStorage );
-    renderStorage();
 </script>
 
 <script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>

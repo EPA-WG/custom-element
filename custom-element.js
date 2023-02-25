@@ -141,10 +141,10 @@ export class CustomElement extends HTMLElement
                         timeoutID = setTimeout(()=>
                         {   applySlices();
                             timeoutID =0;
-                        })
+                        },1000);
                 };
-                this.addEventListener('loadend', onSlice);
-                this.addEventListener('progress1', onSlice);
+                // this.addEventListener('loadend', onSlice);
+                // this.addEventListener('progress1', onSlice);
                 this.onSlice = onSlice;
                 const transform = ()=>
                 {
