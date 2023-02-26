@@ -28,12 +28,12 @@
 
 <html-demo-element legend="1. http-request simplest"
                    description="load the list of pokemons">
-    <p>Should display 10 image buttons with pokemon name </p>
+    <p>Should display 6 image buttons with pokemon name </p>
     <template>
 <custom-element tag="dce-1" hidden>
     <template><!-- wrapping into template to prevent images loading within DCE declaration -->
         <http-request
-            url="https://pokeapi.co/api/v2/pokemon?limit=10&offset=0"
+            url="https://pokeapi.co/api/v2/pokemon?limit=6&offset=0"
             slice="page"
             ></http-request>
         <xsl:for-each select="//slice/page/data/results/*">
