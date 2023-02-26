@@ -18,7 +18,7 @@ bodyXml( dce )
     const t = dce.firstElementChild
     , sanitize = s => s.replaceAll("<html:","<")
                        .replaceAll("</html:","</");
-    if( t.tagName === 'TEMPLATE')
+    if( t?.tagName === 'TEMPLATE')
         return sanitize( new XMLSerializer().serializeToString( t.content ) );
 
     const s = new XMLSerializer().serializeToString( dce );
@@ -110,12 +110,12 @@ CustomElement extends HTMLElement
     {
         super();
 
-        [ ...this.getElementsByTagName( 'slot' ) ].forEach( slot2xsl );
+        [ ...this.templateNode.querySelectorAll('slot') ].forEach( slot2xsl );
         const p = new XSLTProcessor();
         p.importStylesheet( this.xslt );
         const tag = attr( this, 'tag' );
         const dce = this;
-        const sliceNames = [...this.querySelectorAll('[slice]')].map(e=>attr(e,'slice'));
+        const sliceNames = [...this.templateNode.querySelectorAll('[slice]')].map(e=>attr(e,'slice'));
         tag && window.customElements.define( tag, class extends HTMLElement
         {
             constructor()
@@ -168,10 +168,11 @@ CustomElement extends HTMLElement
             get dce(){ return dce;}
         } );
     }
+    get templateNode(){ return this.firstElementChild?.tagName === 'TEMPLATE'? this.firstElementChild.content : this }
     get dce(){ return this;}
-    get xslt()
+    get xsltString()
     {
-        return xml2dom(
+        return (
 `<xsl:stylesheet version="1.0"
     xmlns:xsl="${ XSL_NS_URL }">
   <xsl:output method="html" />
@@ -185,6 +186,7 @@ CustomElement extends HTMLElement
 
 </xsl:stylesheet>` );
     }
+    get xslt(){ return xml2dom( this.xsltString ); }
 }
 
 window.customElements.define( 'custom-element', CustomElement );
