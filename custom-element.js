@@ -1,38 +1,40 @@
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>'
-    , XSL_NS_URL      = 'http://www.w3.org/1999/XSL/Transform';
+,     XSL_NS_URL      = 'http://www.w3.org/1999/XSL/Transform';
 
 // const log = x => console.debug( new XMLSerializer().serializeToString( x ) );
 
-const create = ( tag, t = '' ) =>
-{
-    const e = document.createElement( tag );
-    if( t ) e.innerText = t;
-    return e;
-}
-const attr = (el, attr)=> el.getAttribute(attr);
+const attr = (el, attr)=> el.getAttribute(attr)
+,   create = ( tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElement( tag ));
 
-function xml2dom( xmlString )
+    function
+xml2dom( xmlString )
 {
     return new DOMParser().parseFromString( XML_DECLARATION + xmlString, "application/xml" )
 }
 
-function bodyXml( dce )
+    function
+bodyXml( dce )
 {
+    const t = dce.firstElementChild
+    , sanitize = s => s.replaceAll("<html:","<")
+                       .replaceAll("</html:","</");
+    if( t?.tagName === 'TEMPLATE')
+        return sanitize( new XMLSerializer().serializeToString( t.content ) );
 
     const s = new XMLSerializer().serializeToString( dce );
-    return s.substring( s.indexOf( '>' ) + 1, s.lastIndexOf( '<' ) )
-        .replaceAll("<html:","<")
-        .replaceAll("</html:","</");
+    return sanitize( s.substring( s.indexOf( '>' ) + 1, s.lastIndexOf( '<' ) ) );
 }
 
-function slot2xsl( s )
+    function
+slot2xsl( s )
 {
     const v = document.createElementNS( XSL_NS_URL, 'value-of' );
     v.setAttribute( 'select', `//*[@slot="${ s.name }"]` );
     s.parentNode.replaceChild( v, s );
 }
 
-function injectData( root, sectionName, arr, cb )
+    function
+injectData( root, sectionName, arr, cb )
 {
     const inject = ( tag, parent, s ) =>
     {
@@ -44,7 +46,8 @@ function injectData( root, sectionName, arr, cb )
     return l;
 }
 
-function assureSlot( e )
+    function
+assureSlot( e )
 {
     if( !e.slot )
     {
@@ -85,31 +88,31 @@ Json2Xml( o, tag )
         ret.push("/>");
     return ret.join('\n');
 }
-function injectSlice( x, s, data )
+
+    function
+injectSlice( x, s, data )
 {
-    const   el = create(s)
-    , isString = typeof data === 'string' ;
+    const     el = create(s)
+    ,   isString = typeof data === 'string' ;
     el.innerHTML = isString? data : Json2Xml( data, s );
-    const slice = isString? el : el.firstChild;
-    const d = [...x.children].find( e=>e.localName === s )?.remove();
-    if( d )
-        d.replaceWith( slice );
-    else
+    const  slice = isString? el : el.firstChild;
+    [...x.children].filter( e=>e.localName === s ).map( el=>el.remove() );
         x.append(slice);
 }
 
-export class CustomElement extends HTMLElement
+    export class
+CustomElement extends HTMLElement
 {
     constructor()
     {
         super();
 
-        [ ...this.getElementsByTagName( 'slot' ) ].forEach( slot2xsl );
+        [ ...this.templateNode.querySelectorAll('slot') ].forEach( slot2xsl );
         const p = new XSLTProcessor();
         p.importStylesheet( this.xslt );
         const tag = attr( this, 'tag' );
         const dce = this;
-        const sliceNames = [...this.querySelectorAll('[slice]')].map(e=>attr(e,'slice'));
+        const sliceNames = [...this.templateNode.querySelectorAll('[slice]')].map(e=>attr(e,'slice'));
         tag && window.customElements.define( tag, class extends HTMLElement
         {
             constructor()
@@ -126,11 +129,16 @@ export class CustomElement extends HTMLElement
 
                 const sliceEvents=[];
                 const applySlices = ()=>
-                {   if( sliceEvents.length )
-                    {   sliceEvents.forEach( ev=> injectSlice( sliceRoot, attr( ev.target, 'slice'), ev.detail ) );
-                        transform();
-                        sliceEvents.length = 0;
+                {   const processed = {}
+
+                    for(let ev; ev =  sliceEvents.pop(); )
+                    {   const s = attr( ev.target, 'slice');
+                        if( processed[s] )
+                            continue;
+                        injectSlice( sliceRoot, s, ev.detail );
+                        processed[s] = ev;
                     }
+                    Object.keys(processed).length !== 0 && transform();
                 }
                 let timeoutID;
 
@@ -141,10 +149,8 @@ export class CustomElement extends HTMLElement
                         timeoutID = setTimeout(()=>
                         {   applySlices();
                             timeoutID =0;
-                        })
+                        },10);
                 };
-                this.addEventListener('loadend', onSlice);
-                this.addEventListener('progress1', onSlice);
                 this.onSlice = onSlice;
                 const transform = ()=>
                 {
@@ -164,10 +170,11 @@ export class CustomElement extends HTMLElement
             get dce(){ return dce;}
         } );
     }
+    get templateNode(){ return this.firstElementChild?.tagName === 'TEMPLATE'? this.firstElementChild.content : this }
     get dce(){ return this;}
-    get xslt()
+    get xsltString()
     {
-        return xml2dom(
+        return (
 `<xsl:stylesheet version="1.0"
     xmlns:xsl="${ XSL_NS_URL }">
   <xsl:output method="html" />
@@ -181,6 +188,7 @@ export class CustomElement extends HTMLElement
 
 </xsl:stylesheet>` );
     }
+    get xslt(){ return xml2dom( this.xsltString ); }
 }
 
 window.customElements.define( 'custom-element', CustomElement );

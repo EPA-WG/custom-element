@@ -1,0 +1,19 @@
+html
+{   font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+    font-weight: 400; font-style: normal; -webkit-font-smoothing: antialiased;
+}
+body,nav{ display: flex; flex-wrap: wrap; align-content: stretch; gap: 1rem; }
+body>*{flex: auto;}
+nav{ flex-direction: column;}
+dce-link,dce-1-slot,dce-2-slot,dce-3-slot,dce-4-slot,dce-2-slots,greet-element,pokemon-tile,
+dce-1,dce-2,dce-3,dce-4
+{ box-shadow: 0 0 0.5rem lime; padding: 1rem; display: inline-block; flex:1; }
+dd{ padding: 1rem;}
+p{ margin: 0;}
+
+
+html-demo-element h3
+{   text-shadow: 0 0 0.25em white;
+    letter-spacing: 0.1rem;
+}
+*[slot="demo"]{ display: flex; gap: 1rem; flex-wrap: wrap; }
