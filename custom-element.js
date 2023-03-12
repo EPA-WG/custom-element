@@ -95,11 +95,8 @@ injectSlice( x, s, data )
     const     el = create(s)
     ,   isString = typeof data === 'string' ;
     el.innerHTML = isString? data : Json2Xml( data, s );
-    const  slice = isString? el : el.firstChild
-    ,          d = [...x.children].find( e=>e.localName === s )?.remove();
-    if( d )
-        d.replaceWith( slice );
-    else
+    const  slice = isString? el : el.firstChild;
+    [...x.children].filter( e=>e.localName === s ).map( el=>el.remove() );
         x.append(slice);
 }
 
@@ -132,11 +129,16 @@ CustomElement extends HTMLElement
 
                 const sliceEvents=[];
                 const applySlices = ()=>
-                {   if( sliceEvents.length )
-                    {   sliceEvents.forEach( ev=> injectSlice( sliceRoot, attr( ev.target, 'slice'), ev.detail ) );
-                        transform();
-                        sliceEvents.length = 0;
+                {   const processed = {}
+
+                    for(let ev; ev =  sliceEvents.pop(); )
+                    {   const s = attr( ev.target, 'slice');
+                        if( processed[s] )
+                            continue;
+                        injectSlice( sliceRoot, s, ev.detail );
+                        processed[s] = ev;
                     }
+                    Object.keys(processed).length !== 0 && transform();
                 }
                 let timeoutID;
 

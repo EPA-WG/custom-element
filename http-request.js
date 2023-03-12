@@ -11,7 +11,7 @@ export class HttpRequestElement extends HTMLElement
             s = {};
         s.element = this;
         if( s.destroy )
-            return;
+            return s;
         const controller = new AbortController();
         s.destroy = ()=>
         {   // todo destroy slices in custom-element
