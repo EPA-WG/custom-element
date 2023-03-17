@@ -17,7 +17,9 @@ bodyXml( dce )
 {
     const t = dce.firstElementChild
     , sanitize = s => s.replaceAll("<html:","<")
-                       .replaceAll("</html:","</");
+                       .replaceAll("</html:","</")
+                       .replaceAll( />\s*<\/xsl:value-of>/g ,"/>")
+                       .replaceAll( />\s*<\/(br|hr|img|area|base|col|embed|input|link|meta|param|source|track|wbr)>/g ,"/>");
     if( t?.tagName === 'TEMPLATE')
         return sanitize( new XMLSerializer().serializeToString( t.content ) );
 
@@ -74,14 +76,14 @@ Json2Xml( o, tag )
     tag=tag.replace( /[^a-z0-9]/gi,'_' );
     var oo  = {}
         ,   ret = [ "<"+tag+" "];
-    for( var k in o )
+    for( let k in o )
         if( typeof o[k] == "object" )
             oo[k] = o[k];
         else
             ret.push( k.replace( /[^a-z0-9]/gi,'_' ) + '="'+o[k].toString().replace(/&/gi,'&#38;')+'"');
     if( oo )
     {   ret.push(">");
-        for( var k in oo )
+        for( let k in oo )
             ret.push( Json2Xml( oo[k], k ) );
         ret.push("</"+tag+">");
     }else
@@ -142,7 +144,7 @@ CustomElement extends HTMLElement
                 }
                 let timeoutID;
 
-                const onSlice = ev=>
+                this.onSlice = ev=>
                 {   ev.stopPropagation?.();
                     sliceEvents.push(ev);
                     if( !timeoutID )
@@ -151,7 +153,6 @@ CustomElement extends HTMLElement
                             timeoutID =0;
                         },10);
                 };
-                this.onSlice = onSlice;
                 const transform = ()=>
                 {
                     const f = p.transformToFragment( x, document );
