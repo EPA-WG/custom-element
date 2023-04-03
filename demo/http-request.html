@@ -3,6 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>http-request Declarative Custom Element implementation demo</title>
+        <link rel="icon" href="./wc-square.svg" />
+
     <script type="module" src="../http-request.js"></script>
     <script type="module" src="../custom-element.js"></script>
     <style>
@@ -35,6 +37,8 @@
         <http-request
             url="https://pokeapi.co/api/v2/pokemon?limit=6&offset=0"
             slice="page"
+            method="GET"
+            header-accept="application/json"
             ></http-request>
         <xsl:for-each select="//slice/page/data/results/*">
             <xsl:variable name="slides-url"
@@ -51,6 +55,65 @@
     </template>
 </custom-element>
 <dce-1></dce-1>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="1. http-request headers"
+                   description="request and response headers access demo">
+
+    <template>
+            <custom-element
+                tag="headers-demo"
+                hidden
+                >
+<http-request
+    url="https://pokeapi.co/api/v2/pokemon?offset=6&limit=6"
+    slice="request_slice"
+    type="text"
+    mode="cors"
+    header-x-test="testing"
+    ></http-request>
+Content of <code>//slice/request_slice</code> is filled by <b>request</b> and <b>response</b>
+from <code>${url}</code>
+
+<h3>Samples</h3>
+<table>
+<tr><th>//slice/request_slice/request/headers/@mode</th>
+    <td><xsl:value-of select="//slice/request_slice/request/@mode"/></td></tr>
+<tr><th>//slice/request_slice/response/headers/@content-type</th>
+    <td><xsl:value-of select="//slice/request_slice/response/headers/@content-type"/></td></tr>
+<tr><th>//slice/request_slice/response/@status</th>
+    <td><xsl:value-of select="//slice/request_slice/response/@status"/></td></tr>
+</table>
+<xsl:for-each select="//slice/request_slice/*">
+    <ul data-request-section="{name(.)}">
+        <b data-testid="request-section"><xsl:value-of select='name(.)'/></b>
+        <xsl:for-each select="@*">
+            <div>
+                <var data-testid="section-attribute">@<xsl:value-of select='local-name(.)'/></var>
+                =
+                <code><xsl:value-of select='.'/></code>
+            </div>
+        </xsl:for-each>
+        <xsl:for-each select="*">
+            <div>
+                <b data-testid="section-deep"><xsl:value-of select='local-name(.)'/></b>
+                <ul>
+                    <xsl:for-each select="@*">
+                        <li>
+                            <var data-testid="section-attribute">@<xsl:value-of select='local-name(.)'/></var>
+                            =
+                            <code><xsl:value-of select='.'/></code>
+                        </li>
+                    </xsl:for-each>
+                    <code><xsl:value-of select='.'/></code>
+                </ul>
+            </div>
+        </xsl:for-each>
+    </ul>
+</xsl:for-each>
+            </custom-element>
+            <headers-demo></headers-demo>
     </template>
 </html-demo-element>
 

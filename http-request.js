@@ -6,6 +6,16 @@ export class HttpRequestElement extends HTMLElement
     constructor() {
         super();
     }
+    get requestHeaders()
+    {   const ret = {};
+        [...this.attributes].filter(a=>a.name.startsWith('header-')).map( a => ret[a.name.substring(7)] = a.value );
+        return ret;
+    }
+    get requestProps()
+    {   const ret = {};
+        [...this.attributes].filter(a=>!a.name.startsWith('header-')).map( a => ret[a.name] = a.value );
+        return ret;
+    }
     sliceInit( s )
     {   if( !s )
             s = {};
@@ -18,7 +28,7 @@ export class HttpRequestElement extends HTMLElement
             controller.abort();
         };
         const     url = attr(this, 'url') || ''
-        ,     request = { url }
+        ,     request = { ...this.requestProps, headers: this.requestHeaders }
         ,       slice = { detail: { request }, target: this }
         , updateSlice = slice =>
         {   for( let parent = s.element.parentElement; parent; parent = parent.parentElement )
@@ -30,9 +40,14 @@ export class HttpRequestElement extends HTMLElement
 
         setTimeout( async ()=>
         {   updateSlice( slice );
-            slice.detail.response = await fetch(url,{ signal: controller.signal });
+            const response = await fetch(url,{ ...this.requestProps, signal: controller.signal, headers: this.requestHeaders })
+            ,      r= {headers: {}};
+            [...response.headers].map( ([k,v]) => r.headers[k]=v );
+            'ok,status,statusText,type,url,redirected'.split(',').map(k=>r[k]=response[k])
+
+            slice.detail.response = r;
             updateSlice( slice );
-            slice.detail.data = await slice.detail.response.json();
+            slice.detail.data = await response.json();
             updateSlice( slice );
         },0 );
 

@@ -1,8 +1,11 @@
 # custom-element
-`Declarative Custom Element` proof of concept as a part of [WCCG in Declarative custom elements](https://github.com/w3c/webcomponents-cg/issues/32#issuecomment-1321037301) 
-discussion.
+`Declarative Custom Element` is a part of pure `Declarative Web Application` stack. A proof of concept as a part of 
+[WCCG in Declarative custom elements](https://github.com/w3c/webcomponents-cg/issues/32#issuecomment-1321037301) 
+discussion. The functionality of DCE and its data access does not require programming using JavaScript. 
 
-It allows to define custom HTML tag with template filled from slots and attributes.
+It allows to define custom HTML tag with template filled from slots and attributes and data `slice` as of now from  
+[local-storage][local-storage-demo] and [http-request][http-request-demo].
+UI is re-rendered on each data slice change.
 
 [![git][github-image] GitHub][git-url]
 | Live demo: [custom-element][demo-url]
@@ -182,6 +185,8 @@ within template
 [git-url]:        https://github.com/EPA-WG/custom-element
 [git-test-url]:   https://github.com/EPA-WG/custom-element-test
 [demo-url]:       https://unpkg.com/@epa-wg/custom-element@0.0/index.html
+[local-storage-demo]: https://unpkg.com/@epa-wg/custom-element@0.0/demo/local-storage.html
+[http-request-demo]:  https://unpkg.com/@epa-wg/custom-element@0.0/demo/http-request.html
 [github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
 [npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element

@@ -73,14 +73,14 @@ Json2Xml( o, tag )
         return "<"+tag+">"+o.map(function(el){ return Json2Xml(el,tag); }).join()+"</"+tag+">";
     }
     noTag &&  (tag = 'r');
-    tag=tag.replace( /[^a-z0-9]/gi,'_' );
+    tag=tag.replace( /[^a-z0-9\-]/gi,'_' );
     var oo  = {}
         ,   ret = [ "<"+tag+" "];
     for( let k in o )
         if( typeof o[k] == "object" )
             oo[k] = o[k];
         else
-            ret.push( k.replace( /[^a-z0-9]/gi,'_' ) + '="'+o[k].toString().replace(/&/gi,'&#38;')+'"');
+            ret.push( k.replace( /[^a-z0-9\-]/gi,'_' ) + '="'+o[k].toString().replace(/&/gi,'&#38;')+'"');
     if( oo )
     {   ret.push(">");
         for( let k in oo )
