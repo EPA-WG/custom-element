@@ -94,12 +94,13 @@ Json2Xml( o, tag )
     function
 injectSlice( x, s, data )
 {
-    const     el = create(s)
-    ,   isString = typeof data === 'string' ;
-    el.innerHTML = isString? data : Json2Xml( data, s );
-    const  slice = isString? el : el.firstChild;
+    const isString = typeof data === 'string' ;
+
+    const el = isString
+        ? create(s, data)
+        : document.adoptNode( xml2dom( Json2Xml( data, s ) ).documentElement);
     [...x.children].filter( e=>e.localName === s ).map( el=>el.remove() );
-        x.append(slice);
+        x.append(el);
 }
 
     export class
