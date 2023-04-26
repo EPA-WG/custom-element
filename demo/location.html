@@ -20,12 +20,34 @@
 <body>
 
 
-<html-demo-element legend="1. window.location simplest"
-                   description="location read only during initial and only render, does not track the changes.">
+<html-demo-element legend="Change window URL">
+    <template>
+        <a href="#dce2">#dce2</a>
+        <form >
+            <input name="p1" value="abc"/>
+            <input name="p2" value="def"/>
+            <input type="submit" value="params"/>
+        </form>
+        <button onclick="history.pushState( {},'', 'location.html?pushstate')"
+                >history.pushState</button>
+        <button onclick="history.replaceState( {},'', 'location.html?replaceState#dce1')"
+                >history.replaceState</button>
+
+    </template>
+</html-demo-element>
+
+
+<html-demo-element legend="2. window.location live update"
+                   description="In the page beginning change the window URL via link or by history change"
+                   id="dce2"
+    >
     <p>Has to produce URL properties</p>
     <template>
-        <custom-element tag="dce-1" hidden>
+        <custom-element tag="dce-2" hidden>
             <template>
+
+                <location-element slice="window-url" live></location-element>
+
                 <html:table>
                     <xsl:for-each select="//slice/window-url/@*">
                         <html:tr>
@@ -44,13 +66,46 @@
                         </html:tr>
                     </xsl:for-each>
                 </html:table>
+            </template>
+        </custom-element>
+        <dce-2>?</dce-2>
+    </template>
+</html-demo-element>
+
+
+<html-demo-element legend="1. window.location simplest"
+                   description="location read only during initial and only render, does not track the changes."
+                   id="dce1">
+    <p>Has to produce URL properties</p>
+    <template>
+        <custom-element tag="dce-1" hidden>
+            <template>
+
                 <location-element slice="window-url"></location-element>
+
+                <html:table>
+                    <xsl:for-each select="//slice/window-url/@*">
+                        <html:tr>
+                            <html:th><xsl:value-of select="name()"/></html:th>
+                            <html:td><xsl:value-of select="."/></html:td>
+                        </html:tr>
+                    </xsl:for-each>
+                    <html:tr>
+                        <html:th><u>params</u></html:th>
+                        <html:th></html:th>
+                    </html:tr>
+                    <xsl:for-each select="//slice/window-url/params/*">
+                        <html:tr>
+                            <html:th><xsl:value-of select="name()"/></html:th>
+                            <html:td><xsl:value-of select="."/></html:td>
+                        </html:tr>
+                    </xsl:for-each>
+                </html:table>
             </template>
         </custom-element>
         <dce-1>?</dce-1>
     </template>
 </html-demo-element>
-
 
 <script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
 

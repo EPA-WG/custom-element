@@ -9,9 +9,8 @@ export class LocationElement extends HTMLElement
     {
         super();
         const      state = {}
-        ,           type = attr(this, 'type') || 'text'
-        ,       listener = e=> propagateSlice()
-        , propagateSlice = ()=>
+        ,       listener = e=> propagateSlice(e)
+        , propagateSlice = (e)=>
         {   const urlStr = attr(this,'src')
             const url = urlStr? new URL(urlStr) : window.location
 
