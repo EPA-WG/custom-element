@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>custom-element Declarative Custom Element implementation demo</title>
     <link rel="icon" href="./wc-square.svg" />
-    <script type="module" src="../location.js"></script>
+    <script type="module" src="../location-element.js"></script>
     <script type="module" src="../custom-element.js"></script>
     <style>
         @import "./demo.css";
@@ -18,8 +18,9 @@
     </style>
 </head>
 <body>
-
-
+<nav>
+    <a href=".."><h3><code>custom-element</code> demo</h3></a>
+</nav>
 <html-demo-element legend="Change window URL">
     <template>
         <a href="#dce2">#dce2</a>
@@ -104,6 +105,41 @@
             </template>
         </custom-element>
         <dce-1>?</dce-1>
+    </template>
+</html-demo-element>
+
+
+<html-demo-element legend="3. External URL as SRC attribute"
+                   description="url parsed and populated into slice."
+                   id="dce3">
+    <p>Has to produce URL properties</p>
+    <template>
+        <custom-element tag="dce-3" hidden>
+            <template>
+
+                <location-element slice="src-url" src="https://my.example?a=1&b=2#3"></location-element>
+
+                <html:table>
+                    <xsl:for-each select="//slice/src-url/@*">
+                        <html:tr>
+                            <html:th><xsl:value-of select="name()"/></html:th>
+                            <html:td><xsl:value-of select="."/></html:td>
+                        </html:tr>
+                    </xsl:for-each>
+                    <html:tr>
+                        <html:th><u>params</u></html:th>
+                        <html:th></html:th>
+                    </html:tr>
+                    <xsl:for-each select="//slice/src-url/params/*">
+                        <html:tr>
+                            <html:th><xsl:value-of select="name()"/></html:th>
+                            <html:td><xsl:value-of select="."/></html:td>
+                        </html:tr>
+                    </xsl:for-each>
+                </html:table>
+            </template>
+        </custom-element>
+        <dce-3>?</dce-3>
     </template>
 </html-demo-element>
 

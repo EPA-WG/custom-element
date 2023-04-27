@@ -20,7 +20,7 @@ export class LocationElement extends HTMLElement
                 params[key] = search.getAll(key)
 
             const detail = {params}
-            for( const k in url)
+            for( const k in url )
             {   if ('string' === typeof url[k])
                     detail[k] = url[k]
             }
