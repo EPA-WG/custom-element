@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:html="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>custom-element Declarative Custom Element implementation demo</title>
+    <link rel="icon" href="./wc-square.svg" />
+    <script type="module" src="../location-element.js"></script>
+    <script type="module" src="../custom-element.js"></script>
+    <style>
+        @import "./demo.css";
+
+        button{ background: forestgreen; }
+        table{ min-width: 16rem; }
+        td{ border-bottom: 1px solid silver; }
+        tfoot td{ border-bottom: none; }
+        td,th{text-align: right; }
+        caption{ padding: 1rem; font-weight: bolder; font-family: sans-serif; }
+    </style>
+</head>
+<body>
+<nav>
+    <a href=".."><h3><code>custom-element</code> demo</h3></a>
+</nav>
+<html-demo-element legend="Change window URL">
+    <template>
+        <a href="#dce2">#dce2</a>
+        <form >
+            <input name="p1" value="abc"/>
+            <input name="p2" value="def"/>
+            <input type="submit" value="params"/>
+        </form>
+        <button onclick="history.pushState( {},'', 'location.html?pushstate')"
+                >history.pushState</button>
+        <button onclick="history.replaceState( {},'', 'location.html?replaceState#dce1')"
+                >history.replaceState</button>
+
+    </template>
+</html-demo-element>
+
+
+<html-demo-element legend="2. window.location live update"
+                   description="In the page beginning change the window URL via link or by history change"
+                   id="dce2"
+    >
+    <p>Has to produce URL properties</p>
+    <template>
+        <custom-element tag="dce-2" hidden>
+            <template>
+
+                <location-element slice="window-url" live></location-element>
+
+                <html:table>
+                    <xsl:for-each select="//slice/window-url/@*">
+                        <html:tr>
+                            <html:th><xsl:value-of select="name()"/></html:th>
+                            <html:td><xsl:value-of select="."/></html:td>
+                        </html:tr>
+                    </xsl:for-each>
+                    <html:tr>
+                        <html:th><u>params</u></html:th>
+                        <html:th></html:th>
+                    </html:tr>
+                    <xsl:for-each select="//slice/window-url/params/*">
+                        <html:tr>
+                            <html:th><xsl:value-of select="name()"/></html:th>
+                            <html:td><xsl:value-of select="."/></html:td>
+                        </html:tr>
+                    </xsl:for-each>
+                </html:table>
+            </template>
+        </custom-element>
+        <dce-2>?</dce-2>
+    </template>
+</html-demo-element>
+
+
+<html-demo-element legend="1. window.location simplest"
+                   description="location read only during initial and only render, does not track the changes."
+                   id="dce1">
+    <p>Has to produce URL properties</p>
+    <template>
+        <custom-element tag="dce-1" hidden>
+            <template>
+
+                <location-element slice="window-url"></location-element>
+
+                <html:table>
+                    <xsl:for-each select="//slice/window-url/@*">
+                        <html:tr>
+                            <html:th><xsl:value-of select="name()"/></html:th>
+                            <html:td><xsl:value-of select="."/></html:td>
+                        </html:tr>
+                    </xsl:for-each>
+                    <html:tr>
+                        <html:th><u>params</u></html:th>
+                        <html:th></html:th>
+                    </html:tr>
+                    <xsl:for-each select="//slice/window-url/params/*">
+                        <html:tr>
+                            <html:th><xsl:value-of select="name()"/></html:th>
+                            <html:td><xsl:value-of select="."/></html:td>
+                        </html:tr>
+                    </xsl:for-each>
+                </html:table>
+            </template>
+        </custom-element>
+        <dce-1>?</dce-1>
+    </template>
+</html-demo-element>
+
+
+<html-demo-element legend="3. External URL as SRC attribute"
+                   description="url parsed and populated into slice."
+                   id="dce3">
+    <p>Has to produce URL properties</p>
+    <template>
+        <custom-element tag="dce-3" hidden>
+            <template>
+
+                <location-element slice="src-url" src="https://my.example?a=1&b=2#3"></location-element>
+
+                <html:table>
+                    <xsl:for-each select="//slice/src-url/@*">
+                        <html:tr>
+                            <html:th><xsl:value-of select="name()"/></html:th>
+                            <html:td><xsl:value-of select="."/></html:td>
+                        </html:tr>
+                    </xsl:for-each>
+                    <html:tr>
+                        <html:th><u>params</u></html:th>
+                        <html:th></html:th>
+                    </html:tr>
+                    <xsl:for-each select="//slice/src-url/params/*">
+                        <html:tr>
+                            <html:th><xsl:value-of select="name()"/></html:th>
+                            <html:td><xsl:value-of select="."/></html:td>
+                        </html:tr>
+                    </xsl:for-each>
+                </html:table>
+            </template>
+        </custom-element>
+        <dce-3>?</dce-3>
+    </template>
+</html-demo-element>
+
+<script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
+
+</body>
+</html>

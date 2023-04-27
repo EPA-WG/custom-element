@@ -3,8 +3,8 @@
 [WCCG in Declarative custom elements](https://github.com/w3c/webcomponents-cg/issues/32#issuecomment-1321037301) 
 discussion. The functionality of DCE and its data access does not require programming using JavaScript. 
 
-It allows to define custom HTML tag with template filled from slots and attributes and data `slice` as of now from  
-[local-storage][local-storage-demo] and [http-request][http-request-demo].
+It allows to define custom HTML tag with template filled from slots, attributes and data `slice` as of now from  
+[local-storage][local-storage-demo],  [http-request][http-request-demo], [location][location-demo].
 UI is re-rendered on each data slice change.
 
 [![git][github-image] GitHub][git-url]
@@ -187,12 +187,13 @@ within template
 [demo-url]:       https://unpkg.com/@epa-wg/custom-element@0.0/index.html
 [local-storage-demo]: https://unpkg.com/@epa-wg/custom-element@0.0/demo/local-storage.html
 [http-request-demo]:  https://unpkg.com/@epa-wg/custom-element@0.0/demo/http-request.html
+[location-demo]:  https://unpkg.com/@epa-wg/custom-element@0.0/demo/location.html
 [github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
 [npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
-[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.9/coverage/coverage.svg
-[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.9/coverage/lcov-report/index.html
-[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.9/storybook-static/index.html?path=/story/welcome--introduction
+[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.10/coverage/coverage.svg
+[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.10/coverage/lcov-report/index.html
+[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.10/storybook-static/index.html?path=/story/welcome--introduction
 [sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
 [webcomponents-url]: https://www.webcomponents.org/element/@epa-wg/custom-element
 [webcomponents-img]: https://img.shields.io/badge/webcomponents.org-published-blue.svg
