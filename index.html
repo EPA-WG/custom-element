@@ -52,11 +52,12 @@
 </html-demo-element>
 
 <html-demo-element legend="2a. payload with slot definition and slot value"
-                   description="same slot can be used multiple times unlike in TEMPLATE">
+                   description="unlike in TEMPLATE, same slot can be used multiple times and within attribute ">
     <template>
         <custom-element tag="dce-2-slots" hidden>
            <slot name="slot2"> 😃</slot> and again:
            <slot name="slot2"> 😃</slot>
+            <input placeholder="🐇❤️{//*[@slot='slot2']}"/>
         </custom-element>
         <dce-2-slots><i slot="slot2">🥕</i></dce-2-slots>
     </template>
