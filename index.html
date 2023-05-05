@@ -103,7 +103,7 @@
                    description="Complex case with slots, attributes, dataset, conditional render">
     <template>
 
-        <custom-element tag="pokemon-tile" hidden>
+        <custom-element tag="pokemon-tile" hidden id="shared-template">
             <h3><xsl:value-of select="title"/></h3> <!-- title is an attribute in instance
                                                          mapped into /*/attributes/title -->
             <xsl:if test="//smile">                 <!-- data-smile DCE instance attribute,
