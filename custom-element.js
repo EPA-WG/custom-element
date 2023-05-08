@@ -103,6 +103,10 @@ injectSlice( x, s, data )
         x.append(el);
 }
 
+function forEach$( el, css, cb){
+    for( let n of el.querySelectorAll(css) )
+        cb(n)
+}
     export class
 CustomElement extends HTMLElement
 {
@@ -110,7 +114,7 @@ CustomElement extends HTMLElement
     {
         super();
 
-        [ ...this.templateNode.querySelectorAll('slot') ].forEach( slot2xsl );
+        forEach$( this.templateNode,'slot', slot2xsl )
         const p = new XSLTProcessor();
         p.importStylesheet( this.xslt );
         const tag = attr( this, 'tag' );
@@ -122,8 +126,8 @@ CustomElement extends HTMLElement
             {
                 super();
                 const x = create( 'div' );
-                injectData( x, 'payload', this.childNodes, assureSlot );
-                injectData( x, 'attributes', this.attributes, e => create( e.nodeName, e.value ) );
+                injectData( x, 'payload'    , this.childNodes, assureSlot );
+                injectData( x, 'attributes' , this.attributes, e => create( e.nodeName, e.value ) );
                 injectData( x, 'dataset', Object.keys( this.dataset ), k => create( k, this.dataset[ k ] ) );
                 const sliceRoot = injectData( x, 'slice', sliceNames, k => create( k, '' ) );
                 this.xml = x;
@@ -160,11 +164,12 @@ CustomElement extends HTMLElement
                     this.innerHTML = '';
                     [ ...f.childNodes ].forEach( e => this.appendChild( e ) );
 
-                    for( let el of this.querySelectorAll('[slice]') )
+                    forEach$(this,'[slice]', el=> {
                         if( 'function' === typeof el.sliceInit )
                         {   const s = attr(el,'slice');
                             slices[s] = el.sliceInit( slices[s] );
                         }
+                    })
                 };
                 transform();
                 applySlices();

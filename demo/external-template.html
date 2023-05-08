@@ -116,6 +116,15 @@
     </template>
 </html-demo-element>
 
+<html-demo-element legend="9. local template as a 'loading...' or fallback for remote, error handling" >
+    <template>
+            <custom-element tag="dce-hash" src="../index.html#shared-template" hidden>
+                loading by hash from ../index.html#shared-template ...
+            </custom-element>
+            <dce-hash></dce-hash>
+    </template>
+</html-demo-element>
+
 
 <script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
 
