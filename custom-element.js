@@ -11,29 +11,8 @@ xml2dom( xmlString )
 {
     return new DOMParser().parseFromString( XML_DECLARATION + xmlString, "application/xml" )
 }
-
     function
-bodyXml( dce )
-{
-    const t = dce.firstElementChild
-    , sanitize = s => s.replaceAll("<html:","<")
-                       .replaceAll("</html:","</")
-                       .replaceAll( />\s*<\/xsl:value-of>/g ,"/>")
-                       .replaceAll( />\s*<\/(br|hr|img|area|base|col|embed|input|link|meta|param|source|track|wbr)>/g ,"/>");
-    if( t?.tagName === 'TEMPLATE')
-        return sanitize( new XMLSerializer().serializeToString( t.content ) );
-
-    const s = new XMLSerializer().serializeToString( dce );
-    return sanitize( s.substring( s.indexOf( '>' ) + 1, s.lastIndexOf( '<' ) ) );
-}
-
-    function
-slot2xsl( s )
-{
-    const v = document.createElementNS( XSL_NS_URL, 'value-of' );
-    v.setAttribute( 'select', `//*[@slot="${ s.name }"]` );
-    s.parentNode.replaceChild( v, s );
-}
+xmlString(doc){ return new XMLSerializer().serializeToString( doc ) }
 
     function
 injectData( root, sectionName, arr, cb )
@@ -91,6 +70,40 @@ Json2Xml( o, tag )
     return ret.join('\n');
 }
 
+    export function
+createXsltFromDom(templateNode)
+{
+    const dom = xml2dom(
+`<xsl:stylesheet version="1.0"
+    xmlns:xsl="${ XSL_NS_URL }">
+  <xsl:output method="html" />
+
+  <xsl:template match="/">
+    <xsl:apply-templates select="//attributes"/>
+  </xsl:template><xsl:template match="attributes"></xsl:template></xsl:stylesheet>`
+    );
+
+
+    const slot2xsl = s =>
+    {   const v = dom.createElementNS( XSL_NS_URL, 'value-of' );
+        v.setAttribute( 'select', `//*[@slot="${ s.name }"]` );
+        s.parentNode?.replaceChild( v, s );
+        return v
+    }
+
+    for( let c of ( templateNode.content?.childNodes || templateNode.childNodes ) )
+    {
+        let adopted = dom.importNode(c,true)
+
+        if('slot' === adopted.tagName )
+            adopted = slot2xsl(adopted)
+        else
+            forEach$( adopted,'slot', slot2xsl )
+        dom.documentElement.lastChild.appendChild(adopted)
+    }
+    // apply bodyXml changes
+    return dom
+}
     function
 injectSlice( x, s, data )
 {
@@ -104,9 +117,13 @@ injectSlice( x, s, data )
 }
 
 function forEach$( el, css, cb){
-    for( let n of el.querySelectorAll(css) )
-        cb(n)
+    if( el.querySelectorAll )
+        for( let n of el.querySelectorAll(css) )
+            cb(n)
 }
+const getByHashId = ( n, id )=> ( p => n===p? null: (p && ( p.querySelector(id) || getByHashId(p,id) ) ))( n.getRootNode() )
+
+
     export class
 CustomElement extends HTMLElement
 {
@@ -114,9 +131,20 @@ CustomElement extends HTMLElement
     {
         super();
 
-        forEach$( this.templateNode,'slot', slot2xsl )
+        let templateDoc;
+        const src = attr( this, 'src' );
+
+        if( src?.startsWith('#') )
+        {
+            const template = getByHashId( this, src)
+            templateDoc = createXsltFromDom(template)
+        }else
+            templateDoc = createXsltFromDom(this.children.length===1 && this.firstElementChild.tagName ==='TEMPLATE'? this.firstElementChild: this)
+
+        Object.defineProperty( this, "xsltString", { get: ()=>xmlString(templateDoc) });
+
         const p = new XSLTProcessor();
-        p.importStylesheet( this.xslt );
+        p.importStylesheet( templateDoc );
         const tag = attr( this, 'tag' );
         const dce = this;
         const sliceNames = [...this.templateNode.querySelectorAll('[slice]')].map(e=>attr(e,'slice'));
@@ -179,22 +207,7 @@ CustomElement extends HTMLElement
     }
     get templateNode(){ return this.firstElementChild?.tagName === 'TEMPLATE'? this.firstElementChild.content : this }
     get dce(){ return this;}
-    get xsltString()
-    {
-        return (
-`<xsl:stylesheet version="1.0"
-    xmlns:xsl="${ XSL_NS_URL }">
-  <xsl:output method="html" />
 
-  <xsl:template match="/">
-    <xsl:apply-templates select="//attributes"/>
-  </xsl:template>
-  <xsl:template match="attributes">
-    ${ bodyXml( this ) }
-  </xsl:template>
-
-</xsl:stylesheet>` );
-    }
     get xslt(){ return xml2dom( this.xsltString ); }
 }
 
