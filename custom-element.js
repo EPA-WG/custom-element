@@ -104,7 +104,23 @@ createXsltFromDom(templateNode)
     // apply bodyXml changes
     return dom
 }
-    function
+    export function
+deepEqual(a, b, O=false)
+{
+    if( a === b )
+        return true;
+
+    if( (typeof a !== "object" || a === null) || (typeof b !== "object" || b === null)
+        || Object.keys(a).length != Object.keys(b).length )
+        return O;
+
+    for( let k in a )
+        if( (!k in b) || !deepEqual( a[k], b[k] ) )
+            return O
+    return true;
+}
+
+    export function
 injectSlice( x, s, data )
 {
     const isString = typeof data === 'string' ;
@@ -113,6 +129,7 @@ injectSlice( x, s, data )
         ? create(s, data)
         : document.adoptNode( xml2dom( Json2Xml( data, s ) ).documentElement);
     [...x.children].filter( e=>e.localName === s ).map( el=>el.remove() );
+    el.data = data
         x.append(el);
 }
 
@@ -179,6 +196,10 @@ CustomElement extends HTMLElement
 
                 this.onSlice = ev=>
                 {   ev.stopPropagation?.();
+                    const s = attr( ev.target, 'slice')
+                    if( deepEqual( ev.detail, [...sliceRoot.children].find( e=>e.localName === s )?.data ) )
+                        return
+
                     sliceEvents.push(ev);
                     if( !timeoutID )
                         timeoutID = setTimeout(()=>
