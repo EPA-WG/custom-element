@@ -47,8 +47,10 @@ export class HttpRequestElement extends HTMLElement
 
             slice.detail.response = r;
             updateSlice( slice );
-            slice.detail.data = await response.json();
-            updateSlice( slice );
+            const detail = {...slice.detail}
+            detail.data = await response.json();
+            const s = {...slice, detail}
+            updateSlice( s );
         },0 );
 
         return s;
