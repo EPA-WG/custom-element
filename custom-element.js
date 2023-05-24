@@ -165,10 +165,9 @@ CustomElement extends HTMLElement
         const tag = attr( this, 'tag' );
         const dce = this;
         const sliceNames = [...this.templateNode.querySelectorAll('[slice]')].map(e=>attr(e,'slice'));
-        class DceClass extends HTMLElement
+        class DceElement extends HTMLElement
         {
-            connectedCallback(){ this.adoptPayload() }
-            adoptPayload()
+            connectedCallback()
             {   const x = create( 'div' );
                 injectData( x, 'payload'    , this.childNodes, assureSlot );
                 injectData( x, 'attributes' , this.attributes, e => create( e.nodeName, e.value ) );
@@ -223,12 +222,12 @@ CustomElement extends HTMLElement
                 applySlices();
             }
             get dce(){ return dce }
-        };
+        }
         if(tag)
-            window.customElements.define( tag, DceClass);
+            window.customElements.define( tag, DceElement);
         else
         {   const t = 'dce-'+crypto.randomUUID()
-            window.customElements.define( t, DceClass);
+            window.customElements.define( t, DceElement);
             const el = document.createElement(t);
 
             [ ...this.childNodes ].forEach( e => el.appendChild( e ) );
