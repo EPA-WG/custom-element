@@ -111,7 +111,7 @@ deepEqual(a, b, O=false)
         return true;
 
     if( (typeof a !== "object" || a === null) || (typeof b !== "object" || b === null)
-        || Object.keys(a).length != Object.keys(b).length )
+        || Object.keys(a).length !== Object.keys(b).length )
         return O;
 
     for( let k in a )
@@ -144,10 +144,8 @@ const getByHashId = ( n, id )=> ( p => n===p? null: (p && ( p.querySelector(id) 
     export class
 CustomElement extends HTMLElement
 {
-    constructor()
+    connectedCallback()
     {
-        super();
-
         let templateDoc;
         const src = attr( this, 'src' );
 
@@ -211,8 +209,8 @@ CustomElement extends HTMLElement
                     this.innerHTML = '';
                     [ ...f.childNodes ].forEach( e => this.appendChild( e ) );
 
-                    forEach$(this,'[slice]', el=> {
-                        if( 'function' === typeof el.sliceInit )
+                    forEach$(this,'[slice]', el=>
+                    {   if( 'function' === typeof el.sliceInit )
                         {   const s = attr(el,'slice');
                             slices[s] = el.sliceInit( slices[s] );
                         }
