@@ -61,12 +61,42 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="3. external file" >
+<html-demo-element legend="3. external SVG file" >
     <template>
-            <custom-element tag="dce-external" src="toc.html" >
-                <template>loading by hash from toc.html ...</template>
+            <custom-element tag="dce-external" src="confused.svg" >
+                <i>loading from SVG ...</i>
             </custom-element>
             <dce-external></dce-external>
+            <custom-element src="confused.svg" >
+                <i>inline DCE loading from SVG ...</i>
+            </custom-element>
+            <custom-element src="no.svg" >
+                <i>fallback for missing image</i>
+            </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="4. external XSLT file" >
+    <template>
+            <custom-element tag="dce-external-4" src="tree.xsl" >
+                <i>loading from XSLT ...</i>
+            </custom-element>
+            <dce-external-4 title="DCE with external XSLT template" data-fruit="🍌">Hi</dce-external-4>
+            <custom-element src="tree.xsl"  data-smile="👼" data-basket="🍒">
+                <i>inline DCE loading from XSLT ...</i>
+            </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="5. external HTML template" >
+    <template>
+            <custom-element tag="dce-external-4" src="tree.xsl" >
+                <i>loading from XSLT ...</i>
+            </custom-element>
+            <dce-external-4 title="DCE with external XSLT template" data-fruit="🍌">Hi</dce-external-4>
+            <custom-element src="tree.xsl"  data-smile="👼" data-basket="🍒">
+                <i>inline DCE loading from XSLT ...</i>
+            </custom-element>
     </template>
 </html-demo-element>
 

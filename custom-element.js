@@ -73,6 +73,8 @@ Json2Xml( o, tag )
     export function
 createXsltFromDom(templateNode)
 {
+    if( templateNode.documentElement?.tagName === 'xsl:stylesheet' )
+        return templateNode
     const dom = xml2dom(
 `<xsl:stylesheet version="1.0"
     xmlns:xsl="${ XSL_NS_URL }">
@@ -91,7 +93,7 @@ createXsltFromDom(templateNode)
         return v
     }
 
-    for( let c of ( templateNode.content?.childNodes || templateNode.childNodes ) )
+    for( let c of ( templateNode.content?.childNodes || templateNode.childNodes || []) )
     {
         let adopted = dom.importNode(c,true)
 
@@ -99,9 +101,32 @@ createXsltFromDom(templateNode)
             adopted = slot2xsl(adopted)
         else
             forEach$( adopted,'slot', slot2xsl )
-        dom.documentElement.lastChild.appendChild(adopted)
+        dom.documentElement.lastElementChild.appendChild(adopted)
     }
     // apply bodyXml changes
+    return dom
+}
+    export async function
+xhrTemplate(src)
+{
+    const dom = await new Promise((resolve,reject)=>
+    {   const xhr = new XMLHttpRequest();
+        xhr.open("GET", src);
+        xhr.responseType = "document";
+        xhr.overrideMimeType("text/xml");
+        xhr.onload = () =>
+        {   if( xhr.readyState === xhr.DONE && xhr.status === 200 )
+            {   if( xhr.responseXML )
+                    return resolve( xhr.responseXML )
+                debugger;
+                console.log(xhr.response, xhr.responseXML);
+            }else
+              reject(xhr.statusText)
+        };
+        xhr.addEventListener("error", ev=>reject(ev) );
+
+        xhr.send();
+    })
     return dom
 }
     export function
@@ -115,7 +140,7 @@ deepEqual(a, b, O=false)
         return O;
 
     for( let k in a )
-        if( (!k in b) || !deepEqual( a[k], b[k] ) )
+        if( !(k in b) || !deepEqual( a[k], b[k] ) )
             return O
     return true;
 }
@@ -144,15 +169,19 @@ const getByHashId = ( n, id )=> ( p => n===p? null: (p && ( p.querySelector(id) 
     export class
 CustomElement extends HTMLElement
 {
-    connectedCallback()
+    async connectedCallback()
     {
         let templateDoc;
         const src = attr( this, 'src' );
 
-        if( src?.startsWith('#') )
+        if( src )
         {
-            const template = getByHashId( this, src)
-            templateDoc = createXsltFromDom(template)
+            if( src.startsWith('#') )
+                templateDoc = createXsltFromDom( getByHashId( this, src) )
+            else
+            {
+                templateDoc = createXsltFromDom( await xhrTemplate(src) )
+            }
         }else
             templateDoc = createXsltFromDom(this.children.length===1 && this.firstElementChild.tagName ==='TEMPLATE'? this.firstElementChild: this)
 
@@ -227,6 +256,7 @@ CustomElement extends HTMLElement
         {   const t = 'dce-'+crypto.randomUUID()
             window.customElements.define( t, DceElement);
             const el = document.createElement(t);
+            this.getAttributeNames().forEach(a=>el.setAttribute(a,this.getAttribute(a)));
 
             [ ...this.childNodes ].forEach( e => el.appendChild( e ) );
             this.appendChild(el);
