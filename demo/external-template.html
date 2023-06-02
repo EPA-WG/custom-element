@@ -33,17 +33,17 @@
 </nav>
 
 <html-demo-element legend="1. reference the template in page DOM"
-                   description="should render two 'Hi'">
+                   description="should render hand wave with '👋 World!' and 'Hello World!'">
     <template>
 <template id="template1">
-    👋Hi
+    <slot> Hello </slot> World!
 </template>
 
 <custom-element tag="dce-internal" src="#template1">
     <!-- no need for loading fallback as the template exists -->
 </custom-element>
 
-<dce-internal></dce-internal>
+<dce-internal>👋</dce-internal>
 <dce-internal></dce-internal>
     </template>
 </html-demo-element>
@@ -64,7 +64,7 @@
 <html-demo-element legend="3. external SVG file" >
     <template>
             <custom-element tag="dce-external" src="confused.svg" >
-                <i>loading from SVG ...</i>
+                <template><i>loading from SVG ...</i></template>
             </custom-element>
             <dce-external></dce-external>
             <custom-element src="confused.svg" >
@@ -79,7 +79,7 @@
 <html-demo-element legend="4. external XSLT file" >
     <template>
             <custom-element tag="dce-external-4" src="tree.xsl" >
-                <i>loading from XSLT ...</i>
+                <template><i>loading from XSLT ...</i></template>
             </custom-element>
             <dce-external-4 title="DCE with external XSLT template" data-fruit="🍌">Hi</dce-external-4>
             <custom-element src="tree.xsl"  data-smile="👼" data-basket="🍒">
