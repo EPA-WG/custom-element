@@ -171,19 +171,15 @@ CustomElement extends HTMLElement
 {
     async connectedCallback()
     {
-        let templateDoc;
-        const src = attr( this, 'src' );
-
-        if( src )
-        {
-            if( src.startsWith('#') )
-                templateDoc = createXsltFromDom( getByHashId( this, src) )
-            else
-            {
-                templateDoc = createXsltFromDom( await xhrTemplate(src) )
-            }
-        }else
-            templateDoc = createXsltFromDom(this.children.length===1 && this.firstElementChild.tagName ==='TEMPLATE'? this.firstElementChild: this)
+        const src = attr( this, 'src' )
+        ,  xslDom = src
+                ? ( src.startsWith('#')
+                    ? getByHashId( this, src)
+                    : await xhrTemplate(src) )
+                : ( this.children.length===1 && this.firstElementChild.tagName ==='TEMPLATE'
+                    ? this.firstElementChild
+                    : this)
+        , templateDoc = createXsltFromDom( xslDom );
 
         Object.defineProperty( this, "xsltString", { get: ()=>xmlString(templateDoc) });
 
