@@ -1,10 +1,12 @@
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>'
-,     XSL_NS_URL      = 'http://www.w3.org/1999/XSL/Transform';
+,          XSL_NS_URL = 'http://www.w3.org/1999/XSL/Transform'
+,          DCE_NS_URL ="urn:schemas-epa-wg:dce";
 
 // const log = x => console.debug( new XMLSerializer().serializeToString( x ) );
 
 const attr = (el, attr)=> el.getAttribute(attr)
-,   create = ( tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElement( tag ));
+,   create = ( tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElement( tag ))
+,   createNS = ( ns, tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElementNS( ns, tag ));
 
     function
 xml2dom( xmlString )
@@ -19,7 +21,7 @@ injectData( root, sectionName, arr, cb )
 {
     const inject = ( tag, parent, s ) =>
     {
-        parent.append( s = create( tag ) );
+        parent.append( s = createNS( DCE_NS_URL, tag ) );
         return s;
     };
     const l = inject( sectionName, root );
@@ -77,32 +79,55 @@ createXsltFromDom(templateNode)
         return templateNode
     const dom = xml2dom(
 `<xsl:stylesheet version="1.0"
-    xmlns:xsl="${ XSL_NS_URL }">
-  <xsl:output method="html" />
+    xmlns:xsl="${ XSL_NS_URL }"
+    >
+    <xsl:output method="html" />
 
-  <xsl:template match="/">
-    <xsl:apply-templates select="//attributes"/>
-  </xsl:template><xsl:template match="attributes"></xsl:template></xsl:stylesheet>`
+    <xsl:template match="/">
+        <xsl:for-each select="//attributes">
+            <xsl:call-template name="attributes"/>\t
+        </xsl:for-each>
+    </xsl:template>
+    <xsl:template name="slot" >
+        <xsl:param name="slotname" />
+        <xsl:param name="defaultvalue" />
+        <xsl:choose>
+            <xsl:when test="//payload/*[@slot=$slotname]">
+                <xsl:copy-of select="//payload/*[@slot=$slotname]"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy-of select="$defaultvalue"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    <xsl:template name="attributes"></xsl:template>
+    <xsl:variable name="slottemplate">
+        <xsl:call-template name="slot" >
+            <xsl:with-param name="slotname" select="''"/>
+            <xsl:with-param name="defaultvalue"/>
+        </xsl:call-template>
+    </xsl:variable>
+</xsl:stylesheet>`
     );
 
-
-    const slot2xsl = s =>
-    {   const v = dom.createElementNS( XSL_NS_URL, 'value-of' );
-        v.setAttribute( 'select', `//*[@slot="${ s.name }"]` );
-        s.parentNode?.replaceChild( v, s );
-        return v
-    }
-
+    const attrsTemplate = dom.documentElement.lastElementChild.previousElementSibling;
     for( let c of ( templateNode.content?.childNodes || templateNode.childNodes || []) )
     {
         let adopted = dom.importNode(c,true)
 
-        if('slot' === adopted.tagName )
-            adopted = slot2xsl(adopted)
-        else
-            forEach$( adopted,'slot', slot2xsl )
-        dom.documentElement.lastElementChild.appendChild(adopted)
+        attrsTemplate.appendChild(adopted)
     }
+    const slot2xsl = s =>
+    {   const v = dom.firstElementChild.lastElementChild.lastElementChild.cloneNode(true);
+        v.firstElementChild.setAttribute('select',`'${s.name}'`)
+        for( let c of s.childNodes)
+            v.lastElementChild.appendChild(c)
+        return v
+    }
+
+    for( const s of attrsTemplate.querySelectorAll('slot') )
+        s.parentNode.replaceChild( slot2xsl(s), s )
+
     // apply bodyXml changes
     return dom
 }
@@ -191,7 +216,7 @@ CustomElement extends HTMLElement
         class DceElement extends HTMLElement
         {
             connectedCallback()
-            {   const x = create( 'div' );
+            {   const x = createNS( DCE_NS_URL,'datadom' );
                 injectData( x, 'payload'    , this.childNodes, assureSlot );
                 injectData( x, 'attributes' , this.attributes, e => create( e.nodeName, e.value ) );
                 injectData( x, 'dataset', Object.keys( this.dataset ), k => create( k, this.dataset[ k ] ) );
