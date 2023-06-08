@@ -103,5 +103,9 @@ dist
 # TernJS port file
 .tern-port
 
-/.idea/
-/0/
+.idea/
+0/
+.vs/
+a.*
+?.*
+??.*
