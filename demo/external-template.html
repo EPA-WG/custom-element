@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:html="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>http-request Declarative Custom Element implementation demo</title>
@@ -12,7 +12,7 @@
 
         button
         {   display: inline-flex; flex-direction: column; align-items: center; flex: auto;
-            box-shadow: inset silver 0px 0px 1rem; min-width: 12rem; padding: 1rem;
+            box-shadow: inset silver 0 0 1rem; min-width: 12rem; padding: 1rem;
             color: coral; text-shadow: 1px 1px silver; font-weight: bolder;
         }
         button img{ max-height: 10vw; min-height: 4rem;}
@@ -21,7 +21,6 @@
         tfoot td{ border-bottom: none; }
         td,th{text-align: right; }
         caption{ padding: 1rem; font-weight: bolder; font-family: sans-serif; }
-        dce-1{ padding: 0; display: flex; flex-wrap: wrap;}
         code{ text-align: right; min-width: 3rem;}
     </style>
 </head>
@@ -88,15 +87,33 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="5. external HTML template" >
+<html-demo-element legend="5. external HTML template" description="Should render 👋👌">
     <template>
-            <custom-element tag="dce-external-4" src="tree.xsl" >
-                <i>loading from XSLT ...</i>
+            <custom-element tag="dce-external-5" src="html-template.html" >
+                <template><i>loading from HTML file ...</i></template>
             </custom-element>
-            <dce-external-4 title="DCE with external XSLT template" data-fruit="🍌">Hi</dce-external-4>
-            <custom-element src="tree.xsl"  data-smile="👼" data-basket="🍒">
-                <i>inline DCE loading from XSLT ...</i>
+            <dce-external-5 title="DCE with external XSLT template" data-fruit="🍌">Hi</dce-external-5>
+            <custom-element src="html-template.html"  data-smile="👼" data-basket="🍒">
+                <i>inline DCE loading from HTML file ...</i>
             </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="6. by ID within external file" description="Should render 👋,👌, svg, and fallback">
+    <a href="html-template.html">html-template.html</a>
+    <template>
+        <custom-element src="html-template.html#wave" >
+            <template><i>loading from HTML templates file ...</i></template>
+        </custom-element>
+        <custom-element src="html-template.html#ok" >
+            <template><i>loading from HTML templates file ...</i></template>
+        </custom-element>
+        <custom-element src="html-template.html#dwc-logo" >
+            <template><i>loading from HTML templates file ...</i></template>
+        </custom-element>
+        <custom-element src="html-template.html#none" >
+            <template><i>element with id=none is missing in template</i></template>
+        </custom-element>
     </template>
 </html-demo-element>
 

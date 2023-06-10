@@ -73,7 +73,7 @@ Json2Xml( o, tag )
 }
 
     export function
-createXsltFromDom(templateNode)
+createXsltFromDom(templateNode, hash, dce)
 {
     if( templateNode.documentElement?.tagName === 'xsl:stylesheet' )
         return templateNode
@@ -110,13 +110,20 @@ createXsltFromDom(templateNode)
 </xsl:stylesheet>`
     );
 
-    const attrsTemplate = dom.documentElement.lastElementChild.previousElementSibling;
-    for( let c of ( templateNode.content?.childNodes || templateNode.childNodes || []) )
-    {
-        let adopted = dom.importNode(c,true)
+    const attrsTemplate = dom.documentElement.lastElementChild.previousElementSibling
+    , getTemplateRoot = n => n?.firstElementChild?.content || n.content || n.body || n
+    , tc = getTemplateRoot(templateNode)
+    , cc = ( n =>
+        {   if( hash && tc.querySelector)
+            {   if( n = tc.querySelector(hash) )
+                    return [n]
+                return getTemplateRoot(dce) ?.childNodes || []
+            }
+        })() || tc?.childNodes || [];
 
-        attrsTemplate.appendChild(adopted)
-    }
+    for( let c of cc )
+        attrsTemplate.appendChild(dom.importNode(c,true))
+
     const slot2xsl = s =>
     {   const v = dom.firstElementChild.lastElementChild.lastElementChild.cloneNode(true);
         v.firstElementChild.setAttribute('select',`'${s.name}'`)
@@ -138,15 +145,11 @@ xhrTemplate(src)
     {   const xhr = new XMLHttpRequest();
         xhr.open("GET", src);
         xhr.responseType = "document";
-        xhr.overrideMimeType("text/xml");
+        // xhr.overrideMimeType("text/xml");
         xhr.onload = () =>
         {   if( xhr.readyState === xhr.DONE && xhr.status === 200 )
-            {   if( xhr.responseXML )
-                    return resolve( xhr.responseXML )
-                debugger;
-                console.log(xhr.response, xhr.responseXML);
-            }else
-              reject(xhr.statusText)
+                resolve( xhr.responseXML ||  create('div', xhr.responseText ) )
+            reject(xhr.statusText)
         };
         xhr.addEventListener("error", ev=>reject(ev) );
 
@@ -196,15 +199,21 @@ CustomElement extends HTMLElement
 {
     async connectedCallback()
     {
-        const src = attr( this, 'src' )
+        let src = attr( this, 'src' )
+        , hash =  src.startsWith('#') ? '' : src?.substring && src.substring( src.indexOf('#') )
+        , getTemplateDom = async ()=>
+            {   try{ return await xhrTemplate(src) }
+                catch(e){ hash = '' }
+                return this
+            }
         ,  xslDom = src
                 ? ( src.startsWith('#')
                     ? getByHashId( this, src)
-                    : await xhrTemplate(src) )
+                    : await getTemplateDom() )
                 : ( this.children.length===1 && this.firstElementChild.tagName ==='TEMPLATE'
                     ? this.firstElementChild
                     : this)
-        , templateDoc = createXsltFromDom( xslDom );
+        , templateDoc = createXsltFromDom( xslDom, hash, this );
 
         Object.defineProperty( this, "xsltString", { get: ()=>xmlString(templateDoc) });
 
