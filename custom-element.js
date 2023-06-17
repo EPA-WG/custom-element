@@ -75,7 +75,7 @@ Json2Xml( o, tag )
     export function
 createXsltFromDom( templateNode /*, hash, dce*/ )
 {
-    if( templateNode.documentElement?.tagName === 'xsl:stylesheet' )
+    if( templateNode.tagName === 'xsl:stylesheet' || templateNode.documentElement?.tagName === 'xsl:stylesheet' )
         return templateNode
     const dom = xml2dom(
 `<xsl:stylesheet version="1.0"
@@ -111,12 +111,16 @@ createXsltFromDom( templateNode /*, hash, dce*/ )
     );
 
     const attrsTemplate = dom.documentElement.lastElementChild.previousElementSibling
-    , getTemplateRoot = n => n?.firstElementChild?.content || n.content || n.body || n
+    , getTemplateRoot = n => n.documentElement || n.firstElementChild?.content || n.content || n.body || n
     , tc = getTemplateRoot(templateNode)
     , cc = tc?.childNodes || [];
-
-    for( let c of cc )
-        attrsTemplate.append(dom.importNode(c,true))
+    if( (tc instanceof CustomElement) || tc.nodeType===11) {
+        for( let c of cc )
+            attrsTemplate.append(dom.importNode(c,true))
+    }else
+    {
+        attrsTemplate.append(dom.importNode(tc,true))
+    }
 
     const slot2xsl = s =>
     {   const v = dom.firstElementChild.lastElementChild.lastElementChild.cloneNode(true);
