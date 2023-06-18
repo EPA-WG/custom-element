@@ -73,9 +73,9 @@ Json2Xml( o, tag )
 }
 
     export function
-createXsltFromDom( templateNode /*, hash, dce*/ )
+createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
 {
-    if( templateNode.tagName === 'xsl:stylesheet' || templateNode.documentElement?.tagName === 'xsl:stylesheet' )
+    if( templateNode.tagName === S || templateNode.documentElement?.tagName === S )
         return templateNode
     const dom = xml2dom(
 `<xsl:stylesheet version="1.0"
@@ -203,10 +203,18 @@ const loadTemplateRoots = async ( src, dce )=>
             const r = n.getRootNode();
             return r===n ? []: getByHashId(r)
         })(dce.parentElement)
-    // todo cache
-    const dom = await xhrTemplate(src)
-    const hash = new URL(src,location).hash
-    return hash? [...dom.querySelectorAll(hash)] : [dom]
+    try
+    {   // todo cache
+        const dom = await xhrTemplate(src)
+        const hash = new URL(src, location).hash
+        if( hash )
+        {   const ret = dom.querySelectorAll(hash);
+            if( ret.length )
+                return [...ret]
+            return [dce]
+        }
+        return [dom]
+    }catch (error){ return [dce]}
 }
     export class
 CustomElement extends HTMLElement

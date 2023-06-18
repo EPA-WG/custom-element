@@ -99,18 +99,23 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="6. by ID within external file" description="Should render 👋,👌, svg, and fallback">
+<html-demo-element legend="6. HTML, SVG by ID within external file" description="Should render 👋, svg, 👌">
     <a href="html-template.html">html-template.html</a>
     <template>
         <custom-element src="html-template.html#wave" >
             <template><i>loading from HTML templates file ...</i></template>
         </custom-element>
-        <custom-element src="html-template.html#ok" >
-            <template><i>loading from HTML templates file ...</i></template>
-        </custom-element>
         <custom-element src="html-template.html#dwc-logo" >
             <template><i>loading from HTML templates file ...</i></template>
         </custom-element>
+        <custom-element src="html-template.html#ok" >
+            <template><i>loading from HTML templates file ...</i></template>
+        </custom-element>
+    </template>
+</html-demo-element>
+<html-demo-element legend="7. XSLT by ID within external file" description="Should render tree, and fallback">
+    <a href="html-template.html">html-template.html</a>
+    <template>
         <custom-element src="html-template.xhtml#embedded-xsl" >
             <template>whole XSLT is  embedded into HTML body</template>
         </custom-element>
@@ -120,39 +125,35 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="7. external file with embedding of another external DCE" >
+<html-demo-element legend="8. external file with embedding of another external DCE" >
     <template>
-            <custom-element tag="dce-hash" src="embed-1.html" hidden>
+            <custom-element src="embed-1.html" hidden>
                 loading from embed-1.html ...
             </custom-element>
-            <dce-hash></dce-hash>
     </template>
 </html-demo-element>
 
-<html-demo-element legend="8. deep external files, complex rendering" >
+<html-demo-element legend="9. deep external files, complex rendering" >
     <template>
-            <custom-element tag="dce-hash" src="../index.html#shared-template" hidden>
+            <custom-element src="../index.html#shared-template" hidden>
                 loading by hash from ../index.html#shared-template ...
             </custom-element>
-            <dce-hash></dce-hash>
     </template>
 </html-demo-element>
 
 <html-demo-element legend="9. own import maps" >
     <template>
-            <custom-element tag="dce-hash" src="../index.html#shared-template" hidden>
+            <custom-element  src="../index.html#shared-template" hidden>
                 loading by hash from ../index.html#shared-template ...
             </custom-element>
-            <dce-hash></dce-hash>
     </template>
 </html-demo-element>
 
 <html-demo-element legend="10. deep external files with own import maps" >
     <template>
-            <custom-element tag="dce-hash" src="../index.html#shared-template" hidden>
+            <custom-element src="../index.html#shared-template" hidden>
                 loading by hash from ../index.html#shared-template ...
             </custom-element>
-            <dce-hash></dce-hash>
     </template>
 </html-demo-element>
 
