@@ -125,14 +125,18 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="8. external file with embedding of another external DCE" >
+<html-demo-element legend="8. external file with embedding of another external DCE"
+                   description="Should render Vulcan Salute 🖖"
+>
     <template>
-            <custom-element src="embed-1.html" hidden>
+            <custom-element src="embed-1.html" >
                 loading from embed-1.html ...
             </custom-element>
     </template>
 </html-demo-element>
-
+<html-demo-element legend="embed-1.html external file " src="embed-1.html">
+</html-demo-element>
+<!--
 <html-demo-element legend="9. deep external files, complex rendering" >
     <template>
             <custom-element src="../index.html#shared-template" hidden>
@@ -165,7 +169,7 @@
     </template>
 </html-demo-element>
 
-
+-->
 <script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
 
 </body>
