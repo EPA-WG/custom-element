@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>http-request Declarative Custom Element implementation demo</title>
+        <link rel="icon" href="./wc-square.svg" />
+
+    <script type="module" src="../http-request.js"></script>
+    <script type="module" src="../custom-element.js"></script>
+    <style>
+        @import "./demo.css";
+
+        button
+        {   display: inline-flex; flex-direction: column; align-items: center; flex: auto;
+            box-shadow: inset silver 0 0 1rem; min-width: 12rem; padding: 1rem;
+            color: coral; text-shadow: 1px 1px silver; font-weight: bolder;
+        }
+        button img{ max-height: 10vw; min-height: 4rem;}
+        table{ min-width: 16rem; }
+        td{ border-bottom: 1px solid silver; }
+        tfoot td{ border-bottom: none; }
+        td,th{text-align: right; }
+        caption{ padding: 1rem; font-weight: bolder; font-family: sans-serif; }
+        code{ text-align: right; min-width: 3rem;}
+        svg{ max-height: 3rem;}
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="../index.html"><h3><code>custom-element</code> demo</h3></a>
+    <h3>Loading DCE template by SRC attribute</h3>
+</nav>
+
+<html-demo-element legend="1. reference the template in page DOM"
+                   description="should render hand wave with '👋 World!' and 'Hello World!'">
+    <template>
+<template id="template1">
+    <slot> Hello </slot> World!
+</template>
+
+<custom-element tag="dce-internal" src="#template1"></custom-element>
+<!-- no need for loading fallback as the template exists -->
+
+<dce-internal>👋</dce-internal>
+<dce-internal></dce-internal>
+    </template>
+</html-demo-element>
+
+
+<html-demo-element legend="2. without TAG, inline instantiation"
+                   description="hash value in SRC references template by ID. Should output 'construction' 2 times">
+    <template>
+<template id="template2">
+    🏗️ construction
+</template>
+
+<custom-element src="#template2"></custom-element>
+<custom-element src="#template2"></custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="3. external SVG file" >
+    <template>
+            <custom-element tag="dce-external" src="confused.svg" >
+                <template><i>loading from SVG ...</i></template>
+            </custom-element>
+            <dce-external></dce-external>
+            <custom-element src="confused.svg" >
+                <i>inline DCE loading from SVG ...</i>
+            </custom-element>
+            <custom-element src="no.svg" >
+                <i>fallback for missing image</i>
+            </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="4. external XSLT file" >
+    <template>
+            <custom-element tag="dce-external-4" src="tree.xsl" >
+                <template><i>loading from XSLT ...</i></template>
+            </custom-element>
+            <dce-external-4 title="DCE with external XSLT template" data-fruit="🍌">Hi</dce-external-4>
+            <custom-element src="tree.xsl"  data-smile="👼" data-basket="🍒">
+                <i>inline DCE loading from XSLT ...</i>
+            </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="5. external HTML template" description="Should render 👋👌, svg">
+    <template>
+            <custom-element tag="dce-external-5" src="html-template.html" >
+                <template><i>loading from HTML file ...</i></template>
+            </custom-element>
+            <dce-external-5 title="DCE with external XSLT template" data-fruit="🍌">Hi</dce-external-5>
+            <custom-element src="html-template.html"  data-smile="👼" data-basket="🍒">
+                <i>inline DCE loading from HTML file ...</i>
+            </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="6. HTML, SVG by ID within external file" description="Should render 👋, svg, 👌">
+    <a href="html-template.html">html-template.html</a>
+    <template>
+        <custom-element src="html-template.html#wave" >
+            <template><i>loading from HTML templates file ...</i></template>
+        </custom-element>
+        <custom-element src="html-template.html#dwc-logo" >
+            <template><i>loading from HTML templates file ...</i></template>
+        </custom-element>
+        <custom-element src="html-template.html#ok" >
+            <template><i>loading from HTML templates file ...</i></template>
+        </custom-element>
+    </template>
+</html-demo-element>
+<html-demo-element legend="7. XSLT by ID within external file" description="Should render tree, and fallback">
+    <a href="html-template.html">html-template.html</a>
+    <template>
+        <custom-element src="html-template.xhtml#embedded-xsl" >
+            <template>whole XSLT is  embedded into HTML body</template>
+        </custom-element>
+         <custom-element src="html-template.html#none" >
+            <template><i>element with id=none is missing in template</i></template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="8. external file with embedding of another external DCE"
+                   description="Should render Vulcan Salute 🖖"
+>
+    <template>
+            <custom-element src="embed-1.html" >
+                loading from embed-1.html ...
+            </custom-element>
+    </template>
+</html-demo-element>
+<html-demo-element legend="embed-1.html external file " src="embed-1.html">
+</html-demo-element>
+<!--
+<html-demo-element legend="9. deep external files, complex rendering" >
+    <template>
+            <custom-element src="../index.html#shared-template" hidden>
+                loading by hash from ../index.html#shared-template ...
+            </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="9. own import maps" >
+    <template>
+            <custom-element  src="../index.html#shared-template" hidden>
+                loading by hash from ../index.html#shared-template ...
+            </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="10. deep external files with own import maps" >
+    <template>
+            <custom-element src="../index.html#shared-template" hidden>
+                loading by hash from ../index.html#shared-template ...
+            </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="11. local template as a 'loading...' or fallback for remote, error handling" >
+    <template>
+            <custom-element src="../index.html#shared-template" hidden>
+                loading by hash from ../index.html#shared-template ...
+            </custom-element>
+    </template>
+</html-demo-element>
+
+-->
+<script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
+
+</body>
+</html>

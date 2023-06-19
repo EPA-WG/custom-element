@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="table.xsl"?>
+<div xmlns="http://www.w3.org/1999/xhtml">
+    <payload>
+        <span slot=""></span>
+        <p slot="description">Bulbasaur is a cute Pokémon born with a large seed firmly affixed to its back;
+            the seed grows in size as the Pokémon does.
+        </p>
+        <span slot=""></span>
+        <ul slot="">
+            <li pokemon-id="2">ivysaur</li>
+            <li pokemon-id="3">venusaur</li>
+        </ul>
+        <span slot=""></span>
+    </payload>
+    <attributes>
+        <title>bulbasaur</title>
+        <data-smile>👼</data-smile>
+        <pokemon-id>1</pokemon-id>
+    </attributes>
+    <dataset>
+        <smile>👼</smile>
+    </dataset>
+    <slice></slice>
+</div>

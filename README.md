@@ -88,6 +88,10 @@ generates HTML
 NOTE: attempt to register custom element with already registered tag name would fail due to w3c standard limitations. 
 The scoped custom element registry is still a proposal.
 
+### omitting `tag` leads to template instantiation
+Whether template is inline or given by `src` attribute, the `custom-element` would be instantiated inline if no `tag` 
+attribute is given.
+
 ### custom element instance
 constructor creates XML with 
 * root matching the tag 
@@ -97,6 +101,29 @@ constructor creates XML with
 * ?dataset
 
 DOM content is replaced with results of instance XML transformation by declaration XSLT.
+
+# `src` attribute
+allows to refer either external template or template within external library by `#id` hash in URL.
+
+See [demo](demo/external-template.html) with various samples.
+
+## types of template
+* HTML with DCE syntax ( slots, data slices, xslt operators, etc. )
+* SVG image, MathML, etc.
+* XSLT template. The `datadom` is the XML payload for transformation. In order to be embedded into external document, 
+this document has to have XML syntax like XHTML. Attempt of including XSLT within HTML file would break the template
+integrity by parser.
+
+
+## `#id` Local reference
+allows to refer the template withing same document
+
+## `url`
+allows to use the external document as template
+
+## `url#id`
+allows to refer the template withing external document
+
 
 # template syntax
 ## Attributes
@@ -191,9 +218,9 @@ within template
 [github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
 [npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
-[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.10/coverage/coverage.svg
-[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.10/coverage/lcov-report/index.html
-[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.10/storybook-static/index.html?path=/story/welcome--introduction
+[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.11/coverage/coverage.svg
+[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.11/coverage/lcov-report/index.html
+[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.11/storybook-static/index.html?path=/story/welcome--introduction
 [sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
 [webcomponents-url]: https://www.webcomponents.org/element/@epa-wg/custom-element
 [webcomponents-img]: https://img.shields.io/badge/webcomponents.org-published-blue.svg

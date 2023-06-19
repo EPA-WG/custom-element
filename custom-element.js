@@ -1,46 +1,27 @@
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>'
-,     XSL_NS_URL      = 'http://www.w3.org/1999/XSL/Transform';
+,          XSL_NS_URL = 'http://www.w3.org/1999/XSL/Transform'
+,          DCE_NS_URL ="urn:schemas-epa-wg:dce";
 
 // const log = x => console.debug( new XMLSerializer().serializeToString( x ) );
 
 const attr = (el, attr)=> el.getAttribute(attr)
-,   create = ( tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElement( tag ));
+,   create = ( tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElement( tag ))
+,   createNS = ( ns, tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElementNS( ns, tag ));
 
     function
 xml2dom( xmlString )
 {
     return new DOMParser().parseFromString( XML_DECLARATION + xmlString, "application/xml" )
 }
-
     function
-bodyXml( dce )
-{
-    const t = dce.firstElementChild
-    , sanitize = s => s.replaceAll("<html:","<")
-                       .replaceAll("</html:","</")
-                       .replaceAll( />\s*<\/xsl:value-of>/g ,"/>")
-                       .replaceAll( />\s*<\/(br|hr|img|area|base|col|embed|input|link|meta|param|source|track|wbr)>/g ,"/>");
-    if( t?.tagName === 'TEMPLATE')
-        return sanitize( new XMLSerializer().serializeToString( t.content ) );
-
-    const s = new XMLSerializer().serializeToString( dce );
-    return sanitize( s.substring( s.indexOf( '>' ) + 1, s.lastIndexOf( '<' ) ) );
-}
-
-    function
-slot2xsl( s )
-{
-    const v = document.createElementNS( XSL_NS_URL, 'value-of' );
-    v.setAttribute( 'select', `//*[@slot="${ s.name }"]` );
-    s.parentNode.replaceChild( v, s );
-}
+xmlString(doc){ return new XMLSerializer().serializeToString( doc ) }
 
     function
 injectData( root, sectionName, arr, cb )
 {
     const inject = ( tag, parent, s ) =>
     {
-        parent.append( s = create( tag ) );
+        parent.append( s = createNS( DCE_NS_URL, tag ) );
         return s;
     };
     const l = inject( sectionName, root );
@@ -91,7 +72,106 @@ Json2Xml( o, tag )
     return ret.join('\n');
 }
 
-    function
+    export function
+createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
+{
+    if( templateNode.tagName === S || templateNode.documentElement?.tagName === S )
+        return templateNode
+    const dom = xml2dom(
+`<xsl:stylesheet version="1.0"
+    xmlns:xsl="${ XSL_NS_URL }"
+    >
+    <xsl:output method="html" />
+
+    <xsl:template match="/">
+        <xsl:for-each select="//attributes">
+            <xsl:call-template name="attributes"/>\t
+        </xsl:for-each>
+    </xsl:template>
+    <xsl:template name="slot" >
+        <xsl:param name="slotname" />
+        <xsl:param name="defaultvalue" />
+        <xsl:choose>
+            <xsl:when test="//payload/*[@slot=$slotname]">
+                <xsl:copy-of select="//payload/*[@slot=$slotname]"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy-of select="$defaultvalue"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    <xsl:template name="attributes"></xsl:template>
+    <xsl:variable name="slottemplate">
+        <xsl:call-template name="slot" >
+            <xsl:with-param name="slotname" select="''"/>
+            <xsl:with-param name="defaultvalue"/>
+        </xsl:call-template>
+    </xsl:variable>
+</xsl:stylesheet>`
+    );
+
+    const attrsTemplate = dom.documentElement.lastElementChild.previousElementSibling
+    , getTemplateRoot = n => n.documentElement || n.firstElementChild?.content || n.content || n.body || n
+    , tc = getTemplateRoot(templateNode)
+    , cc = tc?.childNodes || [];
+    if( (tc instanceof CustomElement) || tc.nodeType===11) {
+        for( let c of cc )
+            attrsTemplate.append(dom.importNode(c,true))
+    }else
+    {
+        attrsTemplate.append(dom.importNode(tc,true))
+    }
+
+    const slot2xsl = s =>
+    {   const v = dom.firstElementChild.lastElementChild.lastElementChild.cloneNode(true);
+        v.firstElementChild.setAttribute('select',`'${s.name}'`)
+        for( let c of s.childNodes)
+            v.lastElementChild.append(c)
+        return v
+    }
+
+    for( const s of attrsTemplate.querySelectorAll('slot') )
+        s.parentNode.replaceChild( slot2xsl(s), s )
+
+    // apply bodyXml changes
+    return dom
+}
+    export async function
+xhrTemplate(src)
+{
+    const dom = await new Promise((resolve,reject)=>
+    {   const xhr = new XMLHttpRequest();
+        xhr.open("GET", src);
+        xhr.responseType = "document";
+        // xhr.overrideMimeType("text/xml");
+        xhr.onload = () =>
+        {   if( xhr.readyState === xhr.DONE && xhr.status === 200 )
+                resolve( xhr.responseXML ||  create('div', xhr.responseText ) )
+            reject(xhr.statusText)
+        };
+        xhr.addEventListener("error", ev=>reject(ev) );
+
+        xhr.send();
+    })
+    return dom
+}
+    export function
+deepEqual(a, b, O=false)
+{
+    if( a === b )
+        return true;
+
+    if( (typeof a !== "object" || a === null) || (typeof b !== "object" || b === null)
+        || Object.keys(a).length !== Object.keys(b).length )
+        return O;
+
+    for( let k in a )
+        if( !(k in b) || !deepEqual( a[k], b[k] ) )
+            return O
+    return true;
+}
+
+    export function
 injectSlice( x, s, data )
 {
     const isString = typeof data === 'string' ;
@@ -100,35 +180,66 @@ injectSlice( x, s, data )
         ? create(s, data)
         : document.adoptNode( xml2dom( Json2Xml( data, s ) ).documentElement);
     [...x.children].filter( e=>e.localName === s ).map( el=>el.remove() );
+    el.data = data
         x.append(el);
 }
 
+function forEach$( el, css, cb){
+    if( el.querySelectorAll )
+        for( let n of el.querySelectorAll(css) )
+            cb(n)
+}
+const getByHashId = ( n, id )=> ( p => n===p? null: (p && ( p.querySelector(id) || getByHashId(p,id) ) ))( n.getRootNode() )
+const loadTemplateRoots = async ( src, dce )=>
+{
+    if( !src || !src.trim() )
+        return [dce]
+    if( src.startsWith('#') )
+        return ( n =>
+        {   if(!n) return []
+            const a = n.querySelectorAll(src)
+            if( a.length )
+                return [...a]
+            const r = n.getRootNode();
+            return r===n ? []: getByHashId(r)
+        })(dce.parentElement)
+    try
+    {   // todo cache
+        const dom = await xhrTemplate(src)
+        const hash = new URL(src, location).hash
+        if( hash )
+        {   const ret = dom.querySelectorAll(hash);
+            if( ret.length )
+                return [...ret]
+            return [dce]
+        }
+        return [dom]
+    }catch (error){ return [dce]}
+}
     export class
 CustomElement extends HTMLElement
 {
-    constructor()
+    async connectedCallback()
     {
-        super();
+        const templateRoots = await loadTemplateRoots( attr( this, 'src' ), this )
+        , templateDocs = templateRoots.map( n => createXsltFromDom( n ) )
+        , xp = templateDocs.map( (td, p) =>{ p = new XSLTProcessor(); p.importStylesheet( td ); return p })
 
-        [ ...this.templateNode.querySelectorAll('slot') ].forEach( slot2xsl );
-        const p = new XSLTProcessor();
-        p.importStylesheet( this.xslt );
+        Object.defineProperty( this, "xsltString", { get: ()=>xp.map( td => xmlString(td) ).join('\n') });
+
         const tag = attr( this, 'tag' );
         const dce = this;
         const sliceNames = [...this.templateNode.querySelectorAll('[slice]')].map(e=>attr(e,'slice'));
-        tag && window.customElements.define( tag, class extends HTMLElement
+        class DceElement extends HTMLElement
         {
-            constructor()
-            {
-                super();
-                const x = create( 'div' );
-                injectData( x, 'payload', this.childNodes, assureSlot );
-                injectData( x, 'attributes', this.attributes, e => create( e.nodeName, e.value ) );
+            connectedCallback()
+            {   const x = createNS( DCE_NS_URL,'datadom' );
+                injectData( x, 'payload'    , this.childNodes, assureSlot );
+                injectData( x, 'attributes' , this.attributes, e => create( e.nodeName, e.value ) );
                 injectData( x, 'dataset', Object.keys( this.dataset ), k => create( k, this.dataset[ k ] ) );
                 const sliceRoot = injectData( x, 'slice', sliceNames, k => create( k, '' ) );
                 this.xml = x;
                 const slices = {};
-
 
                 const sliceEvents=[];
                 const applySlices = ()=>
@@ -147,6 +258,10 @@ CustomElement extends HTMLElement
 
                 this.onSlice = ev=>
                 {   ev.stopPropagation?.();
+                    const s = attr( ev.target, 'slice')
+                    if( deepEqual( ev.detail, [...sliceRoot.children].find( e=>e.localName === s )?.data ) )
+                        return
+
                     sliceEvents.push(ev);
                     if( !timeoutID )
                         timeoutID = setTimeout(()=>
@@ -156,41 +271,39 @@ CustomElement extends HTMLElement
                 };
                 const transform = ()=>
                 {
-                    const f = p.transformToFragment( x, document );
+                    const ff = xp.map( p => p.transformToFragment(x, document) );
                     this.innerHTML = '';
-                    [ ...f.childNodes ].forEach( e => this.appendChild( e ) );
+                    ff.map( f =>
+                    {   [ ...f.childNodes ].forEach( e => this.append( e ) );
 
-                    for( let el of this.querySelectorAll('[slice]') )
-                        if( 'function' === typeof el.sliceInit )
-                        {   const s = attr(el,'slice');
-                            slices[s] = el.sliceInit( slices[s] );
-                        }
+                        forEach$( this,'[slice]', el =>
+                        {   if( 'function' === typeof el.sliceInit )
+                            {   const s = attr( el,'slice' );
+                                slices[s] = el.sliceInit( slices[s] );
+                            }
+                        })
+                    })
                 };
                 transform();
                 applySlices();
             }
-            get dce(){ return dce;}
-        } );
+            get dce(){ return dce }
+        }
+        if(tag)
+            window.customElements.define( tag, DceElement);
+        else
+        {   const t = 'dce-'+crypto.randomUUID()
+            window.customElements.define( t, DceElement);
+            const el = document.createElement(t);
+            this.getAttributeNames().forEach(a=>el.setAttribute(a,this.getAttribute(a)));
+            el.append(...this.childNodes)
+            this.append(el);
+        }
     }
     get templateNode(){ return this.firstElementChild?.tagName === 'TEMPLATE'? this.firstElementChild.content : this }
-    get dce(){ return this;}
-    get xsltString()
-    {
-        return (
-`<xsl:stylesheet version="1.0"
-    xmlns:xsl="${ XSL_NS_URL }">
-  <xsl:output method="html" />
+    get dce(){ return this }
 
-  <xsl:template match="/">
-    <xsl:apply-templates select="//attributes"/>
-  </xsl:template>
-  <xsl:template match="attributes">
-    ${ bodyXml( this ) }
-  </xsl:template>
-
-</xsl:stylesheet>` );
-    }
-    get xslt(){ return xml2dom( this.xsltString ); }
+    get xslt(){ return xml2dom( this.xsltString ) }
 }
 
 window.customElements.define( 'custom-element', CustomElement );
