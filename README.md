@@ -88,6 +88,10 @@ generates HTML
 NOTE: attempt to register custom element with already registered tag name would fail due to w3c standard limitations. 
 The scoped custom element registry is still a proposal.
 
+### omitting `tag` leads to template instantiation
+Whether template is inline or given by `src` attribute, the `custom-element` would be instantiated inline if no `tag` 
+attribute is given.
+
 ### custom element instance
 constructor creates XML with 
 * root matching the tag 
@@ -97,6 +101,29 @@ constructor creates XML with
 * ?dataset
 
 DOM content is replaced with results of instance XML transformation by declaration XSLT.
+
+# `src` attribute
+allows to refer either external template or template within external library by `#id` hash in URL.
+
+See [demo](demo/external-template.html) with various samples.
+
+## types of template
+* HTML with DCE syntax ( slots, data slices, xslt operators, etc. )
+* SVG image, MathML, etc.
+* XSLT template. The `datadom` is the XML payload for transformation. In order to be embedded into external document, 
+this document has to have XML syntax like XHTML. Attempt of including XSLT within HTML file would break the template
+integrity by parser.
+
+
+## `#id` Local reference
+allows to refer the template withing same document
+
+## `url`
+allows to use the external document as template
+
+## `url#id`
+allows to refer the template withing external document
+
 
 # template syntax
 ## Attributes
