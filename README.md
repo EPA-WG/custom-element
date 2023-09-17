@@ -1,6 +1,6 @@
 # custom-element
 `Declarative Custom Element` is a part of pure `Declarative Web Application` stack. A proof of concept as a part of 
-[WCCG in Declarative custom elements](https://github.com/w3c/webcomponents-cg/issues/32#issuecomment-1321037301) 
+[WCCG in Declarative custom elements](https://github.com/w3c/webcomponents-cg/issues/32#issuecomment-1321037301) and [Declarative Web Application](https://github.com/EPA-WG/dwa#readme)
 discussion. The functionality of DCE and its data access does not require programming using JavaScript. 
 
 It allows to define custom HTML tag with template filled from slots, attributes and data `slice` as of now from  
