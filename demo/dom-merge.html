@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>DOM merge - Declarative Custom Element implementation demo</title>
+    <link rel="icon" href="./wc-square.svg"/>
+
+    <script type="module" src="../http-request.js"></script>
+    <script type="module" src="../custom-element.js"></script>
+    <style>
+        @import "./demo.css";
+
+        button {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            flex: auto;
+            box-shadow: inset silver 0 0 1rem;
+            min-width: 12rem;
+            padding: 1rem;
+            color: coral;
+            text-shadow: 1px 1px silver;
+            font-weight: bolder;
+        }
+
+        button img {
+            max-height: 10vw;
+            min-height: 4rem;
+        }
+
+        table {
+            min-width: 16rem;
+        }
+
+        td {
+            border-bottom: 1px solid silver;
+        }
+
+        tfoot td {
+            border-bottom: none;
+        }
+
+        td, th {
+            text-align: right;
+        }
+
+        caption {
+            padding: 1rem;
+            font-weight: bolder;
+            font-family: sans-serif;
+        }
+
+        code {
+            text-align: right;
+            min-width: 3rem;
+        }
+
+        svg {
+            max-height: 3rem;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="../index.html"><h3><code>custom-element</code> demo</h3></a>
+    <h3>DOM merge. DCE dynamic update with focus preservation.</h3>
+</nav>
+
+<html-demo-element legend="1. Word count in textarea"
+                   description="Counter update happens on change event. The update should not interfere with the input">
+    <template>
+
+        <custom-element>
+            <form>
+                <label>
+                    <textarea slice="text-container" name="prompt">Hello world!</textarea>
+<!--                    <input slice="textField" name="prompt" value="Hello world!" />-->
+                    <span> Word count:
+                        <xsl:value-of select='string-length(//slice/text-container/text())'/>
+                    </span>
+                </label>
+            </form>
+        </custom-element>
+        <!--<custom-element>-->
+        <!--    <form>-->
+        <!--    <label>-->
+        <!--        <p>Word count: <xsl:value-of select='string-length(//slice/textContainer/text())'/></p>-->
+        <!--        <textarea slice="textContainer" slice-event="change" name="prompt">Hello world!</textarea>-->
+        <!--    </label></form>-->
+        <!--</custom-element>-->
+
+    </template>
+</html-demo-element>
+
+
+<!--<html-demo-element legend="2. update on blur event">-->
+<!--    <template>-->
+
+<!--<custom-element>-->
+<!--    <p>Word count: <xsl:value-of select='string-length(//slice/textContainer/text())'/></p>-->
+<!--    <textarea slice="textContainer" slice-event="blur">Hello world!</textarea>-->
+<!--</custom-element>-->
+
+<!--    </template>-->
+<!--</html-demo-element>-->
+
+<script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
+<script type="module">
+    document.querySelector('form').addEventListener('change', (event) => {
+        console.log(`Form element ${event.target.name} has changed.`);
+    });
+
+</script>
+</body>
+</html>

@@ -4,7 +4,7 @@ const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>'
 
 // const log = x => console.debug( new XMLSerializer().serializeToString( x ) );
 
-const attr = (el, attr)=> el.getAttribute(attr)
+const attr = (el, attr)=> el.getAttribute?.(attr)
 ,   create = ( tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElement( tag ))
 ,   createNS = ( ns, tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElementNS( ns, tag ));
 
@@ -71,12 +71,27 @@ Json2Xml( o, tag )
         ret.push("/>");
     return ret.join('\n');
 }
+    export function
+tagUid( node )
+{
+    if( 'all' in node ) {
+        let i= 1;
+        for( let e of node.all ) {
+            e.setAttribute && e.setAttribute('data-dce-id', '' + i)
+            i++;
+        }
+    }
+    else {
+        debugger;
+    }
 
+    return node
+}
     export function
 createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
 {
     if( templateNode.tagName === S || templateNode.documentElement?.tagName === S )
-        return templateNode
+        return tagUid(templateNode)
     const dom = xml2dom(
 `<xsl:stylesheet version="1.0"
     xmlns:xsl="${ XSL_NS_URL }"
@@ -134,7 +149,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         s.parentNode.replaceChild( slot2xsl(s), s )
 
     // apply bodyXml changes
-    return dom
+    return tagUid(dom)
 }
     export async function
 xhrTemplate(src)
@@ -216,6 +231,39 @@ const loadTemplateRoots = async ( src, dce )=>
         return [dom]
     }catch (error){ return [dce]}
 }
+export function mergeAttr( from, to )
+{
+    for( let a of from.attributes)
+        a.namespaceURI? to.setAttributeNS( a.namespaceURI, a.name, a.value ) : to.setAttribute( a.name, a.value )
+}
+export function merge( parent, fromArr )
+{
+    // create map of key to existing elements
+    // loop over new
+    //      if the key exist on map,
+    //          extract it,
+    //          merge attributes,
+    //          merge (el, newEl.children)
+    //          push into result
+    //      else push new element into result
+    // map holds elements to be removed
+    // parent.children = result
+
+    const id2old = {}
+    for( let c of parent.children )
+        id2old[ attr(c,'data-dce-id') || 0 ] = c;
+    parent.innerHTML = '';
+    for( let e of fromArr )
+    {   const o = id2old[ attr(e, 'data-dce-id') ];
+        if( o )
+        {   mergeAttr(o,e)
+            merge(o, e.childNodes)
+            parent.append( o )
+        }else
+            parent.append( e )
+    }
+}
+
     export class
 CustomElement extends HTMLElement
 {
@@ -272,15 +320,23 @@ CustomElement extends HTMLElement
                 const transform = ()=>
                 {
                     const ff = xp.map( p => p.transformToFragment(x, document) );
-                    this.innerHTML = '';
+                    // this.innerHTML = '';
                     ff.map( f =>
-                    {   [ ...f.childNodes ].forEach( e => this.append( e ) );
+                    {   // [ ...f.childNodes ].forEach( e => this.append( e ) );
+                        // [ ...f.childNodes ].forEach( e => mergeP(this, e ) );
+                        merge( this, f.childNodes )
+                        const changeCb = el=> this.onSlice({ detail: el[attr(el,'slice-prop') || 'value'], target: el })
+                        , hasInitValue = el => el.hasAttribute('slice-prop') || el.hasAttribute('value') || el.value;
 
                         forEach$( this,'[slice]', el =>
-                        {   if( 'function' === typeof el.sliceInit )
+                        {
+                            el.addEventListener( attr(this,'slice-update')|| 'change', ()=>changeCb(el) )
+                            if( 'function' === typeof el.sliceInit )
                             {   const s = attr( el,'slice' );
                                 slices[s] = el.sliceInit( slices[s] );
                             }
+                            if( hasInitValue(el) )
+                                changeCb(el)
                         })
                     })
                 };
