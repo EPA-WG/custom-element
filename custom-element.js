@@ -225,7 +225,7 @@ CustomElement extends HTMLElement
         , templateDocs = templateRoots.map( n => createXsltFromDom( n ) )
         , xp = templateDocs.map( (td, p) =>{ p = new XSLTProcessor(); p.importStylesheet( td ); return p })
 
-        Object.defineProperty( this, "xsltString", { get: ()=>xp.map( td => xmlString(td) ).join('\n') });
+        Object.defineProperty( this, "xsltString", { get: ()=>templateDocs.map( td => xmlString(td) ).join('\n') });
 
         const tag = attr( this, 'tag' );
         const dce = this;
