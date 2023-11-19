@@ -1,5 +1,6 @@
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>'
 ,          XSL_NS_URL = 'http://www.w3.org/1999/XSL/Transform'
+,          HTML_NS_URL = 'http://www.w3.org/1999/xhtml'
 ,          DCE_NS_URL ="urn:schemas-epa-wg:dce";
 
 // const log = x => console.debug( new XMLSerializer().serializeToString( x ) );
@@ -76,10 +77,8 @@ tagUid( node )
 {
     if( 'all' in node ) {
         let i= 1;
-        for( let e of node.all ) {
-            e.setAttribute && e.setAttribute('data-dce-id', '' + i)
-            i++;
-        }
+        for( let e of node.all )
+            e.setAttribute && !e.tagName.startsWith('xsl:') && e.setAttribute('data-dce-id', '' + i++)
     }
     else {
         debugger;
@@ -95,6 +94,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     const dom = xml2dom(
 `<xsl:stylesheet version="1.0"
     xmlns:xsl="${ XSL_NS_URL }"
+    xmlns="${ HTML_NS_URL }"
     >
     <xsl:output method="html" />
 
@@ -282,6 +282,7 @@ CustomElement extends HTMLElement
         {
             connectedCallback()
             {   const x = createNS( DCE_NS_URL,'datadom' );
+                x.setAttribute('xmlns:xsl', XSL_NS_URL );
                 injectData( x, 'payload'    , this.childNodes, assureSlot );
                 injectData( x, 'attributes' , this.attributes, e => create( e.nodeName, e.value ) );
                 injectData( x, 'dataset', Object.keys( this.dataset ), k => create( k, this.dataset[ k ] ) );
@@ -319,10 +320,17 @@ CustomElement extends HTMLElement
                 };
                 const transform = ()=>
                 {
-                    const ff = xp.map( p => p.transformToFragment(x, document) );
+                    const ff = xp.map( (p,i) =>
+                    {   const f = p.transformToFragment(x, document)
+                        if( !f )
+                            console.error( "XSLT transformation error. xsl:\n", xmlString(templateDocs[i]), '\nxml:\n', xmlString(x) );
+                        return f
+                    });
                     // this.innerHTML = '';
                     ff.map( f =>
-                    {   // [ ...f.childNodes ].forEach( e => this.append( e ) );
+                    {   if( !f )
+                            return;
+                        // [ ...f.childNodes ].forEach( e => this.append( e ) );
                         // [ ...f.childNodes ].forEach( e => mergeP(this, e ) );
                         merge( this, f.childNodes )
                         const changeCb = el=> this.onSlice({ detail: el[attr(el,'slice-prop') || 'value'], target: el })
