@@ -36,7 +36,7 @@ export class LocalStorageElement extends HTMLElement
         const    attr = attr => this.getAttribute(attr)
             , fromStorage = ()=>
         {   this.value = string2value( attr('type'), localStorage.getItem( attr( 'key' ) ) );
-            el.dispatchEvent( new Event('change') )
+            this.dispatchEvent( new Event('change') )
         }
         // todo apply type
         if( this.hasAttribute('value'))
