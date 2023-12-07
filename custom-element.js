@@ -1,7 +1,6 @@
-const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>'
-,          XSL_NS_URL = 'http://www.w3.org/1999/XSL/Transform'
-,          HTML_NS_URL = 'http://www.w3.org/1999/xhtml'
-,          DCE_NS_URL ="urn:schemas-epa-wg:dce";
+const XSL_NS_URL  = 'http://www.w3.org/1999/XSL/Transform'
+,     HTML_NS_URL = 'http://www.w3.org/1999/xhtml'
+,     DCE_NS_URL  ="urn:schemas-epa-wg:dce";
 
 // const log = x => console.debug( new XMLSerializer().serializeToString( x ) );
 
@@ -12,7 +11,7 @@ const attr = (el, attr)=> el.getAttribute?.(attr)
     function
 xml2dom( xmlString )
 {
-    return new DOMParser().parseFromString( XML_DECLARATION + xmlString, "application/xml" )
+    return new DOMParser().parseFromString( xmlString, "application/xml" )
 }
     function
 xmlString(doc){ return new XMLSerializer().serializeToString( doc ) }
@@ -91,17 +90,31 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
 {
     if( templateNode.tagName === S || templateNode.documentElement?.tagName === S )
         return tagUid(templateNode)
-    const dom = xml2dom(
-`<xsl:stylesheet version="1.0"
-    xmlns:xsl="${ XSL_NS_URL }"
-    xmlns="${ HTML_NS_URL }"
+    const sanitizeXsl = xml2dom(`<xsl:stylesheet version="1.0" xmlns:xsl="${ XSL_NS_URL }" xmlns:xhtml="${ HTML_NS_URL }" exclude-result-prefixes="exsl" >   <xsl:output method="xml" />
+        <xsl:template match="/"><xsl:apply-templates mode="sanitize" select="node()/*"/></xsl:template>
+        <xsl:template mode="sanitize" match="template"><xsl:apply-templates mode="sanitize" select="*|@*"/></xsl:template>
+        <xsl:template mode="sanitize" match="*|@*"><xsl:copy><xsl:apply-templates mode="sanitize" select="*|@*"/></xsl:copy></xsl:template>
+        <xsl:template mode="sanitize" match="xhtml:*"><xsl:element name="{local-name()}"><xsl:apply-templates mode="sanitize" select="*|@*"/></xsl:element></xsl:template>
+    </xsl:stylesheet>`)
+    const sanitizeProcessor = new XSLTProcessor()
+    ,   tc = (n =>
+        {   const e = n.firstElementChild?.content || n.content;
+            if( e )
+            {   const t = create('div');
+                [ ...e.childNodes ].map( c => t.append(c) )
+                return t
+            }
+            return  n.documentElement || n.body || n
+        })(templateNode)
+    ,   dom = xml2dom(
+        `<xsl:stylesheet version="1.0"
+        xmlns:xsl="${ XSL_NS_URL }"
+        xmlns:exsl="http://exslt.org/common"
+        exclude-result-prefixes="exsl"
     >
-    <xsl:output method="html" />
-
+    <xsl:template mode="payload"  match="*"></xsl:template>
     <xsl:template match="/">
-        <xsl:for-each select="//attributes">
-            <xsl:call-template name="attributes"/>\t
-        </xsl:for-each>
+        <xsl:apply-templates mode="payload" select="*"/>
     </xsl:template>
     <xsl:template name="slot" >
         <xsl:param name="slotname" />
@@ -115,7 +128,6 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    <xsl:template name="attributes"></xsl:template>
     <xsl:variable name="slottemplate">
         <xsl:call-template name="slot" >
             <xsl:with-param name="slotname" select="''"/>
@@ -123,19 +135,14 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         </xsl:call-template>
     </xsl:variable>
 </xsl:stylesheet>`
-    );
+        );
 
-    const attrsTemplate = dom.documentElement.lastElementChild.previousElementSibling
-    , getTemplateRoot = n => n.documentElement || n.firstElementChild?.content || n.content || n.body || n
-    , tc = getTemplateRoot(templateNode)
-    , cc = tc?.childNodes || [];
-    if( (tc instanceof CustomElement) || tc.nodeType===11) {
-        for( let c of cc )
-            attrsTemplate.append(dom.importNode(c,true))
-    }else
-    {
-        attrsTemplate.append(dom.importNode(tc,true))
-    }
+    sanitizeProcessor.importStylesheet( sanitizeXsl );
+
+    const fr = sanitizeProcessor.transformToFragment(tc, document)
+    ,   attrsTemplate = dom.documentElement.firstElementChild;
+    for( const c of fr.childNodes )
+        attrsTemplate.append(dom.importNode(c,true))
 
     const slot2xsl = s =>
     {   const v = dom.firstElementChild.lastElementChild.lastElementChild.cloneNode(true);
@@ -236,6 +243,16 @@ export function mergeAttr( from, to )
     for( let a of from.attributes)
         a.namespaceURI? to.setAttributeNS( a.namespaceURI, a.name, a.value ) : to.setAttribute( a.name, a.value )
 }
+export function assureUnique(nl)
+{
+    const m = {}
+    for( const e of nl )
+    {   const a = attr(e,'data-dce-id')
+        if( !m[a] )
+            m[a]=1;
+        e.setAttribute('data-dce-id', a + '-' + m[a]++ )
+    }
+}
 export function merge( parent, fromArr )
 {
     // create map of key to existing elements
@@ -253,7 +270,7 @@ export function merge( parent, fromArr )
     for( let c of parent.children )
         id2old[ attr(c,'data-dce-id') || 0 ] = c;
     parent.innerHTML = '';
-    for( let e of fromArr )
+    for( let e of [...fromArr] )
     {   const o = id2old[ attr(e, 'data-dce-id') ];
         if( o )
         {   mergeAttr(o,e)
@@ -288,7 +305,6 @@ CustomElement extends HTMLElement
                 injectData( x, 'dataset', Object.keys( this.dataset ), k => create( k, this.dataset[ k ] ) );
                 const sliceRoot = injectData( x, 'slice', sliceNames, k => create( k, '' ) );
                 this.xml = x;
-                const slices = {};
 
                 const sliceEvents=[];
                 const applySlices = ()=>
@@ -326,26 +342,25 @@ CustomElement extends HTMLElement
                             console.error( "XSLT transformation error. xsl:\n", xmlString(templateDocs[i]), '\nxml:\n', xmlString(x) );
                         return f
                     });
-                    // this.innerHTML = '';
                     ff.map( f =>
                     {   if( !f )
                             return;
-                        // [ ...f.childNodes ].forEach( e => this.append( e ) );
-                        // [ ...f.childNodes ].forEach( e => mergeP(this, e ) );
+                        assureUnique(f.querySelectorAll('[data-dce-id]'))
                         merge( this, f.childNodes )
-                        const changeCb = el=> this.onSlice({ detail: el[attr(el,'slice-prop') || 'value'], target: el })
-                        , hasInitValue = el => el.hasAttribute('slice-prop') || el.hasAttribute('value') || el.value;
+                    })
+                    const changeCb = el=>{
+                        console.log('changeCb')
+                        this.onSlice({ detail: el[attr(el,'slice-prop') || 'value'], target: el })
+                    }
+                    , hasInitValue = el => el.hasAttribute('slice-prop') || el.hasAttribute('value') || el.value;
 
-                        forEach$( this,'[slice]', el =>
-                        {
+                    forEach$( this,'[slice]', el =>
+                    {   if( !el.dceInitialized )
+                        {   el.dceInitialized = 1;
                             el.addEventListener( attr(this,'slice-update')|| 'change', ()=>changeCb(el) )
-                            if( 'function' === typeof el.sliceInit )
-                            {   const s = attr( el,'slice' );
-                                slices[s] = el.sliceInit( slices[s] );
-                            }
                             if( hasInitValue(el) )
                                 changeCb(el)
-                        })
+                        }
                     })
                 };
                 transform();
