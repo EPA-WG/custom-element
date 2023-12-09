@@ -90,11 +90,12 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
 {
     if( templateNode.tagName === S || templateNode.documentElement?.tagName === S )
         return tagUid(templateNode)
-    const sanitizeXsl = xml2dom(`<xsl:stylesheet version="1.0" xmlns:xsl="${ XSL_NS_URL }" xmlns:xhtml="${ HTML_NS_URL }" exclude-result-prefixes="exsl" >   <xsl:output method="xml" />
+    const sanitizeXsl = xml2dom(`<xsl:stylesheet version="1.0" xmlns:xsl="${ XSL_NS_URL }" xmlns:xhtml="${ HTML_NS_URL }" exclude-result-prefixes="exsl" >   
+        <xsl:output method="xml" />
         <xsl:template match="/"><xsl:apply-templates mode="sanitize" select="node()/*"/></xsl:template>
         <xsl:template mode="sanitize" match="template"><xsl:apply-templates mode="sanitize" select="*|@*"/></xsl:template>
-        <xsl:template mode="sanitize" match="*|@*"><xsl:copy><xsl:apply-templates mode="sanitize" select="*|@*"/></xsl:copy></xsl:template>
-        <xsl:template mode="sanitize" match="xhtml:*"><xsl:element name="{local-name()}"><xsl:apply-templates mode="sanitize" select="*|@*"/></xsl:element></xsl:template>
+        <xsl:template mode="sanitize" match="*|@*"><xsl:copy><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:copy></xsl:template>
+        <xsl:template mode="sanitize" match="xhtml:*"><xsl:element name="{local-name()}"><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:element></xsl:template>
     </xsl:stylesheet>`)
     const sanitizeProcessor = new XSLTProcessor()
     ,   tc = (n =>
@@ -109,6 +110,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     ,   dom = xml2dom(
         `<xsl:stylesheet version="1.0"
         xmlns:xsl="${ XSL_NS_URL }"
+        xmlns:dce="urn:schemas-epa-wg:dce"
         xmlns:exsl="http://exslt.org/common"
         exclude-result-prefixes="exsl"
     >
@@ -120,8 +122,8 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         <xsl:param name="slotname" />
         <xsl:param name="defaultvalue" />
         <xsl:choose>
-            <xsl:when test="//payload/*[@slot=$slotname]">
-                <xsl:copy-of select="//payload/*[@slot=$slotname]"/>
+            <xsl:when test="//dce:payload/*[@slot=$slotname]">
+                <xsl:copy-of select="//dce:payload/*[@slot=$slotname]"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:copy-of select="$defaultvalue"/>
@@ -140,20 +142,22 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     sanitizeProcessor.importStylesheet( sanitizeXsl );
 
     const fr = sanitizeProcessor.transformToFragment(tc, document)
-    ,   attrsTemplate = dom.documentElement.firstElementChild;
+    ,   $ = (e,css) => e.querySelector(css)
+    ,   payload = $( dom, 'template[mode="payload"]');
     for( const c of fr.childNodes )
-        attrsTemplate.append(dom.importNode(c,true))
+        payload.append(dom.importNode(c,true))
 
-    const slot2xsl = s =>
-    {   const v = dom.firstElementChild.lastElementChild.lastElementChild.cloneNode(true);
-        v.firstElementChild.setAttribute('select',`'${s.name}'`)
+    const   slotCall = $(dom,'call-template[name="slot"]')
+    ,       slot2xsl = s =>
+    {   const v = slotCall.cloneNode(true)
+        ,  name = attr(s,'name') || '';
+        name && v.firstElementChild.setAttribute('select',`'${ name }'`)
         for( let c of s.childNodes)
             v.lastElementChild.append(c)
         return v
     }
 
-    for( const s of attrsTemplate.querySelectorAll('slot') )
-        s.parentNode.replaceChild( slot2xsl(s), s )
+    forEach$( payload,'slot', s => s.parentNode.replaceChild( slot2xsl(s), s ) )
 
     // apply bodyXml changes
     return tagUid(dom)
@@ -208,8 +212,7 @@ injectSlice( x, s, data )
 
 function forEach$( el, css, cb){
     if( el.querySelectorAll )
-        for( let n of el.querySelectorAll(css) )
-            cb(n)
+        [...el.querySelectorAll(css)].forEach(cb)
 }
 const getByHashId = ( n, id )=> ( p => n===p? null: (p && ( p.querySelector(id) || getByHashId(p,id) ) ))( n.getRootNode() )
 const loadTemplateRoots = async ( src, dce )=>
