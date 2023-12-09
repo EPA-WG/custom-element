@@ -122,8 +122,8 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         <xsl:param name="slotname" />
         <xsl:param name="defaultvalue" />
         <xsl:choose>
-            <xsl:when test="//dce:payload/*[@slot=$slotname]">
-                <xsl:copy-of select="//dce:payload/*[@slot=$slotname]"/>
+            <xsl:when test="//payload/*[@slot=$slotname]">
+                <xsl:copy-of select="//payload/*[@slot=$slotname]"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:copy-of select="$defaultvalue"/>
