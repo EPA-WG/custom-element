@@ -102,7 +102,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         {   const e = n.firstElementChild?.content || n.content;
             if( e )
             {   const t = create('div');
-                [ ...e.childNodes ].map( c => t.append(c) )
+                [ ...e.childNodes ].map( c => t.append(c.cloneNode(true)) )
                 return t
             }
             return  n.documentElement || n.body || n
