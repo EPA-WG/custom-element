@@ -95,7 +95,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         <xsl:template match="/"><xsl:apply-templates select="*"/></xsl:template>
         <xsl:template match="*[name()='template']"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
         <xsl:template match="*"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
-        <xsl:template match="*[name()='svg']"><xsl:apply-templates mode="sanitize" select="."/></xsl:template>
+        <xsl:template match="*[name()='svg']|*[name()='math']"><xsl:apply-templates mode="sanitize" select="."/></xsl:template>
         <xsl:template mode="sanitize" match="*|@*"><xsl:copy><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:copy></xsl:template>
         <xsl:template mode="sanitize" match="xhtml:*"><xsl:element name="{local-name()}"><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:element></xsl:template>
     </xsl:stylesheet>`)
@@ -146,7 +146,9 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     const fr = sanitizeProcessor.transformToFragment(tc, document)
     ,   $ = (e,css) => e.querySelector(css)
     ,   payload = $( dom, 'template[mode="payload"]');
-console.log(fr?.firstChild?.outerHTML||"??????")
+    if( !fr )
+        return console.error("transformation error",{ xml:tc.outerHTML, xsl: xmlString( sanitizeXsl ) });
+
     for( const c of fr.childNodes )
         payload.append(dom.importNode(c,true))
 
