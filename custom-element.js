@@ -92,8 +92,10 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         return tagUid(templateNode)
     const sanitizeXsl = xml2dom(`<xsl:stylesheet version="1.0" xmlns:xsl="${ XSL_NS_URL }" xmlns:xhtml="${ HTML_NS_URL }" exclude-result-prefixes="exsl" >   
         <xsl:output method="xml" />
-        <xsl:template match="/"><xsl:apply-templates mode="sanitize" select="node()/*|*/text()"/></xsl:template>
-        <xsl:template mode="sanitize" match="template"><xsl:apply-templates mode="sanitize" select="*|@*"/></xsl:template>
+        <xsl:template match="/"><xsl:apply-templates select="*"/></xsl:template>
+        <xsl:template match="*[name()='template']"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
+        <xsl:template match="*"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
+        <xsl:template match="*[name()='svg']"><xsl:apply-templates mode="sanitize" select="."/></xsl:template>
         <xsl:template mode="sanitize" match="*|@*"><xsl:copy><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:copy></xsl:template>
         <xsl:template mode="sanitize" match="xhtml:*"><xsl:element name="{local-name()}"><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:element></xsl:template>
     </xsl:stylesheet>`)
@@ -144,6 +146,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     const fr = sanitizeProcessor.transformToFragment(tc, document)
     ,   $ = (e,css) => e.querySelector(css)
     ,   payload = $( dom, 'template[mode="payload"]');
+console.log(fr?.firstChild?.outerHTML||"??????")
     for( const c of fr.childNodes )
         payload.append(dom.importNode(c,true))
 
