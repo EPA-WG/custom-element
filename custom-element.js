@@ -6,7 +6,9 @@ const XSL_NS_URL  = 'http://www.w3.org/1999/XSL/Transform'
 
 const attr = (el, attr)=> el.getAttribute?.(attr)
 ,   create = ( tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElement( tag ))
-,   createNS = ( ns, tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElementNS( ns, tag ));
+,   createNS = ( ns, tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElementNS( ns, tag ))
+,   xslNs = x => ( x?.setAttribute('xmlns:xsl', XSL_NS_URL ), x )
+,   xslHtmlNs = x => ( x?.setAttribute('xmlns:xhtml', HTML_NS_URL ), xslNs(x) );
 
     function
 xml2dom( xmlString )
@@ -105,9 +107,9 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
             if( e )
             {   const t = create('div');
                 [ ...e.childNodes ].map( c => t.append(c.cloneNode(true)) )
-                return t
+                return xslHtmlNs(t)
             }
-            return  n.documentElement || n.body || n
+            return  xslHtmlNs(n.documentElement || n.body || n)
         })(templateNode)
     ,   dom = xml2dom(
         `<xsl:stylesheet version="1.0"
@@ -164,7 +166,6 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
 
     forEach$( payload,'slot', s => s.parentNode.replaceChild( slot2xsl(s), s ) )
 
-    // apply bodyXml changes
     return tagUid(dom)
 }
     export async function
@@ -251,39 +252,39 @@ export function mergeAttr( from, to )
     for( let a of from.attributes)
         a.namespaceURI? to.setAttributeNS( a.namespaceURI, a.name, a.value ) : to.setAttribute( a.name, a.value )
 }
-export function assureUnique(nl)
+export function assureUnique(n, id=0)
 {
     const m = {}
-    for( const e of nl )
-    {   const a = attr(e,'data-dce-id')
+    for( const e of n.childNodes )
+    {   const a = attr(e,'data-dce-id') || e.dceId || 0;
         if( !m[a] )
-            m[a]=1;
-        e.setAttribute('data-dce-id', a + '-' + m[a]++ )
+            m[a] = e.dceId = ++id;
+        else {
+            const v = a + '-' + m[a]++;
+            if( e.setAttribute )
+                e.setAttribute('data-dce-id', v )
+            else
+                e.dceId = v
+        }
+        assureUnique(e)
     }
 }
 export function merge( parent, fromArr )
 {
-    // create map of key to existing elements
-    // loop over new
-    //      if the key exist on map,
-    //          extract it,
-    //          merge attributes,
-    //          merge (el, newEl.children)
-    //          push into result
-    //      else push new element into result
-    // map holds elements to be removed
-    // parent.children = result
+    const id2old = {};
+    for( let c of parent.childNodes)
+        id2old[ attr(c,'data-dce-id') || c.dceId || 0 ] = c;
 
-    const id2old = {}
-    for( let c of parent.children )
-        id2old[ attr(c,'data-dce-id') || 0 ] = c;
-    parent.innerHTML = '';
     for( let e of [...fromArr] )
-    {   const o = id2old[ attr(e, 'data-dce-id') ];
+    {   const o = id2old[ attr(e, 'data-dce-id') || e.dceId ];
         if( o )
-        {   mergeAttr(o,e)
-            merge(o, e.childNodes)
-            parent.append( o )
+        {   if( e.setAttribute )
+            {   mergeAttr(o,e)
+                if( o.childNodes.length || e.childNodes.length )
+                    merge(o, e.childNodes)
+            }else // text
+                if( o.nodeValue !== e.nodeValue )
+                    o.nodeValue = e.nodeValue;
         }else
             parent.append( e )
     }
@@ -306,8 +307,7 @@ CustomElement extends HTMLElement
         class DceElement extends HTMLElement
         {
             connectedCallback()
-            {   const x = createNS( DCE_NS_URL,'datadom' );
-                x.setAttribute('xmlns:xsl', XSL_NS_URL );
+            {   const x = xslNs(createNS( DCE_NS_URL,'datadom' ));
                 injectData( x, 'payload'    , this.childNodes, assureSlot );
                 injectData( x, 'attributes' , this.attributes, e => create( e.nodeName, e.value ) );
                 injectData( x, 'dataset', Object.keys( this.dataset ), k => create( k, this.dataset[ k ] ) );
@@ -353,19 +353,16 @@ CustomElement extends HTMLElement
                     ff.map( f =>
                     {   if( !f )
                             return;
-                        assureUnique(f.querySelectorAll('[data-dce-id]'))
+                        assureUnique(f)
                         merge( this, f.childNodes )
                     })
-                    const changeCb = el=>{
-                        console.log('changeCb')
-                        this.onSlice({ detail: el[attr(el,'slice-prop') || 'value'], target: el })
-                    }
+                    const changeCb = el=>this.onSlice({ detail: el[attr(el,'slice-prop') || 'value'], target: el })
                     , hasInitValue = el => el.hasAttribute('slice-prop') || el.hasAttribute('value') || el.value;
 
                     forEach$( this,'[slice]', el =>
                     {   if( !el.dceInitialized )
                         {   el.dceInitialized = 1;
-                            el.addEventListener( attr(this,'slice-update')|| 'change', ()=>changeCb(el) )
+                            el.addEventListener( attr(el,'slice-update')|| 'change', ()=>changeCb(el) )
                             if( hasInitValue(el) )
                                 changeCb(el)
                         }
