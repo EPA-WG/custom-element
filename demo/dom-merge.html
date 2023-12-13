@@ -6,6 +6,7 @@
     <link rel="icon" href="./wc-square.svg"/>
 
     <script type="module" src="../http-request.js"></script>
+    <script type="module" src="../input-text.js"></script>
     <script type="module" src="../custom-element.js"></script>
     <style>
         @import "./demo.css";
@@ -68,42 +69,41 @@
 </nav>
 
 <html-demo-element legend="1. Word count in textarea"
-                   description="Counter update happens on change event. The update should not interfere with the input">
+                   description="Counter update happens on change event(focus change).
+                                The update should not interfere with the input">
     <template>
-
         <custom-element>
             <form>
                 <label>
-                    <textarea slice="text-container" name="prompt">Hello world!</textarea>
-<!--                    <input slice="textField" name="prompt" value="Hello world!" />-->
+                    <textarea slice="text-container" >Hello world!</textarea>
                     <span> Word count:
                         <xsl:value-of select='string-length(//slice/text-container/text())'/>
                     </span>
                 </label>
             </form>
         </custom-element>
-        <!--<custom-element>-->
-        <!--    <form>-->
-        <!--    <label>-->
-        <!--        <p>Word count: <xsl:value-of select='string-length(//slice/textContainer/text())'/></p>-->
-        <!--        <textarea slice="textContainer" slice-event="change" name="prompt">Hello world!</textarea>-->
-        <!--    </label></form>-->
-        <!--</custom-element>-->
-
     </template>
 </html-demo-element>
+<hr/>
 
+<html-demo-element legend="2. Word count in HTML input field"
+                   description="Counter update happens on keyup event.
+                                The update should not interfere with the input">
+    <template>
+        <custom-element>
+            <form>
+                <label>
+                    <xhtml:input type="text"  value="Type time update" slice="txt" slice-update="keyup"></xhtml:input>
 
-<!--<html-demo-element legend="2. update on blur event">-->
-<!--    <template>-->
-
-<!--<custom-element>-->
-<!--    <p>Word count: <xsl:value-of select='string-length(//slice/textContainer/text())'/></p>-->
-<!--    <textarea slice="textContainer" slice-event="blur">Hello world!</textarea>-->
-<!--</custom-element>-->
-
-<!--    </template>-->
-<!--</html-demo-element>-->
+                    <span> Word count:
+                        <i><xsl:value-of select='string-length(//slice/txt/text())'/></i>
+                    </span>
+                </label>
+                <p><b>txt</b> slice:</p> <blockquote><xsl:value-of select='//slice/txt/text()'/></blockquote>
+            </form>
+        </custom-element>
+    </template>
+</html-demo-element>
 
 <script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
 <script type="module">
