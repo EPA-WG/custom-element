@@ -309,6 +309,7 @@ CustomElement extends HTMLElement
             connectedCallback()
             {   const x = xslNs(createNS( DCE_NS_URL,'datadom' ));
                 injectData( x, 'payload'    , this.childNodes, assureSlot );
+                this.innerHTML='';
                 injectData( x, 'attributes' , this.attributes, e => create( e.nodeName, e.value ) );
                 injectData( x, 'dataset', Object.keys( this.dataset ), k => create( k, this.dataset[ k ] ) );
                 const sliceRoot = injectData( x, 'slice', sliceNames, k => create( k, '' ) );
