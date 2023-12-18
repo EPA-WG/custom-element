@@ -80,10 +80,6 @@ tagUid( node )
         for( let e of node.all )
             e.setAttribute && !e.tagName.startsWith('xsl:') && e.setAttribute('data-dce-id', '' + i++)
     }
-    else {
-        debugger;
-    }
-
     return node
 }
     export function
@@ -99,6 +95,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         <xsl:template match="*[name()='svg']|*[name()='math']"><xsl:apply-templates mode="sanitize" select="."/></xsl:template>
         <xsl:template mode="sanitize" match="*[count(text())=1 and count(*)=0]"><xsl:copy><xsl:apply-templates mode="sanitize" select="@*"/><xsl:value-of select="text()"/></xsl:copy></xsl:template>
         <xsl:template mode="sanitize" match="*|@*"><xsl:copy><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:copy></xsl:template>
+        <xsl:template mode="sanitize" match="text()[normalize-space(.) = '']"></xsl:template>
         <xsl:template mode="sanitize" match="text()"><dce-text><xsl:copy/></dce-text></xsl:template>
         <xsl:template mode="sanitize" match="xsl:value-of"><dce-text><xsl:copy><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:copy></dce-text></xsl:template>
         <xsl:template mode="sanitize" match="xhtml:*"><xsl:element name="{local-name()}"><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:element></xsl:template>
