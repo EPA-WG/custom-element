@@ -20,10 +20,9 @@ xmlString(doc){ return new XMLSerializer().serializeToString( doc ) }
 
     function
 injectData( root, sectionName, arr, cb )
-{
+{   const create = ( tag ) => root.ownerDocument.createElement( tag );
     const inject = ( tag, parent, s ) =>
-    {
-        parent.append( s = createNS( DCE_NS_URL, tag ) );
+    {   parent.append( s = create( tag ) );
         return s;
     };
     const l = inject( sectionName, root );
@@ -99,6 +98,8 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         <xsl:template match="*"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
         <xsl:template match="*[name()='svg']|*[name()='math']"><xsl:apply-templates mode="sanitize" select="."/></xsl:template>
         <xsl:template mode="sanitize" match="*|@*"><xsl:copy><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:copy></xsl:template>
+        <xsl:template mode="sanitize" match="text()"><dce-text><xsl:copy/></dce-text></xsl:template>
+        <xsl:template mode="sanitize" match="xsl:value-of"><dce-text><xsl:copy><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:copy></dce-text></xsl:template>
         <xsl:template mode="sanitize" match="xhtml:*"><xsl:element name="{local-name()}"><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:element></xsl:template>
     </xsl:stylesheet>`)
     const sanitizeProcessor = new XSLTProcessor()
@@ -207,9 +208,9 @@ deepEqual(a, b, O=false)
 injectSlice( x, s, data )
 {
     const isString = typeof data === 'string' ;
-
+    const createXmlNode = ( tag, t = '' ) => ( e => ((e.append( x.ownerDocument.createTextNode(t||''))),e) )(x.ownerDocument.createElement( tag ))
     const el = isString
-        ? create(s, data)
+        ? createXmlNode(s, data)
         : document.adoptNode( xml2dom( Json2Xml( data, s ) ).documentElement);
     [...x.children].filter( e=>e.localName === s ).map( el=>el.remove() );
     el.data = data
@@ -307,12 +308,14 @@ CustomElement extends HTMLElement
         class DceElement extends HTMLElement
         {
             connectedCallback()
-            {   const x = xslNs(createNS( DCE_NS_URL,'datadom' ));
+            {   const x = xml2dom( '<datadom/>' ).documentElement;
+                // const create = ( tag ) => x.ownerDocument.createElement( tag );
+                const createXmlNode = ( tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(x.ownerDocument.createElement( tag ))
                 injectData( x, 'payload'    , this.childNodes, assureSlot );
                 this.innerHTML='';
-                injectData( x, 'attributes' , this.attributes, e => create( e.nodeName, e.value ) );
-                injectData( x, 'dataset', Object.keys( this.dataset ), k => create( k, this.dataset[ k ] ) );
-                const sliceRoot = injectData( x, 'slice', sliceNames, k => create( k, '' ) );
+                injectData( x, 'attributes' , this.attributes, e => createXmlNode( e.nodeName, e.value ) );
+                injectData( x, 'dataset', Object.keys( this.dataset ), k => createXmlNode( k, this.dataset[ k ] ) );
+                const sliceRoot = injectData( x, 'slice', sliceNames, k => createXmlNode( k, '' ) );
                 this.xml = x;
 
                 const sliceEvents=[];
