@@ -1,5 +1,6 @@
 const XSL_NS_URL  = 'http://www.w3.org/1999/XSL/Transform'
 ,     HTML_NS_URL = 'http://www.w3.org/1999/xhtml'
+,     EXSL_NS_URL = 'http://exslt.org/common'
 ,     DCE_NS_URL  ="urn:schemas-epa-wg:dce";
 
 // const log = x => console.debug( new XMLSerializer().serializeToString( x ) );
@@ -87,9 +88,9 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
 {
     if( templateNode.tagName === S || templateNode.documentElement?.tagName === S )
         return tagUid(templateNode)
-    const sanitizeXsl = xml2dom(`<xsl:stylesheet version="1.0" xmlns:xsl="${ XSL_NS_URL }" xmlns:xhtml="${ HTML_NS_URL }" exclude-result-prefixes="exsl" >   
+    const sanitizeXsl = xml2dom(`<xsl:stylesheet version="1.0" xmlns:xsl="${ XSL_NS_URL }" xmlns:xhtml="${ HTML_NS_URL }" xmlns:exsl="${EXSL_NS_URL}" exclude-result-prefixes="exsl" >   
         <xsl:output method="xml" />
-        <xsl:template match="/"><xsl:apply-templates select="*"/></xsl:template>
+        <xsl:template match="/"><dce-root><xsl:apply-templates select="*"/></dce-root></xsl:template>
         <xsl:template match="*[name()='template']"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
         <xsl:template match="*"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
         <xsl:template match="*[name()='svg']|*[name()='math']"><xsl:apply-templates mode="sanitize" select="."/></xsl:template>
@@ -102,15 +103,16 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     </xsl:stylesheet>`)
     const sanitizeProcessor = new XSLTProcessor()
     ,   tc = (n =>
-        {   const e = n.firstElementChild?.content || n.content;
+        {   const e = n.firstElementChild?.content || n.content
+            , asXmlNode = r => xslHtmlNs(xml2dom( '<xhtml/>' ).importNode(r, true));
             if( e )
             {   const t = create('div');
                 [ ...e.childNodes ].map( c => t.append(c.cloneNode(true)) )
-                return xslHtmlNs(t)
+                return asXmlNode(t)
             }
-            return  xslHtmlNs(n.documentElement || n.body || n)
+            return  asXmlNode(n.documentElement || n.body || n)
         })(templateNode)
-    ,   dom = xml2dom(
+    ,   xslDom = xml2dom(
         `<xsl:stylesheet version="1.0"
         xmlns:xsl="${ XSL_NS_URL }"
         xmlns:dce="urn:schemas-epa-wg:dce"
@@ -146,14 +148,14 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
 
     const fr = sanitizeProcessor.transformToFragment(tc, document)
     ,   $ = (e,css) => e.querySelector(css)
-    ,   payload = $( dom, 'template[mode="payload"]');
+    ,   payload = $( xslDom, 'template[mode="payload"]');
     if( !fr )
         return console.error("transformation error",{ xml:tc.outerHTML, xsl: xmlString( sanitizeXsl ) });
 
     for( const c of fr.childNodes )
-        payload.append(dom.importNode(c,true))
+        payload.append(xslDom.importNode(c,true))
 
-    const   slotCall = $(dom,'call-template[name="slot"]')
+    const   slotCall = $(xslDom,'call-template[name="slot"]')
     ,       slot2xsl = s =>
     {   const v = slotCall.cloneNode(true)
         ,  name = attr(s,'name') || '';
@@ -165,7 +167,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
 
     forEach$( payload,'slot', s => s.parentNode.replaceChild( slot2xsl(s), s ) )
 
-    return tagUid(dom)
+    return tagUid(xslDom)
 }
     export async function
 xhrTemplate(src)
