@@ -117,23 +117,23 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         xmlns:exsl="http://exslt.org/common"
         exclude-result-prefixes="exsl"
     >
-    <xsl:template mode="payload"  match="*"></xsl:template>
+    <xsl:template mode="payload"  match="attributes"></xsl:template>
     <xsl:template match="/">
-        <xsl:apply-templates mode="payload" select="*"/>
+        <xsl:apply-templates mode="payload" select="/datadom/attributes"/>
     </xsl:template>
     <xsl:template name="slot" >
         <xsl:param name="slotname" />
         <xsl:param name="defaultvalue" />
         <xsl:choose>
             <xsl:when test="//payload/*[@slot=$slotname]">
-                <xsl:copy-of select="//payload/*[@slot=$slotname]"/>
+               <xsl:copy-of select="//payload/*[@slot=$slotname]"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:copy-of select="$defaultvalue"/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    <xsl:variable name="slottemplate">
+    <xsl:variable name="js-injected-body">
         <xsl:call-template name="slot" >
             <xsl:with-param name="slotname" select="''"/>
             <xsl:with-param name="defaultvalue"/>
@@ -307,8 +307,11 @@ CustomElement extends HTMLElement
         {
             connectedCallback()
             {   const x = xml2dom( '<datadom/>' ).documentElement;
-                // const create = ( tag ) => x.ownerDocument.createElement( tag );
-                const createXmlNode = ( tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(x.ownerDocument.createElement( tag ))
+                const createXmlNode = ( tag, t = '' ) => ( e =>
+                {   if( t )
+                        e.append(x.ownerDocument.createTextNode( t ))
+                    return e;
+                })(x.ownerDocument.createElement( tag ))
                 injectData( x, 'payload'    , this.childNodes, assureSlot );
                 this.innerHTML='';
                 injectData( x, 'attributes' , this.attributes, e => createXmlNode( e.nodeName, e.value ) );
