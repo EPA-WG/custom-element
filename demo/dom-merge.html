@@ -77,7 +77,7 @@
                 <label>
                     <textarea slice="text-container" >Hello world!</textarea>
                     <span> Word count:
-                        <xsl:value-of select='string-length(//slice/text-container/text())'/>
+                        {string-length(//slice/text-container/text())}
                     </span>
                 </label>
             </form>
@@ -93,24 +93,19 @@
         <custom-element>
             <form>
                 <label>
-                    <xhtml:input type="text"  value="Type time update" slice="txt" slice-update="keyup"></xhtml:input>
+                    <input type="text"  value="Type time update" slice="txt" slice-update="keyup"/>
 
                     <span> Word count:
-                        <i><xsl:value-of select='string-length(//slice/txt/text())'/></i>
+                        <i> {string-length(//slice/txt/text())} </i>
                     </span>
                 </label>
-                <p><b>txt</b> slice:</p> <blockquote><xsl:value-of select='//slice/txt/text()'/></blockquote>
+                <p><b>txt</b> slice:</p> <blockquote> {//slice/txt} </blockquote>
             </form>
         </custom-element>
     </template>
 </html-demo-element>
 
 <script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
-<script type="module">
-    document.querySelector('form').addEventListener('change', (event) => {
-        console.log(`Form element ${event.target.name} has changed.`);
-    });
 
-</script>
 </body>
 </html>

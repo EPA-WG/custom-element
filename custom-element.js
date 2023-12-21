@@ -7,6 +7,7 @@ const XSL_NS_URL  = 'http://www.w3.org/1999/XSL/Transform'
 
 const attr = (el, attr)=> el.getAttribute?.(attr)
 ,   create = ( tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElement( tag ))
+,   createText = ( d, t) => (d.ownerDocument || d ).createTextNode( t )
 ,   createNS = ( ns, tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElementNS( ns, tag ))
 ,   xslNs = x => ( x?.setAttribute('xmlns:xsl', XSL_NS_URL ), x )
 ,   xslHtmlNs = x => ( x?.setAttribute('xmlns:xhtml', HTML_NS_URL ), xslNs(x) );
@@ -75,7 +76,31 @@ Json2Xml( o, tag )
 }
     export function
 tagUid( node )
-{
+{   // {} to xsl:value-of
+    forEach$(node,'*',d => [...d.childNodes].filter( e=>e.nodeType === 3 ).forEach( e=>
+    {   const m = e.data.matchAll( /{([^}]*)}/g );
+        if(m)
+        {   let l = 0
+            , txt = t => createText(e,t||'')
+            ,  tt = [];
+            [...m].forEach(t=>
+            {   if( t.index > l )
+                    tt.push( txt( t.input.substring( l, t.index ) ))
+                const v = e.ownerDocument.createElement('xsl:value-of');
+                v.setAttribute('select', t[1] );
+                tt.push(v);
+                l = t.index+t[0].length;
+            })
+            if( l < e.data.length)
+                tt.push( txt( e.data.substring(l,e.data.length) ));
+            if( tt.length )
+            {   for( let t of tt )
+                    d.insertBefore(t,e);
+                d.removeChild(e);
+            }
+        }
+    }));
+
     if( 'all' in node ) {
         let i= 1;
         for( let e of node.all )
@@ -208,7 +233,7 @@ deepEqual(a, b, O=false)
 injectSlice( x, s, data )
 {
     const isString = typeof data === 'string' ;
-    const createXmlNode = ( tag, t = '' ) => ( e => ((e.append( x.ownerDocument.createTextNode(t||''))),e) )(x.ownerDocument.createElement( tag ))
+    const createXmlNode = ( tag, t = '' ) => ( e => ((e.append( createText(x, t||''))),e) )(x.ownerDocument.createElement( tag ))
     const el = isString
         ? createXmlNode(s, data)
         : document.adoptNode( xml2dom( Json2Xml( data, s ) ).documentElement);
@@ -311,7 +336,7 @@ CustomElement extends HTMLElement
             {   const x = xml2dom( '<datadom/>' ).documentElement;
                 const createXmlNode = ( tag, t = '' ) => ( e =>
                 {   if( t )
-                        e.append(x.ownerDocument.createTextNode( t ))
+                        e.append( createText( x, t ))
                     return e;
                 })(x.ownerDocument.createElement( tag ))
                 injectData( x, 'payload'    , this.childNodes, assureSlot );
