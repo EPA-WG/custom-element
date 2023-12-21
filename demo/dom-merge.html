@@ -95,9 +95,19 @@
                 <label>
                     <input type="text"  value="Type time update" slice="txt" slice-update="keyup"/>
 
-                    <span> Word count:
-                        <i> {string-length(//slice/txt/text())} </i>
+                    <span> Character count:
+                        <b> {string-length(//slice/txt)} </b>
                     </span>
+                    <span> Word count:
+                        <b> {string-length(normalize-space(//slice/txt)) -
+                            string-length(translate(normalize-space(//slice/txt), ' ', '')) + 1} </b>
+                        <!-- The expression first normalizes the string by removing leading and trailing whitespace and
+                            collapsing internal whitespace into a single space. It then subtracts the length of the string
+                            with all spaces removed from the length of the original string,
+                            and adds 1 to account for the last word.
+                        -->
+                    </span>
+
                 </label>
                 <p><b>txt</b> slice:</p> <blockquote> {//slice/txt} </blockquote>
             </form>
