@@ -24,7 +24,7 @@
 <html-demo-element legend="Change window URL">
     <template>
         <a href="#dce2">#dce2</a>
-        <form >
+        <form method="get">
             <input name="p1" value="abc"/>
             <input name="p2" value="def"/>
             <input type="submit" value="params"/>
@@ -38,7 +38,7 @@
 </html-demo-element>
 
 
-<html-demo-element legend="2. window.location live update"
+<html-demo-element legend="1. window.location live update"
                    description="In the page beginning change the window URL via link or by history change"
                    id="dce2"
     >
@@ -49,24 +49,17 @@
 
                 <location-element slice="window-url" live></location-element>
 
-                <html:table>
-                    <xsl:for-each select="//slice/window-url/@*">
-                        <html:tr>
-                            <html:th><xsl:value-of select="name()"/></html:th>
-                            <html:td><xsl:value-of select="."/></html:td>
-                        </html:tr>
-                    </xsl:for-each>
-                    <html:tr>
-                        <html:th><u>params</u></html:th>
-                        <html:th></html:th>
-                    </html:tr>
-                    <xsl:for-each select="//slice/window-url/params/*">
-                        <html:tr>
-                            <html:th><xsl:value-of select="name()"/></html:th>
-                            <html:td><xsl:value-of select="."/></html:td>
-                        </html:tr>
-                    </xsl:for-each>
-                </html:table>
+                <xhtml:table>
+                    <xsl:apply-templates mode="attrs"  select="//slice/window-url/@*"></xsl:apply-templates>
+
+                    <xsl:apply-templates mode="attrs"  select="//slice/window-url/params/*"></xsl:apply-templates>
+                </xhtml:table>
+                <xsl:template mode="attrs" match="*|@*">
+                    <xhtml:tr>
+                        <xhtml:th><xsl:value-of select="name()"/></xhtml:th>
+                        <xhtml:td><xsl:value-of select="."/></xhtml:td>
+                    </xhtml:tr>
+                </xsl:template>
             </template>
         </custom-element>
         <dce-2>?</dce-2>
@@ -74,7 +67,7 @@
 </html-demo-element>
 
 
-<html-demo-element legend="1. window.location simplest"
+<html-demo-element legend="2. window.location simplest"
                    description="location read only during initial and only render, does not track the changes."
                    id="dce1">
     <p>Has to produce URL properties</p>
@@ -84,24 +77,24 @@
 
                 <location-element slice="window-url"></location-element>
 
-                <html:table>
+                <table>
                     <xsl:for-each select="//slice/window-url/@*">
-                        <html:tr>
-                            <html:th><xsl:value-of select="name()"/></html:th>
-                            <html:td><xsl:value-of select="."/></html:td>
-                        </html:tr>
+                        <tr>
+                            <th><xsl:value-of select="name()"/></th>
+                            <td><xsl:value-of select="."/></td>
+                        </tr>
                     </xsl:for-each>
-                    <html:tr>
-                        <html:th><u>params</u></html:th>
-                        <html:th></html:th>
-                    </html:tr>
+                    <tr>
+                        <th><u>params</u></th>
+                        <th></th>
+                    </tr>
                     <xsl:for-each select="//slice/window-url/params/*">
-                        <html:tr>
-                            <html:th><xsl:value-of select="name()"/></html:th>
-                            <html:td><xsl:value-of select="."/></html:td>
-                        </html:tr>
+                        <tr>
+                            <th><xsl:value-of select="name()"/></th>
+                            <td><xsl:value-of select="."/></td>
+                        </tr>
                     </xsl:for-each>
-                </html:table>
+                </table>
             </template>
         </custom-element>
         <dce-1>?</dce-1>
@@ -119,24 +112,24 @@
 
                 <location-element slice="src-url" src="https://my.example?a=1&b=2#3"></location-element>
 
-                <html:table>
+                <table>
                     <xsl:for-each select="//slice/src-url/@*">
-                        <html:tr>
-                            <html:th><xsl:value-of select="name()"/></html:th>
-                            <html:td><xsl:value-of select="."/></html:td>
-                        </html:tr>
+                        <tr>
+                            <th><xsl:value-of select="name()"/></th>
+                            <td><xsl:value-of select="."/></td>
+                        </tr>
                     </xsl:for-each>
-                    <html:tr>
-                        <html:th><u>params</u></html:th>
-                        <html:th></html:th>
-                    </html:tr>
+                    <tr>
+                        <th><u>params</u></th>
+                        <th></th>
+                    </tr>
                     <xsl:for-each select="//slice/src-url/params/*">
-                        <html:tr>
-                            <html:th><xsl:value-of select="name()"/></html:th>
-                            <html:td><xsl:value-of select="."/></html:td>
-                        </html:tr>
+                        <tr>
+                            <th><xsl:value-of select="name()"/></th>
+                            <td><xsl:value-of select="."/></td>
+                        </tr>
                     </xsl:for-each>
-                </html:table>
+                </table>
             </template>
         </custom-element>
         <dce-3>?</dce-3>
