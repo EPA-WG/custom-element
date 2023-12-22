@@ -24,10 +24,11 @@ function ensureTrackLocalStorage()
 export class LocalStorageElement extends HTMLElement
 {
     static get observedAttributes() {
-        return ['value' // populated from localStorage, if defined initially, sets the valiue in storage
-                ,'key'
-                ,'type' // `text|json`, defaults to text, other types are compatible with INPUT field
-                ,'live' // monitors localStorage change
+        return  [   'value' // populated from localStorage, if defined initially, sets the valiue in storage
+                ,   'slice'
+                ,   'key'
+                ,   'type' // `text|json`, defaults to text, other types are compatible with INPUT field
+                ,   'live' // monitors localStorage change
                 ];
     }
 

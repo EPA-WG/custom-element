@@ -180,6 +180,9 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     for( const c of fr.childNodes )
         payload.append(xslDom.importNode(c,true))
 
+    const embeddedTemplates = [...payload.querySelectorAll('template')];
+    embeddedTemplates.forEach(t=>payload.ownerDocument.documentElement.append(t));
+
     const   slotCall = $(xslDom,'call-template[name="slot"]')
     ,       slot2xsl = s =>
     {   const v = slotCall.cloneNode(true)
@@ -354,7 +357,7 @@ CustomElement extends HTMLElement
                     {   const s = attr( ev.target, 'slice');
                         if( processed[s] )
                             continue;
-                        injectSlice( sliceRoot, s, ev.detail );
+                        injectSlice( sliceRoot, s, 'object' === typeof ev.detail ? {...ev.detail}: ev.detail );
                         processed[s] = ev;
                     }
                     Object.keys(processed).length !== 0 && transform();
