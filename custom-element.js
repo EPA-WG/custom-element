@@ -6,12 +6,18 @@ const XSL_NS_URL  = 'http://www.w3.org/1999/XSL/Transform'
 // const log = x => console.debug( new XMLSerializer().serializeToString( x ) );
 
 const attr = (el, attr)=> el.getAttribute?.(attr)
+,   isText = e => e.nodeType === 3
 ,   create = ( tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElement( tag ))
 ,   createText = ( d, t) => (d.ownerDocument || d ).createTextNode( t )
 ,   createNS = ( ns, tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElementNS( ns, tag ))
 ,   xslNs = x => ( x?.setAttribute('xmlns:xsl', XSL_NS_URL ), x )
 ,   xslHtmlNs = x => ( x?.setAttribute('xmlns:xhtml', HTML_NS_URL ), xslNs(x) );
 
+    function
+ASSERT(x)
+{   if(!x)
+        debugger
+}
     function
 xml2dom( xmlString )
 {
@@ -78,7 +84,9 @@ Json2Xml( o, tag )
 tagUid( node )
 {   // {} to xsl:value-of
     forEach$(node,'*',d => [...d.childNodes].filter( e=>e.nodeType === 3 ).forEach( e=>
-    {   const m = e.data.matchAll( /{([^}]*)}/g );
+    {   if( e.parentNode.localName === 'style' )
+            return;
+        const m = e.data.matchAll( /{([^}]*)}/g );
         if(m)
         {   let l = 0
             , txt = t => createText(e,t||'')
@@ -120,8 +128,9 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         <xsl:template match="*"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
         <xsl:template match="*[name()='svg']|*[name()='math']"><xsl:apply-templates mode="sanitize" select="."/></xsl:template>
         <xsl:template mode="sanitize" match="*[count(text())=1 and count(*)=0]"><xsl:copy><xsl:apply-templates mode="sanitize" select="@*"/><xsl:value-of select="text()"/></xsl:copy></xsl:template>
+        <xsl:template mode="sanitize" match="xhtml:*[count(text())=1 and count(*)=0]"><xsl:element name="{local-name()}"><xsl:apply-templates mode="sanitize" select="@*"/><xsl:value-of select="text()"/></xsl:element></xsl:template>
         <xsl:template mode="sanitize" match="*|@*"><xsl:copy><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:copy></xsl:template>
-        <xsl:template mode="sanitize" match="text()[normalize-space(.) = '']"></xsl:template>
+        <xsl:template mode="sanitize" match="text()[normalize-space(.) = '']"/>
         <xsl:template mode="sanitize" match="text()"><dce-text><xsl:copy/></dce-text></xsl:template>
         <xsl:template mode="sanitize" match="xsl:value-of|*[name()='slot']"><dce-text><xsl:copy><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:copy></dce-text></xsl:template>
         <xsl:template mode="sanitize" match="xhtml:*"><xsl:element name="{local-name()}"><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:element></xsl:template>
@@ -277,7 +286,11 @@ const loadTemplateRoots = async ( src, dce )=>
     }catch (error){ return [dce]}
 }
 export function mergeAttr( from, to )
-{
+{   if( isText(from) )
+    {
+        if( !isText(to) ){ debugger }
+        return
+    }
     for( let a of from.attributes)
         a.namespaceURI? to.setAttributeNS( a.namespaceURI, a.name, a.value ) : to.setAttribute( a.name, a.value )
 }
@@ -285,35 +298,46 @@ export function assureUnique(n, id=0)
 {
     const m = {}
     for( const e of n.childNodes )
-    {   const a = attr(e,'data-dce-id') || e.dceId || 0;
+    {
+        const a = attr(e,'data-dce-id') || e.dceId || 0;
         if( !m[a] )
-            m[a] = e.dceId = ++id;
-        else {
-            const v = a + '-' + m[a]++;
+        {   if( !a )
+            {   m[a] = e.dceId = ++id;
+                if( e.setAttribute )
+                    e.setAttribute('data-dce-id', e.dceId )
+            }else
+                m[a] = 1;
+        }else
+        {   const v = e.dceId = a + '-' + m[a]++;
             if( e.setAttribute )
                 e.setAttribute('data-dce-id', v )
-            else
-                e.dceId = v
         }
-        assureUnique(e)
+        e.childNodes.length && assureUnique(e)
     }
 }
 export function merge( parent, fromArr )
 {
     const id2old = {};
     for( let c of parent.childNodes)
-        id2old[ attr(c,'data-dce-id') || c.dceId || 0 ] = c;
-
+    {   ASSERT( !id2old[c.dceId] );
+        if( isText(c) )
+        {   ASSERT( c.data.trim() );
+            id2old[c.dceId || 0] = c;
+        } else
+            id2old[attr(c, 'data-dce-id') || 0] = c;
+    }
     for( let e of [...fromArr] )
-    {   const o = id2old[ attr(e, 'data-dce-id') || e.dceId ];
+    {
+        const o = id2old[ attr(e, 'data-dce-id') || e.dceId ];
         if( o )
-        {   if( e.setAttribute )
+        {   if( isText(e) )
+            {   if( o.nodeValue !== e.nodeValue )
+                    o.nodeValue = e.nodeValue;
+            }else
             {   mergeAttr(o,e)
                 if( o.childNodes.length || e.childNodes.length )
                     merge(o, e.childNodes)
-            }else // text
-                if( o.nodeValue !== e.nodeValue )
-                    o.nodeValue = e.nodeValue;
+            }
         }else
             parent.append( e )
     }
