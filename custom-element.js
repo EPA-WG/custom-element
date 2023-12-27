@@ -15,8 +15,9 @@ const attr = (el, attr)=> el.getAttribute?.(attr)
 
     function
 ASSERT(x)
-{   if(!x)
-        debugger
+{
+    // if(!x)
+    //     debugger
 }
     function
 xml2dom( xmlString )
@@ -137,7 +138,9 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     </xsl:stylesheet>`)
     const sanitizeProcessor = new XSLTProcessor()
     ,   tc = (n =>
-        {   const e = n.firstElementChild?.content || n.content
+        {
+            forEach$(n,'script', s=> s.remove() );
+            const e = n.firstElementChild?.content || n.content
             , asXmlNode = r => xslHtmlNs(xml2dom( '<xhtml/>' ).importNode(r, true));
             if( e )
             {   const t = create('div');

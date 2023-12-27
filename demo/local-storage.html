@@ -28,8 +28,8 @@
     <p>Has to produce 12🍒</p>
     <template>
         <custom-element tag="dce-1" hidden>
-            <xsl:value-of select="//slice/fruits/text()"></xsl:value-of>
-           <slot>🤔</slot>
+            {//slice/fruits/text()}
+            <slot>🤔</slot>
             <local-storage key="cherries" slice="fruits"></local-storage>
         </custom-element>
         <dce-1>🍒</dce-1>
@@ -47,15 +47,15 @@
                     <xhtml:tbody>
                         <xsl:for-each select="//basket/@*">
                             <xhtml:tr>
-                                <xhtml:th><xsl:value-of select="name()"/></xhtml:th>
-                                <xhtml:td><xsl:value-of select="."/></xhtml:td>
+                                <xhtml:th> {name()} </xhtml:th>
+                                <xhtml:td> {.}      </xhtml:td>
                             </xhtml:tr>
                         </xsl:for-each>
                     </xhtml:tbody>
                     <xhtml:tfoot>
                         <xhtml:tr>
                             <xhtml:td><slot>🤔</slot></xhtml:td>
-                            <xhtml:th><xsl:value-of select="sum(//slice/basket/@*)"/></xhtml:th>
+                            <xhtml:th> {sum(//slice/basket/@*)} </xhtml:th>
                         </xhtml:tr>
                     </xhtml:tfoot>
                 </xhtml:table>
