@@ -1,5 +1,4 @@
-const     attr = (el, attr)=> el.getAttribute(attr)
-, string2value = (type, v) =>
+const     string2value = (type, v) =>
 {   if( type === 'text')
         return v;
     if( type === 'json')
@@ -24,42 +23,36 @@ function ensureTrackLocalStorage()
 
 export class LocalStorageElement extends HTMLElement
 {
-    // @attribute live - monitors localStorage change
-    // @attribute type - `text|json`, defaults to text, other types are compatible with INPUT field
-    constructor()
-    {
-        super();
-        const      state = {}
-        ,           type = attr(this, 'type') || 'text'
-        ,       listener = e=> e.detail.key === attr( this,'key' ) && propagateSlice()
-        , propagateSlice = ()=>
-        {   for( let parent = this.parentElement; parent; parent = parent.parentElement)
-                if( parent.onSlice )
-                    return parent.onSlice(
-                        {     detail: string2value( type, localStorage.getItem( attr( this, 'key' ) ) )
-                        ,     target: this
-                        } );
-                console.error(`${this.localName} used outside of custom-element`)
-                debugger;
-        };
-        this.sliceInit = s =>
-        {   if( !state.listener && this.hasAttribute('live') )
-            {   state.listener = 1;
-                window.addEventListener( 'local-storage', listener );
-                ensureTrackLocalStorage();
-            }
-            propagateSlice();
-            return s || {}
-        }
-        this._destroy = ()=>
-        {
-            if( !state.listener )
-                return;
-            state.listener && window.removeEventListener('local-storage', listener );
-            delete state.listener;
-        };
+    static get observedAttributes() {
+        return  [   'value' // populated from localStorage, if defined initially, sets the valiue in storage
+                ,   'slice'
+                ,   'key'
+                ,   'type' // `text|json`, defaults to text, other types are compatible with INPUT field
+                ,   'live' // monitors localStorage change
+                ];
     }
-    disconnectedCallback(){ this._destroy(); }
+
+    async connectedCallback()
+    {
+        const    attr = attr => this.getAttribute(attr)
+            , fromStorage = ()=>
+        {   this.value = string2value( attr('type'), localStorage.getItem( attr( 'key' ) ) );
+            this.dispatchEvent( new Event('change') )
+        }
+        // todo apply type
+        if( this.hasAttribute('value'))
+            localStorage.setItem( attr( this, 'key' ) )
+        else
+            fromStorage()
+
+        if( this.hasAttribute('live') )
+        {   const listener = (e => e.detail.key === attr( 'key' ) && fromStorage());
+            window.addEventListener( 'local-storage', listener );
+            ensureTrackLocalStorage();
+            this._destroy = ()=> window.removeEventListener('local-storage', listener );
+        }
+    }
+    disconnectedCallback(){ this._destroy?.(); }
 }
 
 window.customElements.define( 'local-storage', LocalStorageElement );

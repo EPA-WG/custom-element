@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:html="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+      xmlns:xhtml="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>custom-element Declarative Custom Element implementation demo</title>
@@ -24,7 +25,7 @@
 <html-demo-element legend="Change window URL">
     <template>
         <a href="#dce2">#dce2</a>
-        <form >
+        <form method="get">
             <input name="p1" value="abc"/>
             <input name="p2" value="def"/>
             <input type="submit" value="params"/>
@@ -38,7 +39,7 @@
 </html-demo-element>
 
 
-<html-demo-element legend="2. window.location live update"
+<html-demo-element legend="1. window.location live update"
                    description="In the page beginning change the window URL via link or by history change"
                    id="dce2"
     >
@@ -49,24 +50,20 @@
 
                 <location-element slice="window-url" live></location-element>
 
-                <html:table>
-                    <xsl:for-each select="//slice/window-url/@*">
-                        <html:tr>
-                            <html:th><xsl:value-of select="name()"/></html:th>
-                            <html:td><xsl:value-of select="."/></html:td>
-                        </html:tr>
-                    </xsl:for-each>
-                    <html:tr>
-                        <html:th><u>params</u></html:th>
-                        <html:th></html:th>
-                    </html:tr>
-                    <xsl:for-each select="//slice/window-url/params/*">
-                        <html:tr>
-                            <html:th><xsl:value-of select="name()"/></html:th>
-                            <html:td><xsl:value-of select="."/></html:td>
-                        </html:tr>
-                    </xsl:for-each>
-                </html:table>
+                <xhtml:table>
+                        <tr><th><h3> URL properties </h3></th></tr>
+                        <xsl:apply-templates mode="attrs"  select="//slice/window-url/@*"></xsl:apply-templates>
+                </xhtml:table>
+                <xhtml:table>
+                        <tr><th><h3> URL parameters </h3></th></tr>
+                        <xsl:apply-templates mode="attrs"  select="//slice/window-url/params/*"></xsl:apply-templates>
+                </xhtml:table>
+                <xsl:template mode="attrs" match="*|@*">
+                    <xhtml:tr>
+                        <xhtml:th>{name()}</xhtml:th>
+                        <xhtml:td>{.}</xhtml:td>
+                    </xhtml:tr>
+                </xsl:template>
             </template>
         </custom-element>
         <dce-2>?</dce-2>
@@ -74,7 +71,7 @@
 </html-demo-element>
 
 
-<html-demo-element legend="1. window.location simplest"
+<html-demo-element legend="2. window.location simplest"
                    description="location read only during initial and only render, does not track the changes."
                    id="dce1">
     <p>Has to produce URL properties</p>
@@ -84,24 +81,26 @@
 
                 <location-element slice="window-url"></location-element>
 
-                <html:table>
-                    <xsl:for-each select="//slice/window-url/@*">
-                        <html:tr>
-                            <html:th><xsl:value-of select="name()"/></html:th>
-                            <html:td><xsl:value-of select="."/></html:td>
-                        </html:tr>
-                    </xsl:for-each>
-                    <html:tr>
-                        <html:th><u>params</u></html:th>
-                        <html:th></html:th>
-                    </html:tr>
-                    <xsl:for-each select="//slice/window-url/params/*">
-                        <html:tr>
-                            <html:th><xsl:value-of select="name()"/></html:th>
-                            <html:td><xsl:value-of select="."/></html:td>
-                        </html:tr>
-                    </xsl:for-each>
-                </html:table>
+                <xhtml:table>
+                    <xhtml:tbody>
+                        <xhtml:tr><xhtml:th><h3>URL properties</h3></xhtml:th></xhtml:tr>
+                        <xsl:for-each select="//slice/window-url/@*">
+                            <xhtml:tr>
+                                <xhtml:th>{name()}</xhtml:th>
+                                <xhtml:td>{.}</xhtml:td>
+                            </xhtml:tr>
+                        </xsl:for-each>
+                    </xhtml:tbody>
+                    <xhtml:tbody>
+                        <xhtml:tr><xhtml:th><h3>URL parameters</h3></xhtml:th></xhtml:tr>
+                        <xsl:for-each select="//slice/window-url/params/*">
+                            <xhtml:tr>
+                                <xhtml:th>{name()}</xhtml:th>
+                                <xhtml:td>{.}</xhtml:td>
+                            </xhtml:tr>
+                        </xsl:for-each>
+                    </xhtml:tbody>
+                </xhtml:table>
             </template>
         </custom-element>
         <dce-1>?</dce-1>
@@ -119,24 +118,26 @@
 
                 <location-element slice="src-url" src="https://my.example?a=1&b=2#3"></location-element>
 
-                <html:table>
-                    <xsl:for-each select="//slice/src-url/@*">
-                        <html:tr>
-                            <html:th><xsl:value-of select="name()"/></html:th>
-                            <html:td><xsl:value-of select="."/></html:td>
-                        </html:tr>
-                    </xsl:for-each>
-                    <html:tr>
-                        <html:th><u>params</u></html:th>
-                        <html:th></html:th>
-                    </html:tr>
-                    <xsl:for-each select="//slice/src-url/params/*">
-                        <html:tr>
-                            <html:th><xsl:value-of select="name()"/></html:th>
-                            <html:td><xsl:value-of select="."/></html:td>
-                        </html:tr>
-                    </xsl:for-each>
-                </html:table>
+                <xhtml:table>
+                    <xhtml:tbody>
+                        <xhtml:tr><xhtml:th><h3>URL properties</h3></xhtml:th></xhtml:tr>
+                        <xsl:for-each select="//slice/src-url/@*">
+                            <xhtml:tr>
+                                <xhtml:th>{name()}</xhtml:th>
+                                <xhtml:td>{.}</xhtml:td>
+                            </xhtml:tr>
+                        </xsl:for-each>
+                    </xhtml:tbody>
+                    <xhtml:tbody>
+                        <xhtml:tr><xhtml:th><h3>URL parameters</h3></xhtml:th></xhtml:tr>
+                        <xsl:for-each select="//slice/src-url/params/*">
+                            <xhtml:tr>
+                                <xhtml:th>{name()}</xhtml:th>
+                                <xhtml:td>{.}</xhtml:td>
+                            </xhtml:tr>
+                        </xsl:for-each>
+                    </xhtml:tbody>
+                </xhtml:table>
             </template>
         </custom-element>
         <dce-3>?</dce-3>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:html="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>custom-element Declarative Custom Element implementation demo</title>
@@ -28,8 +28,8 @@
     <p>Has to produce 12🍒</p>
     <template>
         <custom-element tag="dce-1" hidden>
-            <xsl:value-of select="//slice/fruits/text()"></xsl:value-of>
-           <slot>🤔</slot>
+            {//slice/fruits/text()}
+            <slot>🤔</slot>
             <local-storage key="cherries" slice="fruits"></local-storage>
         </custom-element>
         <dce-1>🍒</dce-1>
@@ -41,21 +41,25 @@
     <p>Click the fruits button to add into cart </p>
     <template>
         <custom-element tag="dce-2" hidden>
-            <local-storage key="basket" slice="basket" live type="json"></local-storage>
-            <html:table>
-                <xsl:for-each select="//slice/basket/@*">
-                    <html:tr>
-                        <html:th><xsl:value-of select="name()"/></html:th>
-                        <html:td><xsl:value-of select="."/></html:td>
-                    </html:tr>
-                </xsl:for-each>
-                <html:tfoot>
-                    <html:tr>
-                        <html:td><slot>🤔</slot></html:td>
-                        <html:th><xsl:value-of select="sum(//slice/basket/@*)"/></html:th>
-                    </html:tr>
-                </html:tfoot>
-            </html:table>
+            <template>
+                <local-storage key="basket" slice="basket" live type="json"></local-storage>
+                <xhtml:table xmlns:xhtml="http://www.w3.org/1999/xhtml"  >
+                    <xhtml:tbody>
+                        <xsl:for-each select="//basket/@*">
+                            <xhtml:tr>
+                                <xhtml:th> {name()} </xhtml:th>
+                                <xhtml:td> {.}      </xhtml:td>
+                            </xhtml:tr>
+                        </xsl:for-each>
+                    </xhtml:tbody>
+                    <xhtml:tfoot>
+                        <xhtml:tr>
+                            <xhtml:td><slot>🤔</slot></xhtml:td>
+                            <xhtml:th> {sum(//slice/basket/@*)} </xhtml:th>
+                        </xhtml:tr>
+                    </xhtml:tfoot>
+                </xhtml:table>
+            </template>
         </custom-element>
         <dce-2>🛒total</dce-2>
     </template>
@@ -90,6 +94,7 @@
             basket[k] || (basket[k] = 1);
             localStorage.setItem( k, basket[k] = 1+1*localStorage[k] )
             localStorage.setItem( 'basket', JSON.stringify(basket) );
+            renderStorage();
         } );
 
     const renderStorage = () =>

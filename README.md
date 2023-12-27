@@ -1,6 +1,6 @@
 # custom-element
 `Declarative Custom Element` is a part of pure `Declarative Web Application` stack. A proof of concept as a part of 
-[WCCG in Declarative custom elements](https://github.com/w3c/webcomponents-cg/issues/32#issuecomment-1321037301) 
+[WCCG in Declarative custom elements](https://github.com/w3c/webcomponents-cg/issues/32#issuecomment-1321037301) and [Declarative Web Application](https://github.com/EPA-WG/dwa#readme)
 discussion. The functionality of DCE and its data access does not require programming using JavaScript. 
 
 It allows to define custom HTML tag with template filled from slots, attributes and data `slice` as of now from  
@@ -32,13 +32,13 @@ yarn add @epa-wg/custom-element
 ## [Live demo 🔗][demo-url]
 ```html
 <custom-element tag="pokemon-tile" hidden>
-    <h3><xsl:value-of select="title"/></h3> <!-- title is an attribute in instance
+    <h3>{title}</h3> <!-- title is an attribute in instance
                                                  mapped into /*/attributes/title -->
     <xsl:if test="//smile">                 <!-- data-smile DCE instance attribute,
                                                  mapped into /*/dataset/smile
                                                  used in condition -->
                                             <!-- data-smile DCE instance attribute, used as HTML -->
-        <div>Smile as: <xsl:value-of select='//smile'/></div>
+        <div>Smile as: {//smile} </div>
     </xsl:if>
     <!-- image would not be visible in sandbox, see live demo -->
     <img src="https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/{pokemon-id}.svg"
@@ -165,21 +165,28 @@ template engine.
 
 # troubleshooting
 ## HTML parser is not compatible with templates
-On many tags like `table`, or link `a` the attempt to use XSLT operations could lead to DOM order missmatch to given 
-in template. In such cases the `html:` prefix in front of troubled tag would solve the parsing.
+On many tags like `table`, or link `a` the attempt to use XSLT operations could lead to DOM order mismatch to given 
+in template. In such cases the `xhtml:` prefix in front of troubled tag would solve the parsing.
 
 ```html
 <custom-element tag="dce-2" hidden>
-    <local-storage key="basket" slice="basket"></local-storage>
-    <html:table>
-        <xsl:for-each select="//slice/basket/@*">
-            <html:tr>
-                <html:th><xsl:value-of select="name()"/></html:th>
-                <html:td><xsl:value-of select="."/></html:td>
-            </html:tr>
-        </xsl:for-each>
-    </html:table>
-    count:<xsl:value-of select="count(//slice/basket/@*)"/>
+  <local-storage key="basket" slice="basket" live type="json"></local-storage>
+  <xhtml:table xmlns:xhtml="http://www.w3.org/1999/xhtml"  >
+    <xhtml:tbody>
+      <xsl:for-each select="//basket/@*">
+        <xhtml:tr>
+          <xhtml:th> {name()} </xhtml:th>
+          <xhtml:td> {.}      </xhtml:td>
+        </xhtml:tr>
+      </xsl:for-each>
+    </xhtml:tbody>
+    <xhtml:tfoot>
+      <xhtml:tr>
+        <xhtml:td><slot>🤔</slot></xhtml:td>
+        <xhtml:th> {sum(//slice/basket/@*)} </xhtml:th>
+      </xhtml:tr>
+    </xhtml:tfoot>
+  </xhtml:table>
 </custom-element>
 ```
 See [demo source](demo/local-storage.html) for detailed sample.
@@ -206,7 +213,7 @@ run transformation under debugger.
 * try to add as attribute you could observe and put the value of node name or text to identify the current location in data 
 within template
 ```xml
-<b title="{name(*)} : {text()}">xml tag name:<xsl:value-of select='name()'/></b>
+<b title="{name(*)} : {text()}">xml tag name: <xsl:value-of select='name()'/></b>
 ```
 
 [git-url]:        https://github.com/EPA-WG/custom-element
@@ -218,9 +225,9 @@ within template
 [github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
 [npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
-[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.11/coverage/coverage.svg
-[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.11/coverage/lcov-report/index.html
-[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.11/storybook-static/index.html?path=/story/welcome--introduction
+[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.12/coverage/coverage.svg
+[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.12/coverage/lcov-report/index.html
+[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.12/storybook-static/index.html?path=/story/welcome--introduction
 [sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
 [webcomponents-url]: https://www.webcomponents.org/element/@epa-wg/custom-element
 [webcomponents-img]: https://img.shields.io/badge/webcomponents.org-published-blue.svg

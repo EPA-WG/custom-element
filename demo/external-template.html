@@ -75,7 +75,9 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="4. external XSLT file" >
+<html-demo-element legend="4. external XSLT file"
+                   description="This external templates generated the tree for DCE data set"
+    >
     <template>
             <custom-element tag="dce-external-4" src="tree.xsl" >
                 <template><i>loading from XSLT ...</i></template>
@@ -87,7 +89,7 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="5. external HTML template" description="Should render 👋👌, svg">
+<html-demo-element legend="5. external HTML template" description="Should render 👋👌, svg, formula">
     <template>
             <custom-element tag="dce-external-5" src="html-template.html" >
                 <template><i>loading from HTML file ...</i></template>
@@ -99,17 +101,17 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="6. HTML, SVG by ID within external file" description="Should render 👋, svg, 👌">
+<html-demo-element legend="6. HTML, SVG by ID within external file" description="Should render 👋, svg, formula">
     <a href="html-template.html">html-template.html</a>
     <template>
         <custom-element src="html-template.html#wave" >
-            <template><i>loading from HTML templates file ...</i></template>
+            <template><i>loading HTML from templates file ...</i></template>
         </custom-element>
         <custom-element src="html-template.html#dwc-logo" >
-            <template><i>loading from HTML templates file ...</i></template>
+            <template><i>loading  SVG from templates file ...</i></template>
         </custom-element>
-        <custom-element src="html-template.html#ok" >
-            <template><i>loading from HTML templates file ...</i></template>
+        <custom-element src="html-template.html#sophomores-dream" >
+            <template><i>loading MathML from HTML file ...</i></template>
         </custom-element>
     </template>
 </html-demo-element>

@@ -25,11 +25,12 @@
         The data query is powered by XPath. </p>
     <p>Try in <a href="https://stackblitz.com/github/EPA-WG/custom-element?file=index.html" >Sandbox</a> </p>
     <section>
-    <b>Data layer demo</b>
+    <h4>Data layer demo</h4>
         <a href="./demo/local-storage.html"     >local-storage      </a> |
         <a href="./demo/http-request.html"      >http-request       </a> |
         <a href="./demo/location-element.html"  >location-element   </a> |
-        <a href="./demo/external-template.html" >external template  </a>
+        <a href="./demo/external-template.html" >external template  </a> |
+        <a href="./demo/dom-merge.html"         >DOM merge on dynamic update </a>
     </section>
 </nav>
 <html-demo-element legend="1. simple payload"
@@ -58,7 +59,7 @@
         <custom-element tag="dce-2-slots" hidden>
            <slot name="slot2"> 😃</slot> and again:
            <slot name="slot2"> 😃</slot>
-            <input placeholder="🐇❤️{//*[@slot='slot2']}"/>
+            <xhtml:input placeholder="🐇❤️{//*[@slot='slot2']}"/>
         </custom-element>
         <dce-2-slots><i slot="slot2">🥕</i></dce-2-slots>
         <dce-2-slots></dce-2-slots>
@@ -108,13 +109,13 @@
 
         <custom-element tag="pokemon-tile" hidden id="shared-template">
             <template>
-                <h3><xsl:value-of select="title"/></h3> <!-- title is an attribute in instance
-                                                             mapped into /*/attributes/title -->
-                <xsl:if test="//smile">                 <!-- data-smile DCE instance attribute,
-                                                             mapped into /*/dataset/smile
-                                                             used in condition -->
-                                                        <!-- data-smile DCE instance attribute, used as HTML -->
-                    <div>Smile as: <xsl:value-of select='//smile'/></div>
+                <h3> {title} </h3>           <!-- title is an attribute in instance
+                                                  mapped into /*/attributes/title -->
+                <xsl:if test="//smile">      <!-- data-smile DCE instance attribute,
+                                                  mapped into /*/dataset/smile
+                                                  used in condition -->
+                                             <!-- data-smile DCE instance attribute, used as HTML -->
+                    <div>Smile as: {//smile}</div> <!-- /datadom/dataset/smile -->
                 </xsl:if>
                 <!-- image would not be visible in sandbox, see live demo -->
                 <img src="https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/{pokemon-id}.svg"
@@ -126,16 +127,17 @@
                                                         <!-- `slot name=xxx` replaced with elements with `slot=xxx` attribute -->
                 <p><slot name="description"><i>description is not available</i></slot></p>
                 <xsl:for-each select="//*[@pokemon-id]">
-                                                    <!-- loop over payload elements with `pokemon-id` attribute -->
-                <button>
-                    <img height="32"
-                        src="https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/{@pokemon-id}.svg"
-                        alt="{text()}"/>
-                    <br/>
-                    <xsl:value-of select='text()'/>
-                </button>
+                                                        <!-- loop over payload elements with `pokemon-id` attribute,
+                                                            i.e LI elements -->
+                    <button>
+                        <img height="32"
+                            src="https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/{@pokemon-id}.svg"
+                            alt="{text()}"/>
+                        <br/>
+                        {text()} <!-- text from LI element in loop -->
+                    </button>
 
-            </xsl:for-each>
+                </xsl:for-each>
             </template>
         </custom-element>
 
