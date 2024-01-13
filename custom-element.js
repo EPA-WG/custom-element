@@ -345,7 +345,11 @@ export function merge( parent, fromArr )
             parent.append( e )
     }
 }
-
+export function assureUID(n,attr)
+{   if( !n.hasAttribute(attr) )
+        n.setAttribute(attr, crypto.randomUUID());
+    return n.getAttribute(attr)
+}
     export class
 CustomElement extends HTMLElement
 {
@@ -359,7 +363,6 @@ CustomElement extends HTMLElement
             forEach$(t.templateNode, 'style',s=>{
                 const slot = s.closest('slot');
                 const sName = slot ? `slot[name="${slot.name}"]`:'';
-                // s.remove();
                 s.innerHTML = `${tagName} ${sName}{${s.innerHTML}}`;
                 this.append(s);
             })
@@ -373,7 +376,23 @@ CustomElement extends HTMLElement
         class DceElement extends HTMLElement
         {
             connectedCallback()
-            {   const x = xml2dom( '<datadom/>' ).documentElement;
+            {   if( this.firstElementChild?.tagName === 'TEMPLATE' )
+                {   const t = this.firstElementChild;
+                    for( const n of [...t.content.childNodes] )
+                        if( n.localName === 'style' ){
+                            const id = assureUID(this,'data-dce-style')
+                            n.innerHTML= `${tagName}[data-dce-style="${id}"]{${n.innerHTML}}`;
+                            t.insertAdjacentElement('beforebegin',n);
+                        }else
+                            if(n.nodeType===1)
+                                t.insertAdjacentElement('beforebegin',n);
+                            else if(n.nodeType===3)
+                                t.insertAdjacentText('beforebegin',n.data);
+
+                    t.remove();
+
+                }
+                const x = xml2dom( '<datadom/>' ).documentElement;
                 const createXmlNode = ( tag, t = '' ) => ( e =>
                 {   if( t )
                         e.append( createText( x, t ))
@@ -425,8 +444,7 @@ CustomElement extends HTMLElement
                     ff.map( f =>
                     {   if( !f )
                             return;
-                        assureUnique(f)
-                        // forEach$(f,'style',e=>e.innerHTML= `${tagName}{${e.innerHTML}}`)
+                        assureUnique(f);
                         merge( this, f.childNodes )
                     })
                     const changeCb = el=>this.onSlice({ detail: el[attr(el,'slice-prop') || 'value'], target: el })

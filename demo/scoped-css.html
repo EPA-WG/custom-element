@@ -100,8 +100,8 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="3. Override in slot "
-                   description="Red borders only within 2 DCE instances">
+<html-demo-element legend="3. Override style in DCE payload "
+                   description="Red borders only for last DCE instance">
     <template>
         <custom-element tag="dce-2">
             <template><!-- template needed to avoid styles leaking into global HTML -->
@@ -113,13 +113,18 @@
         </custom-element>
         <button>Default border</button>
         <dce-2>1st</dce-2>
-        <dce-2><template> <!-- template needed to avoid styles leaking into global HTML -->
+        <dce-2>
+            <template> <!-- template needed to avoid styles leaking into global HTML -->
                 <style>button{border-color:red;}</style>
                 Red border
-            </template></dce-2>
+                <b>2</b>
+                3
+                <b>4</b>
+            </template>
+        </dce-2>
     </template>
 </html-demo-element>
-<hr/>
+
 
 
 <script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
