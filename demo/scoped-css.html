@@ -68,55 +68,59 @@
     <h3>DOM merge. DCE dynamic update with focus preservation.</h3>
 </nav>
 
-<html-demo-element legend="1. Word count in textarea"
-                   description="Counter update happens on change event(focus change).
-                                The update should not interfere with the input">
+<html-demo-element legend="1. STYLE tag css rules are scoped within element "
+                   description="Green button borders should not be applied to external button ">
     <template>
         <custom-element>
-            <form>
-                <label>
-                    <textarea slice="text-container" >Hello world!</textarea>
-                    <span> Word count:
-                        {string-length(//slice/text-container/text())}
-                    </span>
-                </label>
-            </form>
+            <template><!-- template needed to avoid styles leaking into global HTML -->
+                <style>
+                    button{ border: 0.2rem dashed green; }
+                </style>
+                <button>Green dashed border</button>
+            </template>
         </custom-element>
+        <button>Default border</button>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="2. DCE with tag "
+                   description="Blue borders only within 2 DCE instances">
+    <template>
+        <custom-element tag="dce-1">
+            <template><!-- template needed to avoid styles leaking into global HTML -->
+                <style>
+                    button{ border: 0.2rem dotted blue; }
+                </style>
+                <button><slot>Blue borders</slot></button>
+            </template>
+        </custom-element>
+        <button>Default border</button>
+        <dce-1>1st</dce-1>
+        <dce-1>2nd</dce-1>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="3. Override in slot "
+                   description="Red borders only within 2 DCE instances">
+    <template>
+        <custom-element tag="dce-2">
+            <template><!-- template needed to avoid styles leaking into global HTML -->
+                <style>
+                    button{ border: 0.2rem dashed blue; }
+                </style>
+                <button><slot>Blue borders</slot></button>
+            </template>
+        </custom-element>
+        <button>Default border</button>
+        <dce-2>1st</dce-2>
+        <dce-2><template> <!-- template needed to avoid styles leaking into global HTML -->
+                <style>button{border-color:red;}</style>
+                Red border
+            </template></dce-2>
     </template>
 </html-demo-element>
 <hr/>
 
-<html-demo-element legend="2. Word count in HTML input field"
-                   description="Counter update happens on keyup event.
-                                The update should not interfere with the input">
-    <template>
-        <custom-element>
-            <form>
-                <label>
-                    <input type="text"
-                           value="Type time update"
-                           slice="txt"
-                           slice-update="keyup"/>
-
-                    <span> Character count:
-                        <b> {string-length(//slice/txt)} </b>
-                    </span>
-                    <span> Word count:
-                        <b> {string-length(normalize-space(//slice/txt)) -
-                            string-length(translate(normalize-space(//slice/txt), ' ', '')) + 1} </b>
-                        <!-- The expression first normalizes the string by removing leading and trailing whitespace and
-                            collapsing internal whitespace into a single space. It then subtracts the length of the string
-                            with all spaces removed from the length of the original string,
-                            and adds 1 to account for the last word.
-                        -->
-                    </span>
-
-                </label>
-                <p><b>txt</b> slice:</p> <blockquote> {//slice/txt} </blockquote>
-            </form>
-        </custom-element>
-    </template>
-</html-demo-element>
 
 <script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
 

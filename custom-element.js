@@ -352,12 +352,22 @@ CustomElement extends HTMLElement
     async connectedCallback()
     {
         const templateRoots = await loadTemplateRoots( attr( this, 'src' ), this )
-        , templateDocs = templateRoots.map( n => createXsltFromDom( n ) )
+        ,               tag = attr( this, 'tag' )
+        ,           tagName = tag ?? 'dce-'+crypto.randomUUID();
+
+        for( const t of templateRoots )
+            forEach$(t.templateNode, 'style',s=>{
+                const slot = s.closest('slot');
+                const sName = slot ? `slot[name="${slot.name}"]`:'';
+                // s.remove();
+                s.innerHTML = `${tagName} ${sName}{${s.innerHTML}}`;
+                this.append(s);
+            })
+        const templateDocs = templateRoots.map( n => createXsltFromDom( n ) )
         , xp = templateDocs.map( (td, p) =>{ p = new XSLTProcessor(); p.importStylesheet( td ); return p })
 
         Object.defineProperty( this, "xsltString", { get: ()=>templateDocs.map( td => xmlString(td) ).join('\n') });
 
-        const tag = attr( this, 'tag' );
         const dce = this;
         const sliceNames = [...this.templateNode.querySelectorAll('[slice]')].map(e=>attr(e,'slice'));
         class DceElement extends HTMLElement
@@ -416,6 +426,7 @@ CustomElement extends HTMLElement
                     {   if( !f )
                             return;
                         assureUnique(f)
+                        // forEach$(f,'style',e=>e.innerHTML= `${tagName}{${e.innerHTML}}`)
                         merge( this, f.childNodes )
                     })
                     const changeCb = el=>this.onSlice({ detail: el[attr(el,'slice-prop') || 'value'], target: el })
@@ -438,11 +449,11 @@ CustomElement extends HTMLElement
         if(tag)
             window.customElements.define( tag, DceElement);
         else
-        {   const t = 'dce-'+crypto.randomUUID()
+        {   const t = tagName;
             window.customElements.define( t, DceElement);
             const el = document.createElement(t);
             this.getAttributeNames().forEach(a=>el.setAttribute(a,this.getAttribute(a)));
-            el.append(...this.childNodes)
+            el.append(...[...this.childNodes].filter(e=>e.localName!=='style'))
             this.append(el);
         }
     }
