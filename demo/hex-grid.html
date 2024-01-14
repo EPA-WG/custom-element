@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <style>
+        section{   filter: drop-shadow(0px 2px 3px rgba(50, 50, 0, 0.5)) }
+        :root {
+            --cell-size: 8rem;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row;
+            justify-content: left;
+            margin-right: var(--cell-size);
+            gap: 0.1rem;
+            transform: perspective(15cm) rotateX(5deg) rotateY(40deg) translateX(10rem) translateY(6rem);
+            section{
+                width: var(--cell-size);
+                height: calc(1.53 *var(--cell-size))
+            }
+            button {
+                display: flex;
+                flex-direction: column; align-items: center;
+                img{ height: 3rem;}
+            }
+
+
+            button{
+                width: 8rem;
+                height: 8rem;
+
+                padding: 1rem;
+                clip-path: polygon(50% 0, 100% 25%,100% 75%, 50% 100%, 0 75%, 0 25%);
+                &:hover,&:focus,&.focus{
+                    transform: scale3d(0.9,0.9,0.9) ;
+                    background-color: mediumaquamarine;
+                }
+
+            }
+
+            section:nth-child(even){
+                width:0rem;
+            }
+            section:nth-child(even){
+                position: relative;
+                top: 50%;
+                button{
+                    position: absolute;
+
+                    top: 6.2rem;
+                    right: -4rem;
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+
+
+    <nav>
+        <section>
+            <button class="action">
+                <img src="wc-square.svg"/>
+                text1
+            </button>
+        </section>
+        <section>
+            <button>
+                <img src="wc-square.svg"/>
+                text2
+            </button>
+        </section>
+        <section>
+            <button class="action">
+                <img src="wc-square.svg"/>
+                text3
+            </button>
+        </section>
+        <section>
+            <button>
+                <img src="wc-square.svg"/>
+                text4
+            </button>
+        </section>
+        <section>
+            <button class="action">
+                <img src="wc-square.svg"/>
+                text5
+            </button>
+        </section>
+        <section>
+            <button>
+                <img src="wc-square.svg"/>
+                text6
+            </button>
+        </section>
+        <section>
+            <button class="action">
+                <img src="wc-square.svg"/>
+                text7
+            </button>
+        </section>
+        <section>
+            <button>
+                <img src="wc-square.svg"/>
+                text8
+            </button>
+        </section>
+        <section>
+            <button class="action">
+                <img src="wc-square.svg"/>
+                text9
+            </button>
+        </section>
+        <section>
+            <button>
+                <img src="wc-square.svg"/>
+                text10
+            </button>
+        </section>
+        <section>
+            <button class="action">
+                <img src="wc-square.svg"/>
+                text 11
+            </button>
+        </section>
+        <section>
+            <button>
+                <img src="wc-square.svg"/>
+                text 12
+            </button>
+        </section>
+        <section>
+            <button class="action">
+                <img src="wc-square.svg"/>
+                text 13
+            </button>
+        </section>
+        <section>
+            <button>
+                <img src="wc-square.svg"/>
+                text 14
+            </button>
+        </section>
+        <section>
+            <button>
+                <img src="wc-square.svg"/>
+                text 15
+            </button>
+        </section>
+    </nav>
+    <nav>
+        <section>
+            <button class="action">
+                <img src="wc-square.svg"/>
+                text1
+            </button>
+        </section>
+        <section>
+            <button>
+                <img src="wc-square.svg"/>
+                text2
+            </button>
+        </section>
+        <section>
+            <button class="action">
+                <img src="wc-square.svg"/>
+                text3
+            </button>
+        </section>
+        <section>
+            <button>
+                <img src="wc-square.svg"/>
+                text4
+            </button>
+        </section>
+        <section>
+            <button class="action">
+                <img src="wc-square.svg"/>
+                text5
+            </button>
+        </section>
+        <section>
+            <button class="focus">
+                <img src="wc-square.svg"/>
+                text6
+            </button>
+        </section>
+        <section>
+            <button class="action">
+                <img src="wc-square.svg"/>
+                text7
+            </button>
+        </section>
+        <section>
+            <button>
+                <img src="wc-square.svg"/>
+                text8
+            </button>
+        </section>
+        <section>
+            <button class="action">
+                <img src="wc-square.svg"/>
+                text9
+            </button>
+        </section>
+        <section>
+            <button>
+                <img src="wc-square.svg"/>
+                text10
+            </button>
+        </section>
+        <section>
+            <button class="action">
+                <img src="wc-square.svg"/>
+                text 11
+            </button>
+        </section>
+        <section>
+            <button>
+                <img src="wc-square.svg"/>
+                text 12
+            </button>
+        </section>
+        <section>
+            <button class="action">
+                <img src="wc-square.svg"/>
+                text 13
+            </button>
+        </section>
+        <section>
+            <button>
+                <img src="wc-square.svg"/>
+                text 14
+            </button>
+        </section>
+        <section>
+            <button>
+                <img src="wc-square.svg"/>
+                text 15
+            </button>
+        </section>
+    </nav>
+
+
+</body>
+</html>
