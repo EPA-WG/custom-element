@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script type="module" src="../custom-element.js"></script>
+</head>
+<body>
+
+<custom-element tag="hex-grid">
+    <template>
+        <style>
+            section{   filter: drop-shadow(0px 2px 3px rgba(50, 50, 0, 0.5)) }
+            :root {
+                --hex-grid-size: 8rem;
+            }
+            nav {
+                --hex-grid-size: var(--hex-grid-size,8rem);
+                display: flex;
+                flex-wrap: wrap;
+                flex-direction: row;
+                justify-content: left;
+                margin-right: calc(var(--hex-grid-size)/2);
+                padding-bottom: calc(var(--hex-grid-size,8rem));
+                gap: 0.1rem;
+                section{
+                    width: var(--hex-grid-size);
+                    height: calc(1.53 *var(--hex-grid-size))
+                }
+                button {
+                    display: flex;
+                    flex-direction: column; align-items: center;
+                    justify-content: center;
+                    border: none;
+                    width: var(--hex-grid-size,8rem);
+                    height: var(--hex-grid-size,8rem);
+                    padding: calc( var(--hex-grid-size,8rem)/8);
+                    clip-path: polygon(50% 0, 100% 25%,100% 75%, 50% 100%, 0 75%, 0 25%);
+                    &:hover,&:focus,&.focus{
+                        transform: scale3d(0.9,0.9,0.9) ;
+                        background-color: mediumaquamarine;
+                    }
+
+                    img{ height: calc( var(--hex-grid-size,8rem)/2);}
+                }
+
+
+                section:nth-child(even){
+                    width:0;
+                }
+                section:nth-child(even){
+                    position: relative;
+                    top: 50%;
+                    button{
+                        position: absolute;
+
+                        top: 6.2rem;
+                        right: calc( -1* var(--hex-grid-size,8rem)/2);
+                    }
+                }
+            }
+        </style>
+        <nav>
+            <xsl:for-each select="/datadom/payload/xhtml:*">
+                <!-- sanitize blank spans -->
+                <xsl:if test="local-name(.) != 'span' or normalize-space(.) != ''">
+                    <section>
+                        <button class="action">
+                            {@alt}
+                            <xsl:copy-of select="."/>
+                        </button>
+                    </section>
+                </xsl:if>
+            </xsl:for-each>
+        </nav>
+    </template>
+</custom-element>
+
+<!--<hex-grid>-->
+<!--    <img src="wc-square.svg" alt="web component"/>-->
+<!--    <img src="wc-square.svg" alt="123"/>-->
+<!--    <span>Hey!</span>-->
+<!--</hex-grid>-->
+<hex-grid class="grid2x">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React"/>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Angular_full_color_logo.svg" alt="Angular"/>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Vue.js_Logo_2.svg" alt="Vue.JS"/>
+    <img src="https://lit.dev/images/logo.svg#flame" alt="Lit"/>
+    <img src="https://redux.js.org/img/redux.svg" alt="Redux"/>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Svelte_Logo.svg" alt="Svelte"/>
+    <img src="https://www.solidjs.com/img/logo/without-wordmark/logo.svg" alt="SolidJS"/>
+    <img src="wc-square.svg" alt="123"/>
+    <span>Hey!</span>
+</hex-grid>
+
+
+
+<style>
+    .grid2x{--hex-grid-size:16rem; margin-top: 8rem; }
+</style>
+
+</body>
+</html>
