@@ -3,6 +3,12 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <script type="module" src="../custom-element.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+        button{ font-family: 'Roboto', sans-serif; color:  darkcyan;}
+        body{ background-color: lightgreen;}
+    </style>
 </head>
 <body>
 
@@ -13,8 +19,10 @@
             :root {
                 --hex-grid-size: 8rem;
             }
+
             nav {
-                --hex-grid-size: var(--hex-grid-size,8rem);
+                --hex-grid-size: 8rem;
+            /*var(--hex-grid-size,8rem);*/
                 display: flex;
                 flex-wrap: wrap;
                 flex-direction: row;
@@ -38,6 +46,7 @@
                     &:hover,&:focus,&.focus{
                         transform: scale3d(0.9,0.9,0.9) ;
                         background-color: mediumaquamarine;
+                        color: white;
                     }
 
                     img{ height: calc( var(--hex-grid-size,8rem)/2);}
@@ -81,6 +90,7 @@
 <!--    <span>Hey!</span>-->
 <!--</hex-grid>-->
 <hex-grid class="grid2x">
+    <img src="wc-square.svg" alt="DCE"/>
     <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React"/>
     <img src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Angular_full_color_logo.svg" alt="Angular"/>
     <img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Vue.js_Logo_2.svg" alt="Vue.JS"/>
@@ -88,8 +98,18 @@
     <img src="https://redux.js.org/img/redux.svg" alt="Redux"/>
     <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Svelte_Logo.svg" alt="Svelte"/>
     <img src="https://www.solidjs.com/img/logo/without-wordmark/logo.svg" alt="SolidJS"/>
-    <img src="wc-square.svg" alt="123"/>
-    <span>Hey!</span>
+    <img src="https://www.svgrepo.com/show/354113/nextjs-icon.svg" alt="NextJS"/>
+    <img src="https://global.discourse-cdn.com/standard17/uploads/threejs/original/2X/b/be2f75f72751c11cbe1593c69a99a52900bf12cb.svg" alt="TreeJS"/>
+    <img src="https://dmtgy0px4zdqn.cloudfront.net/images/integrations/blazejs.webp" alt="BlazeJS"/>
+    <img src="https://dmtgy0px4zdqn.cloudfront.net/images/integrations/tailwindcss.webp" alt="Tailwind CSS"/>
+    <img src="https://dmtgy0px4zdqn.cloudfront.net/images/integrations/flowbite.webp" alt="Flowbite"/>
+    <img src="https://dmtgy0px4zdqn.cloudfront.net/images/integrations/chakra-ui.webp" alt="Chakra-UI"/>
+    <img src="https://dmtgy0px4zdqn.cloudfront.net/images/integrations/graphql.webp" alt="GraphQL"/>
+    <img src="https://dmtgy0px4zdqn.cloudfront.net/images/cloud-icon.png" alt="Meteor"/>
+    <img src="https://www.svgrepo.com/show/508923/jquery.svg" alt="jQuery"/>
+    <img src="https://www.svgrepo.com/show/330899/materialui.svg" alt="Material UI"/>
+    <img src="https://mithril.js.org/logo.svg" alt="Mithril.js"/>
+    <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/backbone-js-icon.svg" alt="Backbone.js"/>
 </hex-grid>
 
 

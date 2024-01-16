@@ -5,7 +5,7 @@
     <style>
         section{   filter: drop-shadow(0px 2px 3px rgba(50, 50, 0, 0.5)) }
         :root {
-            --cell-size: 8rem;
+            --hex-grid-size: 8rem;
         }
 
         nav {
@@ -13,31 +13,27 @@
             flex-wrap: wrap;
             flex-direction: row;
             justify-content: left;
-            margin-right: calc(var(--cell-size)/2);
+            margin-right: calc(var(--hex-grid-size)/2);
             gap: 0.1rem;
             transform: perspective(15cm) rotateX(5deg) rotateY(40deg) translateX(10rem) translateY(6rem);
             section{
-                width: var(--cell-size);
-                height: calc(1.53 *var(--cell-size))
+                width: var(--hex-grid-size);
+                height: calc(1.53 *var(--hex-grid-size))
             }
             button {
                 display: flex;
                 flex-direction: column; align-items: center;
-                img{ height: 3rem;}
-            }
-
-
-            button{
+                justify-content: center;
+                border: none;
                 width: 8rem;
                 height: 8rem;
-
                 padding: 1rem;
                 clip-path: polygon(50% 0, 100% 25%,100% 75%, 50% 100%, 0 75%, 0 25%);
                 &:hover,&:focus,&.focus{
                     transform: scale3d(0.9,0.9,0.9) ;
                     background-color: mediumaquamarine;
                 }
-
+                img{ height: 3rem;}
             }
 
             section:nth-child(even){
