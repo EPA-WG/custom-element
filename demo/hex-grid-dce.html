@@ -7,7 +7,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
         button{ font-family: 'Roboto', sans-serif; color:  darkcyan;}
-        body{ background-color: lightgreen;}
+        body{ background-color: #DDE2F1;}
     </style>
 </head>
 <body>
@@ -111,6 +111,40 @@
     <img src="https://mithril.js.org/logo.svg" alt="Mithril.js"/>
     <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/backbone-js-icon.svg" alt="Backbone.js"/>
 </hex-grid>
+
+<custom-element tag="hex-row">
+    <template>
+        <style>
+            hex-grid {
+                nav {
+                    --hex-grid-size:6rem;
+                    display: inline-flex;
+                    padding-bottom: 0;
+                    margin-right: 0;
+                    section{ margin-right: 0.2rem;  height: var(--hex-grid-size);}
+                    button:has([selected]){ background-color: #2d4554; }
+                }
+            }
+        </style>
+        <xsl:for-each select="/datadom/payload/xhtml:*">
+            <!-- sanitize blank spans -->
+            <xsl:if test="local-name(.) != 'span' or normalize-space(.) != ''">
+                <hex-grid>
+                    <xsl:copy-of select="."/>
+                </hex-grid>
+            </xsl:if>
+        </xsl:for-each>
+    </template>
+</custom-element>
+<hex-row class="grid2x">
+    <img src="https://dmtgy0px4zdqn.cloudfront.net/images/integrations/chakra-ui.webp" alt="Chakra-UI"/>
+    <img src="https://dmtgy0px4zdqn.cloudfront.net/images/integrations/graphql.webp" alt="GraphQL"/>
+    <img src="https://dmtgy0px4zdqn.cloudfront.net/images/cloud-icon.png" alt="Meteor"/>
+    <img src="https://www.svgrepo.com/show/508923/jquery.svg" alt="jQuery" selected/>
+    <img src="https://www.svgrepo.com/show/330899/materialui.svg" alt="Material UI"/>
+    <img src="https://mithril.js.org/logo.svg" alt="Mithril.js"/>
+    <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/backbone-js-icon.svg" alt="Backbone.js"/>
+</hex-row>
 
 
 
