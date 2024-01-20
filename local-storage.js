@@ -24,7 +24,7 @@ function ensureTrackLocalStorage()
 export class LocalStorageElement extends HTMLElement
 {
     static get observedAttributes() {
-        return  [   'value' // populated from localStorage, if defined initially, sets the valiue in storage
+        return  [   'value' // populated from localStorage, if defined initially, sets the value in storage
                 ,   'slice'
                 ,   'key'
                 ,   'type' // `text|json`, defaults to text, other types are compatible with INPUT field
