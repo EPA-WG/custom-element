@@ -13,7 +13,7 @@
 <body>
 
 <custom-element tag="hex-grid">
-    <template>
+    <template id="hex-grid-template">
         <style>
             section{   filter: drop-shadow(0px 2px 3px rgba(50, 50, 0, 0.5)) }
             :root {
@@ -39,6 +39,7 @@
                     justify-content: center;
                     border: none;
                     width: var(--hex-grid-size,8rem);
+                    min-width: var(--hex-grid-size,8rem);
                     height: var(--hex-grid-size,8rem);
                     padding: calc( var(--hex-grid-size,8rem)/8);
                     clip-path: polygon(50% 0, 100% 25%,100% 75%, 50% 100%, 0 75%, 0 25%);
@@ -61,7 +62,7 @@
                     button{
                         position: absolute;
 
-                        top: 6.2rem;
+                        top: calc(0.77*var(--hex-grid-size));
                         right: calc( -1* var(--hex-grid-size,8rem)/2);
                     }
                 }
@@ -69,8 +70,11 @@
         </style>
         <nav>
             <xsl:for-each select="/datadom/payload/xhtml:*">
+                <xsl:if test="local-name(.) = 'style'">
+                    <xsl:copy-of select="." />
+                </xsl:if>
                 <!-- sanitize blank spans -->
-                <xsl:if test="local-name(.) != 'span' or normalize-space(.) != ''">
+                <xsl:if test="local-name(.) != 'style' and (local-name(.) != 'span' or normalize-space(.) != '')">
                     <section>
                         <button class="action">
                             {@alt}

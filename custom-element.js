@@ -357,10 +357,10 @@ CustomElement extends HTMLElement
     {
         const templateRoots = await loadTemplateRoots( attr( this, 'src' ), this )
         ,               tag = attr( this, 'tag' )
-        ,           tagName = tag ?? 'dce-'+crypto.randomUUID();
+        ,           tagName = tag ? tag : 'dce-'+crypto.randomUUID();
 
         for( const t of templateRoots )
-            forEach$(t.templateNode||t, 'style',s=>{
+            forEach$(t.templateNode||t.content||t, 'style',s=>{
                 const slot = s.closest('slot');
                 const sName = slot ? `slot[name="${slot.name}"]`:'';
                 s.innerHTML = `${tagName} ${sName}{${s.innerHTML}}`;

@@ -2,7 +2,7 @@
 <html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>DOM merge - Declarative Custom Element implementation demo</title>
+    <title>CSS scoping - Declarative Custom Element implementation demo</title>
     <link rel="icon" href="./wc-square.svg"/>
 
     <script type="module" src="../http-request.js"></script>
@@ -24,27 +24,6 @@
             font-weight: bolder;
         }
 
-        button img {
-            max-height: 10vw;
-            min-height: 4rem;
-        }
-
-        table {
-            min-width: 16rem;
-        }
-
-        td {
-            border-bottom: 1px solid silver;
-        }
-
-        tfoot td {
-            border-bottom: none;
-        }
-
-        td, th {
-            text-align: right;
-        }
-
         caption {
             padding: 1rem;
             font-weight: bolder;
@@ -56,9 +35,6 @@
             min-width: 3rem;
         }
 
-        svg {
-            max-height: 3rem;
-        }
     </style>
 </head>
 <body>
@@ -122,6 +98,67 @@
                 <b>4</b>
             </template>
         </dce-2>
+    </template>
+</html-demo-element>
+
+
+<html-demo-element legend="4. simple internal override "
+                   description="green label with blue text button ">
+    <template>
+        <custom-element>
+            <template>
+                <style>
+                    color:green;
+                    b{ color: blue;}
+                    input:checked+b{ color: darkblue; text-shadow: 0 0 4px springgreen;}
+                </style>
+                <label>
+                    green
+                    <input type="checkbox" value="Glowing Blue" checked/><b>blue</b>
+                </label>
+            </template>
+        </custom-element>
+
+    </template>
+</html-demo-element>
+
+
+<html-demo-element legend="5. External template( inline lib )"
+                   description="green label with blue text button ">
+    <template>
+        <template id="template-5">
+            <style>
+                color:green;
+                i{ color: blue;}
+            </style>
+            <p>
+                green
+                <i>blue</i>
+            </p>
+        </template>
+        <custom-element src="#template-5"></custom-element>
+
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="6. External template( ext lib )"
+                   description="Grid with 8 hex shaped buttons with text and icon ">
+    <template>
+        <a href="hex-grid-dce.html">hex-grid-dce.html</a>
+        <custom-element src="hex-grid-dce.html#hex-grid-template">
+            <template>
+                <style>nav{--hex-grid-size: 5rem; margin-left:2rem; }</style>
+                <img src="wc-square.svg" alt="DCE" href="https://github.com/EPA-WG/custom-element"/>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React" href="https://react.dev/"/>
+                <img src="https://angularjs.org/favicon.ico" alt="Angular" href="https://angularjs.org/"/>
+                <img src="https://www.svgrepo.com/show/508923/jquery.svg" alt="jQuery"/>
+                <img src="https://open-wc.org/35ded306.svg" alt="Open WC" href="https://open-wc.org/"/>
+                <img src="https://storage.googleapis.com/cms-storage-bucket/4fd0db61df0567c0f352.png" alt="Flutter" href="https://flutter.dev/"/>
+                <img src="https://lit.dev/images/logo.svg#flame" alt="Lit"/>
+                <img src="https://redux.js.org/img/redux.svg" alt="Redux"/>
+            </template>
+        </custom-element>
+
     </template>
 </html-demo-element>
 
