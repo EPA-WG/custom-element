@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="icon" href="./wc-square.svg"/>
+    <script type="module" src="../custom-element.js"></script>
+    <style>
+        html
+        {   font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+            font-weight: 400; font-style: normal; -webkit-font-smoothing: antialiased;
+        }
+        #grid1 nav {
+            transform: perspective(15cm) rotateX(5deg) rotateY(40deg) translateX(20rem) translateY(6rem);
+        }
+        #grid2 nav {
+            transform: perspective(15cm) rotateX(5deg) rotateY(50deg) translateX(20rem) translateY(10rem);
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="../index.html"><h3><code>custom-element</code> demo</h3></a>
+    <h3>Example of DCE HTML as a library.</h3>
+</nav>
+<p>The template and its own responsive layout behavior demo resides in
+    <a href="hex-grid-dce.html">hex-grid-dce.html</a> file.</p>
+<custom-element src="hex-grid-dce.html#hex-grid-template" tag="hex-grid" >
+    <template><i>loading  hex-grid template from HTML lib file ...</i></template>
+</custom-element>
+
+<hex-grid id="grid1">
+    <template>
+        <style>
+            nav{
+                --hex-grid-size:5rem;
+                button dce-text{ position: absolute; top: 3rem; text-shadow:  0 0 3px white, 0 0 6px blue; }
+            }
+        </style>
+        <img src="wc-square.svg" alt="DCE" href="https://github.com/EPA-WG/custom-element"/>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React" href="https://react.dev/"/>
+        <img src="https://angularjs.org/favicon.ico" alt="Angular" href="https://angularjs.org/"/>
+        <img src="https://semantic-ui.com/images/logo.png" alt="Semantic UI" href="https://semantic-ui.com/"/>
+        <img src="https://open-wc.org/35ded306.svg" alt="Open WC" href="https://open-wc.org/"/>
+    </template>
+</hex-grid>
+<hex-grid id="grid2">
+    <template>
+        <img src="wc-square.svg" alt="DCE" href="https://github.com/EPA-WG/custom-element"/>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React" href="https://react.dev/"/>
+        <img src="https://angularjs.org/favicon.ico" alt="Angular" href="https://angularjs.org/"/>
+        <img src="https://semantic-ui.com/images/logo.png" alt="Semantic UI" href="https://semantic-ui.com/"/>
+        <img src="https://open-wc.org/35ded306.svg" alt="Open WC" href="https://open-wc.org/"/>
+        <img src="https://storage.googleapis.com/cms-storage-bucket/4fd0db61df0567c0f352.png" alt="Flutter" href="https://flutter.dev/"/>
+        <img src="https://refine.dev/img/refine_favicon.svg" alt="Refine" href="https://refine.dev/"/>
+        <img src="https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo-shadow.png" alt="Bootstrap" href="https://getbootstrap.com/"/>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Vue.js_Logo_2.svg" alt="Vue.JS" href="https://vuejs.org/"/>
+        <img src="https://lit.dev/images/logo.svg#flame" alt="Lit"/>
+        <img src="https://redux.js.org/img/redux.svg" alt="Redux"/>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Svelte_Logo.svg" alt="Svelte"/>
+        <img src="https://www.solidjs.com/img/logo/without-wordmark/logo.svg" alt="SolidJS"/>
+        <img src="https://www.svgrepo.com/show/354113/nextjs-icon.svg" alt="NextJS"/>
+    </template>
+</hex-grid>
+</body>
+</html>

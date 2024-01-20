@@ -78,6 +78,10 @@ generates HTML
 </pokemon-tile>
 ```
 
+[![responsive hex grid demo][hex-grid-image] responsive hex-grid demo][hex-grid-url]
+, look into sources for samples of CSS encapsulation and external template use.
+
+
 # Implementation notes
 ## Life cycle
 ### `custom-element` declaration
@@ -126,6 +130,44 @@ allows to refer the template withing external document
 
 
 # template syntax
+[Scoped CSS][css-demo-url] live demo
+## styles encapsulation
+DCE can have the own styles which would be scoped to the instances. 
+In order to prevent the style leaking, it has to be defined withing `template` tag:
+```html
+<custom-element>
+  <template>
+    <style>
+        color:green;
+        button{ color: blue; }
+    </style>
+    <label> green <button>blue</button> </label>
+  </template>
+</custom-element>
+```
+<fieldset>
+  <label style="color: green"> green <button style="color: blue">blue</button> </label>
+</fieldset>
+
+### override style for instance
+In same way as in DCE itself:
+```html
+        <custom-element tag="dce-2">
+            <template><!-- template needed to avoid styles leaking into global HTML -->
+                <style>
+                    button{ border: 0.2rem dashed blue; }
+                </style>
+                <button><slot>Blue borders</slot></button>
+            </template>
+        </custom-element>
+        <dce-2>dashed blue</dce-2>
+        <dce-2>
+            <template> <!-- template needed to avoid styles leaking into global HTML -->
+                <style>button{border-color:red;}</style>
+                Red border
+            </template>
+        </dce-2>
+```
 ## Attributes
 curly braces `{}` in attributes implemented as [attribute value template](https://www.w3.org/TR/xslt20/#attribute-value-templates)
 
@@ -219,15 +261,18 @@ within template
 [git-url]:        https://github.com/EPA-WG/custom-element
 [git-test-url]:   https://github.com/EPA-WG/custom-element-test
 [demo-url]:       https://unpkg.com/@epa-wg/custom-element@0.0/index.html
+[css-demo-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/scoped-css.html
+[hex-grid-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/hex-grid.html
+[hex-grid-image]: demo/hex-grid-transform.png
 [local-storage-demo]: https://unpkg.com/@epa-wg/custom-element@0.0/demo/local-storage.html
 [http-request-demo]:  https://unpkg.com/@epa-wg/custom-element@0.0/demo/http-request.html
 [location-demo]:  https://unpkg.com/@epa-wg/custom-element@0.0/demo/location.html
 [github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
 [npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
-[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.12/coverage/coverage.svg
-[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.12/coverage/lcov-report/index.html
-[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.12/storybook-static/index.html?path=/story/welcome--introduction
+[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.13/coverage/coverage.svg
+[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.13/coverage/lcov-report/index.html
+[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.13/storybook-static/index.html?path=/story/welcome--introduction
 [sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
 [webcomponents-url]: https://www.webcomponents.org/element/@epa-wg/custom-element
 [webcomponents-img]: https://img.shields.io/badge/webcomponents.org-published-blue.svg

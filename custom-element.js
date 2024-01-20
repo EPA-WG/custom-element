@@ -345,25 +345,54 @@ export function merge( parent, fromArr )
             parent.append( e )
     }
 }
-
+export function assureUID(n,attr)
+{   if( !n.hasAttribute(attr) )
+        n.setAttribute(attr, crypto.randomUUID());
+    return n.getAttribute(attr)
+}
     export class
 CustomElement extends HTMLElement
 {
     async connectedCallback()
     {
         const templateRoots = await loadTemplateRoots( attr( this, 'src' ), this )
-        , templateDocs = templateRoots.map( n => createXsltFromDom( n ) )
+        ,               tag = attr( this, 'tag' )
+        ,           tagName = tag ? tag : 'dce-'+crypto.randomUUID();
+
+        for( const t of templateRoots )
+            forEach$(t.templateNode||t.content||t, 'style',s=>{
+                const slot = s.closest('slot');
+                const sName = slot ? `slot[name="${slot.name}"]`:'';
+                s.innerHTML = `${tagName} ${sName}{${s.innerHTML}}`;
+                this.append(s);
+            })
+        const templateDocs = templateRoots.map( n => createXsltFromDom( n ) )
         , xp = templateDocs.map( (td, p) =>{ p = new XSLTProcessor(); p.importStylesheet( td ); return p })
 
         Object.defineProperty( this, "xsltString", { get: ()=>templateDocs.map( td => xmlString(td) ).join('\n') });
 
-        const tag = attr( this, 'tag' );
         const dce = this;
         const sliceNames = [...this.templateNode.querySelectorAll('[slice]')].map(e=>attr(e,'slice'));
         class DceElement extends HTMLElement
         {
             connectedCallback()
-            {   const x = xml2dom( '<datadom/>' ).documentElement;
+            {   if( this.firstElementChild?.tagName === 'TEMPLATE' )
+                {   const t = this.firstElementChild;
+                    for( const n of [...t.content.childNodes] )
+                        if( n.localName === 'style' ){
+                            const id = assureUID(this,'data-dce-style')
+                            n.innerHTML= `${tagName}[data-dce-style="${id}"]{${n.innerHTML}}`;
+                            t.insertAdjacentElement('beforebegin',n);
+                        }else
+                            if(n.nodeType===1)
+                                t.insertAdjacentElement('beforebegin',n);
+                            else if(n.nodeType===3)
+                                t.insertAdjacentText('beforebegin',n.data);
+
+                    t.remove();
+
+                }
+                const x = xml2dom( '<datadom/>' ).documentElement;
                 const createXmlNode = ( tag, t = '' ) => ( e =>
                 {   if( t )
                         e.append( createText( x, t ))
@@ -415,7 +444,7 @@ CustomElement extends HTMLElement
                     ff.map( f =>
                     {   if( !f )
                             return;
-                        assureUnique(f)
+                        assureUnique(f);
                         merge( this, f.childNodes )
                     })
                     const changeCb = el=>this.onSlice({ detail: el[attr(el,'slice-prop') || 'value'], target: el })
@@ -438,11 +467,11 @@ CustomElement extends HTMLElement
         if(tag)
             window.customElements.define( tag, DceElement);
         else
-        {   const t = 'dce-'+crypto.randomUUID()
+        {   const t = tagName;
             window.customElements.define( t, DceElement);
             const el = document.createElement(t);
             this.getAttributeNames().forEach(a=>el.setAttribute(a,this.getAttribute(a)));
-            el.append(...this.childNodes)
+            el.append(...[...this.childNodes].filter(e=>e.localName!=='style'))
             this.append(el);
         }
     }
