@@ -19,12 +19,12 @@ ASSERT(x)
     // if(!x)
     //     debugger
 }
-    function
+    export function
 xml2dom( xmlString )
 {
     return new DOMParser().parseFromString( xmlString, "application/xml" )
 }
-    function
+    export function
 xmlString(doc){ return new XMLSerializer().serializeToString( doc ) }
 
     function
@@ -124,7 +124,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         return tagUid(templateNode)
     const sanitizeXsl = xml2dom(`<xsl:stylesheet version="1.0" xmlns:xsl="${ XSL_NS_URL }" xmlns:xhtml="${ HTML_NS_URL }" xmlns:exsl="${EXSL_NS_URL}" exclude-result-prefixes="exsl" >   
         <xsl:output method="xml" />
-        <xsl:template match="/"><dce-root><xsl:apply-templates select="*"/></dce-root></xsl:template>
+        <xsl:template match="/"><dce-root xmlns="${ HTML_NS_URL }"><xsl:apply-templates select="*"/></dce-root></xsl:template>
         <xsl:template match="*[name()='template']"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
         <xsl:template match="*"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
         <xsl:template match="*[name()='svg']|*[name()='math']"><xsl:apply-templates mode="sanitize" select="."/></xsl:template>
@@ -141,7 +141,12 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         {
             forEach$(n,'script', s=> s.remove() );
             const e = n.firstElementChild?.content || n.content
-            , asXmlNode = r => xslHtmlNs(xml2dom( '<xhtml/>' ).importNode(r, true));
+            , asXmlNode = r => {
+                const d = xml2dom( '<xhtml/>' )
+                ,     n = d.importNode(r, true);
+                d.replaceChild(n,d.documentElement);
+                return xslHtmlNs(n);
+            };
             if( e )
             {   const t = create('div');
                 [ ...e.childNodes ].map( c => t.append(c.cloneNode(true)) )
@@ -436,7 +441,7 @@ CustomElement extends HTMLElement
                 const transform = ()=>
                 {
                     const ff = xp.map( (p,i) =>
-                    {   const f = p.transformToFragment(x, document)
+                    {   const f = p.transformToFragment(x.ownerDocument, document)
                         if( !f )
                             console.error( "XSLT transformation error. xsl:\n", xmlString(templateDocs[i]), '\nxml:\n', xmlString(x) );
                         return f
