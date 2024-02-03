@@ -95,7 +95,7 @@ tagUid( node )
             [...m].forEach(t=>
             {   if( t.index > l )
                     tt.push( txt( t.input.substring( l, t.index ) ))
-                const v = e.ownerDocument.createElement('xsl:value-of');
+                const v = node.querySelector('value-of').cloneNode();
                 v.setAttribute('select', t[1] );
                 tt.push(v);
                 l = t.index+t[0].length;
@@ -161,6 +161,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         xmlns:exsl="http://exslt.org/common"
         exclude-result-prefixes="exsl"
     >
+    <xsl:template match="ignore"><xsl:value-of select="."/></xsl:template>
     <xsl:template mode="payload"  match="attributes"></xsl:template>
     <xsl:template match="/">
         <xsl:apply-templates mode="payload" select="/datadom/attributes"/>
