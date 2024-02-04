@@ -157,6 +157,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     ,   xslDom = xml2dom(
         `<xsl:stylesheet version="1.0"
         xmlns:xsl="${ XSL_NS_URL }"
+        xmlns:xhtml="${ HTML_NS_URL }"
         xmlns:dce="urn:schemas-epa-wg:dce"
         xmlns:exsl="http://exslt.org/common"
         exclude-result-prefixes="exsl"
