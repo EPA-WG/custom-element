@@ -3,7 +3,7 @@ const     attr = (el, attr)=> el.getAttribute(attr);
 export class LocationElement extends HTMLElement
 {
     static get observedAttributes()
-    {   return  [   'value' // populated from localStorage, if defined initially, sets the valiue in storage
+    {   return  [   'value' // populated from localStorage, if defined initially, sets the value in storage
                 ,   'slice'
                 ,   'live' // monitors location change
                 ,   'src'  // URL to be parsed, defaults to `window.location`

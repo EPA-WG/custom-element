@@ -9,22 +9,14 @@ const     string2value = (type, v) =>
     return type==='number'? el.valueAsNumber : 'date|time|dateTimeLocal'.includes(type)? el.valueAsDate: el.value;
 };
 
-let originalSetItem;
-
-function ensureTrackLocalStorage()
-{   if( originalSetItem )
-        return;
-    originalSetItem = localStorage.setItem;
-    localStorage.setItem = function( key, value, ...rest )
-        {   originalSetItem.apply(this, [ key, value, ...rest ]);
-            window.dispatchEvent( new CustomEvent('local-storage',{detail:{key,value}}) );
-        };
+export function localStorageSetItem(key, value)
+{   localStorage.setItem(key, value);
+    window.dispatchEvent( new CustomEvent('local-storage',{detail:{key,value}}) );
 }
-
 export class LocalStorageElement extends HTMLElement
 {
     static get observedAttributes() {
-        return  [   'value' // populated from localStorage, if defined initially, sets the valiue in storage
+        return  [   'value' // populated from localStorage, if defined initially, sets the value in storage
                 ,   'slice'
                 ,   'key'
                 ,   'type' // `text|json`, defaults to text, other types are compatible with INPUT field
@@ -41,14 +33,13 @@ export class LocalStorageElement extends HTMLElement
         }
         // todo apply type
         if( this.hasAttribute('value'))
-            localStorage.setItem( attr( this, 'key' ) )
+            localStorageSetItem( attr( this, 'key' ) )
         else
             fromStorage()
 
         if( this.hasAttribute('live') )
         {   const listener = (e => e.detail.key === attr( 'key' ) && fromStorage());
             window.addEventListener( 'local-storage', listener );
-            ensureTrackLocalStorage();
             this._destroy = ()=> window.removeEventListener('local-storage', listener );
         }
     }

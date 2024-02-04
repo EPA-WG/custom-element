@@ -82,18 +82,19 @@
     </table>
 </fieldset>
 <script type="module">
+    import { localStorageSetItem } from '../local-storage.js';
     import $ from 'https://unpkg.com/css-chain@1/CssChain.js';
 
     const basket = {cherries: 12, lemons:1 };
-    localStorage.setItem( 'basket', JSON.stringify(basket) );
+    localStorageSetItem( 'basket', JSON.stringify(basket) );
 
     $('button[name]')
         .forEach( b=> localStorage.setItem( b.name, b.value ) )
         .addEventListener( 'click', e =>
         {   const k = e.target.name;
             basket[k] || (basket[k] = 1);
-            localStorage.setItem( k, basket[k] = 1+1*localStorage[k] )
-            localStorage.setItem( 'basket', JSON.stringify(basket) );
+            localStorageSetItem( k, basket[k] = 1+1*localStorage[k] )
+            localStorageSetItem( 'basket', JSON.stringify(basket) );
             renderStorage();
         } );
 

@@ -19,12 +19,12 @@ ASSERT(x)
     // if(!x)
     //     debugger
 }
-    function
+    export function
 xml2dom( xmlString )
 {
     return new DOMParser().parseFromString( xmlString, "application/xml" )
 }
-    function
+    export function
 xmlString(doc){ return new XMLSerializer().serializeToString( doc ) }
 
     function
@@ -95,7 +95,7 @@ tagUid( node )
             [...m].forEach(t=>
             {   if( t.index > l )
                     tt.push( txt( t.input.substring( l, t.index ) ))
-                const v = e.ownerDocument.createElement('xsl:value-of');
+                const v = node.querySelector('value-of').cloneNode();
                 v.setAttribute('select', t[1] );
                 tt.push(v);
                 l = t.index+t[0].length;
@@ -124,7 +124,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         return tagUid(templateNode)
     const sanitizeXsl = xml2dom(`<xsl:stylesheet version="1.0" xmlns:xsl="${ XSL_NS_URL }" xmlns:xhtml="${ HTML_NS_URL }" xmlns:exsl="${EXSL_NS_URL}" exclude-result-prefixes="exsl" >   
         <xsl:output method="xml" />
-        <xsl:template match="/"><dce-root><xsl:apply-templates select="*"/></dce-root></xsl:template>
+        <xsl:template match="/"><dce-root xmlns="${ HTML_NS_URL }"><xsl:apply-templates select="*"/></dce-root></xsl:template>
         <xsl:template match="*[name()='template']"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
         <xsl:template match="*"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
         <xsl:template match="*[name()='svg']|*[name()='math']"><xsl:apply-templates mode="sanitize" select="."/></xsl:template>
@@ -141,7 +141,12 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         {
             forEach$(n,'script', s=> s.remove() );
             const e = n.firstElementChild?.content || n.content
-            , asXmlNode = r => xslHtmlNs(xml2dom( '<xhtml/>' ).importNode(r, true));
+            , asXmlNode = r => {
+                const d = xml2dom( '<xhtml/>' )
+                ,     n = d.importNode(r, true);
+                d.replaceChild(n,d.documentElement);
+                return xslHtmlNs(n);
+            };
             if( e )
             {   const t = create('div');
                 [ ...e.childNodes ].map( c => t.append(c.cloneNode(true)) )
@@ -152,10 +157,12 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     ,   xslDom = xml2dom(
         `<xsl:stylesheet version="1.0"
         xmlns:xsl="${ XSL_NS_URL }"
+        xmlns:xhtml="${ HTML_NS_URL }"
         xmlns:dce="urn:schemas-epa-wg:dce"
         xmlns:exsl="http://exslt.org/common"
         exclude-result-prefixes="exsl"
     >
+    <xsl:template match="ignore"><xsl:value-of select="."/></xsl:template>
     <xsl:template mode="payload"  match="attributes"></xsl:template>
     <xsl:template match="/">
         <xsl:apply-templates mode="payload" select="/datadom/attributes"/>
@@ -436,7 +443,7 @@ CustomElement extends HTMLElement
                 const transform = ()=>
                 {
                     const ff = xp.map( (p,i) =>
-                    {   const f = p.transformToFragment(x, document)
+                    {   const f = p.transformToFragment(x.ownerDocument, document)
                         if( !f )
                             console.error( "XSLT transformation error. xsl:\n", xmlString(templateDocs[i]), '\nxml:\n', xmlString(x) );
                         return f
