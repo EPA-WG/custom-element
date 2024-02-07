@@ -5,7 +5,7 @@ discussion. The functionality of DCE and its data access does not require progra
 
 It allows to define custom HTML tag with template filled from slots, attributes and data `slice` as of now from  
 [local-storage][local-storage-demo],  [http-request][http-request-demo], [location][location-demo].
-UI is re-rendered on each data slice change.
+UI is re-rendered on each data slice change triggered by initialization or DOM event.
 
 [![git][github-image] GitHub][git-url]
 | Live demo: [custom-element][demo-url]
