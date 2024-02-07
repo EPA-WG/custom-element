@@ -1,5 +1,5 @@
 # custom-element
-`Declarative Custom Element` is a part of pure `Declarative Web Application` stack. A proof of concept as a part of 
+`Declarative Custom Element` (DCE) is a part of pure `Declarative Web Application` stack. A proof of concept as a part of 
 [WCCG in Declarative custom elements](https://github.com/w3c/webcomponents-cg/issues/32#issuecomment-1321037301) and [Declarative Web Application](https://github.com/EPA-WG/dwa#readme)
 discussion. The functionality of DCE and its data access does not require programming using JavaScript. 
 
@@ -16,6 +16,33 @@ UI is re-rendered on each data slice change.
 [![NPM version][npm-image]][npm-url] 
 [![coverage][coverage-image]][coverage-url] 
 [![Published on webcomponents.org][webcomponents-img]][webcomponents-url]
+
+
+
+<details>
+<summary> What is DCE? </summary>
+DCE provides the next level of abstraction in HTML - native composition. With native implementation which is 
+streaming parser, streaming transformation, multithreading. native assumes the C/Rust compiled code. There is no place for JavaScript except of polyfill and ability to extend DCE, which otherwise has to be native.
+
+The composition assumes the fully functional template and ability to call the template with parameters( custom tag + attributes) .
+
+As the next to HTML abstraction layer - composition, it needs and provide:
+* ability to use dependencies as from withing the page as from external file/lib via src attribute and # in URL
+* ability to treat external content via content-type like html, SVG, images, video with own template rendering
+* provide styles and embedded DCE declarations in own and named(lib) scope, sharing the scoped registry.
+
+As the next to composition layer of **functional component** it provides
+* data layer with access to attributes/payload(+slots), dataset, data bound slice
+* means in template to use the data selector for condition/enumeration/text injection into attributes and DOM
+* Set of native primitives to support browser APIs declaratively: location,storage, http request which bonded to slice and as result to reactive UI.
+* support the data change trigger over events
+
+While DCE is no-JS concept, DCE provides the basic declarative constructs to build most of simple apps. Assuming the extending via custom elements and JS.  The evolution goal is to adopt most demanded APIs/construct natively into DCE stack over time.
+
+DCE is compatible with closed/open/named root. Enabling as site-scoped styling and registry as encapsulated anonymous scopes in shadow root.
+
+This project is a POC( Proof of Concept ) targeting to become a base for native DCE implementation polyfill.
+</details>
 
 # use
 ## install
@@ -138,7 +165,7 @@ In order to prevent the style leaking, it has to be defined withing `template` t
 <custom-element>
   <template>
     <style>
-        color:green;
+        color: green;
         button{ color: blue; }
     </style>
     <label> green <button>blue</button> </label>
