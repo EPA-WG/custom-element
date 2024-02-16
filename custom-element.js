@@ -409,8 +409,10 @@ CustomElement extends HTMLElement
         class DceElement extends HTMLElement
         {
             static get observedAttributes()
-            {
-                return templateDocs.reduce( (ret,t) =>{ ret.push( ...t.params.map(e=>attr(e,'name')) ); return ret; }, [] );
+            {   return templateDocs.reduce( (ret,t) =>
+                {   if( t.params ) ret.push( ...t.params.map(e=>attr(e,'name')) );
+                    return ret;
+                }, [] );
             }
             connectedCallback()
             {   if( this.firstElementChild?.tagName === 'TEMPLATE' )
