@@ -7,8 +7,9 @@ const XSL_NS_URL  = 'http://www.w3.org/1999/XSL/Transform'
 
 const attr = (el, attr)=> el.getAttribute?.(attr)
 ,   isText = e => e.nodeType === 3
-,   create = ( tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElement( tag ))
+,   create = ( tag, t = '', d=document ) => ( e => ((e.innerText = t||''),e) )((d.ownerDocument || d ).createElement( tag ))
 ,   createText = ( d, t) => (d.ownerDocument || d ).createTextNode( t )
+,   emptyNode = n=> { while(n.firstChild) n.firstChild.remove(); return n; }
 ,   createNS = ( ns, tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElementNS( ns, tag ))
 ,   xslNs = x => ( x?.setAttribute('xmlns:xsl', XSL_NS_URL ), x )
 ,   xslHtmlNs = x => ( x?.setAttribute('xmlns:xhtml', HTML_NS_URL ), xslNs(x) );
@@ -162,7 +163,12 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         xmlns:exsl="http://exslt.org/common"
         exclude-result-prefixes="exsl"
     >
-    <xsl:template match="ignore"><xsl:value-of select="."/></xsl:template>
+    <xsl:template match="ignore">
+        <xsl:choose>
+            <xsl:when test="//attr">{//attr}</xsl:when>
+            <xsl:otherwise>{def}</xsl:otherwise>
+        </xsl:choose>
+        <xsl:value-of select="."/></xsl:template>
     <xsl:template mode="payload"  match="attributes"></xsl:template>
     <xsl:template match="/">
         <xsl:apply-templates mode="payload" select="/datadom/attributes"/>
@@ -195,6 +201,24 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     ,   payload = $( xslDom, 'template[mode="payload"]');
     if( !fr )
         return console.error("transformation error",{ xml:tc.outerHTML, xsl: xmlString( sanitizeXsl ) });
+    const params = [];
+    [...fr.querySelectorAll('dce-root>param')].forEach(p=>
+    {   payload.append(p);
+        let select = attr(p,'select')?.split('??')
+        if( !select)
+        {   select = ['//'+attr(p, 'name'), `'${p.textContent}'`];
+            emptyNode(p);
+        }
+        if( select?.length>1){
+            p.removeAttribute('select');
+            const c = $( xslDom, 'template[match="ignore"]>choose').cloneNode(true);
+            c.firstElementChild.setAttribute('test',select[0]);
+            emptyNode(c.firstElementChild).append( createText(c,'{'+select[0]+'}'));
+            emptyNode(c.lastElementChild ).append( createText(c,'{'+select[1]+'}'));
+            p.append(c)
+        }
+        params.push(p)
+    });
 
     for( const c of fr.childNodes )
         payload.append(xslDom.importNode(c,true))
@@ -214,7 +238,9 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
 
     forEach$( payload,'slot', s => s.parentNode.replaceChild( slot2xsl(s), s ) )
 
-    return tagUid(xslDom)
+    const ret = tagUid(xslDom)
+    ret.params = params;
+    return ret;
 }
     export async function
 xhrTemplate(src)
@@ -382,6 +408,10 @@ CustomElement extends HTMLElement
         const sliceNames = [...this.templateNode.querySelectorAll('[slice]')].map(e=>attr(e,'slice'));
         class DceElement extends HTMLElement
         {
+            static get observedAttributes()
+            {
+                return templateDocs.reduce( (ret,t) =>{ ret.push( ...t.params.map(e=>attr(e,'name')) ); return ret; }, [] );
+            }
             connectedCallback()
             {   if( this.firstElementChild?.tagName === 'TEMPLATE' )
                 {   const t = this.firstElementChild;
@@ -416,7 +446,7 @@ CustomElement extends HTMLElement
                 const applySlices = ()=>
                 {   const processed = {}
 
-                    for(let ev; ev =  sliceEvents.pop(); )
+                    for(let ev; ev = sliceEvents.pop(); )
                     {   const s = attr( ev.target, 'slice');
                         if( processed[s] )
                             continue;
@@ -440,7 +470,7 @@ CustomElement extends HTMLElement
                             timeoutID =0;
                         },10);
                 };
-                const transform = ()=>
+                const transform = this.transform = ()=>
                 {
                     const ff = xp.map( (p,i) =>
                     {   const f = p.transformToFragment(x.ownerDocument, document)
@@ -468,6 +498,20 @@ CustomElement extends HTMLElement
                 };
                 transform();
                 applySlices();
+            }
+            attributeChangedCallback(name, oldValue, newValue)
+            {   if( !this.xml )
+                    return;
+                let a = this.xml.querySelector(`attributes>${name}`);
+                if( a )
+                    emptyNode(a).append( createText(a,newValue));
+                else
+                {   a = create( name, newValue, this.xml );
+                    a.append( createText(a,newValue) );
+                    this.xml.querySelector('attributes').append( a );
+                }
+
+                this.transform(); // needs throttling
             }
             get dce(){ return dce }
         }

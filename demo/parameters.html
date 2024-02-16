@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+      xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>parameters - custom-element Declarative Custom Element implementation demo</title>
+    <link rel="icon" href="./wc-square.svg" />
+    <script type="module" src="../location-element.js"></script>
+    <script type="module" src="../custom-element.js"></script>
+    <style>
+        @import "./demo.css";
+
+        button{ background: forestgreen; }
+        table{ min-width: 16rem; }
+        td{ border-bottom: 1px solid silver; }
+        tfoot td{ border-bottom: none; }
+        td,th{text-align: right; }
+        caption{ padding: 1rem; font-weight: bolder; font-family: sans-serif; }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="../index.html"><h3><code>custom-element</code> demo</h3></a>
+</nav>
+<html-demo-element legend="param as attributes definition" description="
+params needed to declare DCE attributes and track the attributes changes. It also be used by IDE and validation.
+">
+    <template>
+        <custom-element tag="dce-link" hidden>
+            <xsl:param name="p1" >default_P1</xsl:param>
+            <xsl:param name="p2" select="'always_p2'"  ></xsl:param>
+            <xsl:param name="p3" select="//p3 ?? 'def_P3' "  ></xsl:param>
+            p1:{$p1} <br/> p2: {$p2} <br/> p3: {$p3}
+        </custom-element>
+        <dce-link id="dce1"></dce-link>
+        <section>
+            <dce-link id="dce2" p1="123" p2="override ignored as select is defined"></dce-link> <br/>
+            <div><input id="i1" value="p1" />  <button onclick="dce2.setAttribute('p1',i1.value)"> set p1</button> </div>
+            <div><input id="i2" value="p2" />  <button onclick="dce2.setAttribute('p2',i2.value)"> set p2</button> </div>
+            <div><input id="i3" value="p3" />  <button onclick="dce2.setAttribute('p3',i3.value)"> set p3</button> </div>
+        </section>
+        <dce-link id="dce3" p1="123" p3="qwe"></dce-link> |
+
+    </template>
+</html-demo-element>
+
+
+
+<script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
+
+</body>
+</html>

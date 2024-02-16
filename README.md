@@ -196,7 +196,18 @@ In same way as in DCE itself:
         </dce-2>
 ```
 ## Attributes
-curly braces `{}` in attributes implemented as [attribute value template](https://www.w3.org/TR/xslt20/#attribute-value-templates)
+To be served by IDE and to track the attributes changes, they have to be declared via `xsl:param` syntax:
+```html
+    <custom-element tag="dce-with-attrs" hidden>
+        <xsl:param name="p1" >default_P1</xsl:param>
+        <xsl:param name="p2" select="'always_p2'"  ></xsl:param>
+        <xsl:param name="p3" select="//p3 ?? 'def_P3' "  ></xsl:param>
+        p1: {$p1} <br/> p2: {$p2} <br/> p3: {$p3}
+    </custom-element>
+    <dce-with-attrs p1="123" p3="qwe"></dce-with-attrs>
+```
+
+The curly braces `{}` in attributes implemented as [attribute value template](https://www.w3.org/TR/xslt20/#attribute-value-templates)
 
 The names in curly braces are matching the instance attributes. I.e. in XML node `/my-component/attributes/`.
 
@@ -297,9 +308,9 @@ within template
 [github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
 [npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
-[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.14/coverage/coverage.svg
-[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.14/coverage/lcov-report/index.html
-[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.14/storybook-static/index.html?path=/story/welcome--introduction
+[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.15/coverage/coverage.svg
+[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.15/coverage/lcov-report/index.html
+[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.15/storybook-static/index.html?path=/story/welcome--introduction
 [sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
 [webcomponents-url]: https://www.webcomponents.org/element/@epa-wg/custom-element
 [webcomponents-img]: https://img.shields.io/badge/webcomponents.org-published-blue.svg
