@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json.schemastore.org/web-types",
+  "name": "@epa-wg/custom-element",
+  "version": "0.0.16",
+  "js-types-syntax": "typescript",
+  "description-markup": "markdown",
+  "contributions": {
+    "html": {
+      "elements": [
+        {
+          "name": "custom-element",
+          "description": "Declarative Custom Element as W3C proposal PoC with native(XSLT) based templating",
+          "doc-url": "https://github.com/EPA-WG/custom-element?tab=readme-ov-file#custom-element",
+          "attributes": [
+            {
+              "name": "tag",
+              "description": "HTML tag for Custom Element. Used for window.customElements.define(). If not set, would be generated and DCE instance rendered inline. ",
+              "default": "",
+              "required": false,
+              "doc-url": "https://github.com/EPA-WG/custom-element?tab=readme-ov-file#tag-attribute",
+              "value": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "src",
+              "description": "full, relative, or hash URL to DCE template.",
+              "default": "",
+              "required": false,
+              "doc-url": "https://github.com/EPA-WG/custom-element?tab=readme-ov-file#src-attribute",
+              "value": {
+                "type": "URL"
+              }
+            }
+          ],
+          "slots": [],
+          "js": {
+            "events": [
+              {
+                "name": "value:changed",
+                "description": "Emitted when data changes. Can be used for state serialization in hydration flow"
+              }
+            ],
+            "properties": [
+              {
+                "name": "value",
+                "type": "string",
+                "default": "",
+                "description": "DCE state. Can be used for state serialization in hydration flow. Format TBD, most likely encoded XML string"
+              }
+            ]
+          },
+          "css": {
+            "properties": [
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
