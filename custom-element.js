@@ -386,6 +386,7 @@ export function assureUID(n,attr)
     export class
 CustomElement extends HTMLElement
 {
+    static observedAttributes = ['src','tag','hidden'];
     async connectedCallback()
     {
         const templateRoots = await loadTemplateRoots( attr( this, 'src' ), this )

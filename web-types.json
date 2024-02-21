@@ -13,6 +13,15 @@
           "doc-url": "https://github.com/EPA-WG/custom-element?tab=readme-ov-file#custom-element",
           "attributes": [
             {
+              "name": "hidden",
+              "description": "hides DCE definition to prevent visual appearance of content. Wrap the payload into template tag to prevent applying the inline CSS in global scope.",
+              "required": false,
+              "doc-url": "https://developer.mozilla.org/en-US/docs/web/html/global_attributes/hidden",
+              "value": {
+                "type": "boolean"
+              }
+            },
+            {
               "name": "tag",
               "description": "HTML tag for Custom Element. Used for window.customElements.define(). If not set, would be generated and DCE instance rendered inline. ",
               "default": "",
