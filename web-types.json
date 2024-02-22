@@ -38,6 +38,59 @@
           ],
           "events": [],
           "js": { "properties": [], "events": [] }
+        },
+        {
+          "name": "greet-element",
+          "description": "This is a DCE for greeting users\n---\n\n\n### **Slots:**\n - _default_ - This replaces the start of the greeting",
+          "doc-url": "",
+          "attributes": [],
+          "slots": [
+            {
+              "name": "",
+              "description": "This replaces the start of the greeting"
+            }
+          ],
+          "events": [],
+          "js": { "properties": [], "events": [] }
+        },
+        {
+          "name": "pokemon-tile",
+          "description": "This is a DCE for displaying Pokemon\n---\n\n\n### **Slots:**\n - **description** - This replaces the Pokemon description",
+          "doc-url": "",
+          "attributes": [
+            {
+              "name": "title",
+              "description": "the name of the Pokemon",
+              "value": { "type": "string" }
+            },
+            {
+              "name": "pokemon-id",
+              "description": "the Pokemon's ID",
+              "value": { "type": "number" }
+            }
+          ],
+          "slots": [
+            {
+              "name": "description",
+              "description": "This replaces the Pokemon description"
+            }
+          ],
+          "events": [],
+          "js": {
+            "properties": [
+              {
+                "name": "title",
+                "description": "the name of the Pokemon",
+                "value": { "type": "string" }
+              },
+              {
+                "name": "pokemon-id",
+                "description": "the Pokemon's ID",
+                "value": { "type": "number" }
+              }
+            ],
+            "events": []
+          }
         }
       ]
     },

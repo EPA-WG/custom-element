@@ -3,7 +3,7 @@ import { customElementJetBrainsPlugin } from "custom-element-jet-brains-integrat
 
 export default {
     /** Globs to analyze */
-    globs: ['components/*.js'],
+    globs: ['components.js'],
     /** Provide custom plugins */
     plugins: [
         customElementVsCodePlugin({ cssFileName: null }),

@@ -19,6 +19,29 @@
       "description": "This is a DCE with slots\n---\n\n\n### **Slots:**\n - _default_ - This is a default/unnamed slot",
       "attributes": [],
       "references": []
+    },
+    {
+      "name": "greet-element",
+      "description": "This is a DCE for greeting users\n---\n\n\n### **Slots:**\n - _default_ - This replaces the start of the greeting",
+      "attributes": [],
+      "references": []
+    },
+    {
+      "name": "pokemon-tile",
+      "description": "This is a DCE for displaying Pokemon\n---\n\n\n### **Slots:**\n - **description** - This replaces the Pokemon description",
+      "attributes": [
+        {
+          "name": "title",
+          "description": "the name of the Pokemon",
+          "values": []
+        },
+        {
+          "name": "pokemon-id",
+          "description": "the Pokemon's ID",
+          "values": []
+        }
+      ],
+      "references": []
     }
   ]
 }

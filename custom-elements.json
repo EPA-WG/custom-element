@@ -4,7 +4,7 @@
   "modules": [
     {
       "kind": "javascript-module",
-      "path": "components/components.js",
+      "path": "components.js",
       "declarations": [
         {
           "kind": "class",
@@ -56,6 +56,56 @@
           "tagName": "dce-3-slot",
           "summary": "This is a DCE with slots",
           "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "GreetElement",
+          "slots": [
+            {
+              "description": "This replaces the start of the greeting",
+              "name": ""
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "greet-element",
+          "summary": "This is a DCE for greeting users",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "PokemonTile",
+          "slots": [
+            {
+              "description": "This replaces the Pokemon description",
+              "name": "description"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "the name of the Pokemon",
+              "name": "title"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "the Pokemon's ID",
+              "name": "pokemon-id"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "pokemon-tile",
+          "summary": "This is a DCE for displaying Pokemon",
+          "customElement": true
         }
       ],
       "exports": [
@@ -64,7 +114,7 @@
           "name": "dce-link",
           "declaration": {
             "name": "DceLink",
-            "module": "components/components.js"
+            "module": "components.js"
           }
         },
         {
@@ -72,7 +122,7 @@
           "name": "dce-2-slots",
           "declaration": {
             "name": "Dce2Slots",
-            "module": "components/components.js"
+            "module": "components.js"
           }
         },
         {
@@ -80,7 +130,23 @@
           "name": "dce-3-slot",
           "declaration": {
             "name": "Dce3Slot",
-            "module": "components/components.js"
+            "module": "components.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "greet-element",
+          "declaration": {
+            "name": "GreetElement",
+            "module": "components.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "pokemon-tile",
+          "declaration": {
+            "name": "PokemonTile",
+            "module": "components.js"
           }
         }
       ]
