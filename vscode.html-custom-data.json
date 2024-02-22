@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vscode-html-languageservice/main/docs/customData.schema.json",
+  "version": 1.1,
+  "tags": [
+    {
+      "name": "dce-link",
+      "description": "This is a DCE Link\n---\n\n\n### **Slots:**\n - _default_ - This is a default/unnamed slot",
+      "attributes": [],
+      "references": []
+    },
+    {
+      "name": "dce-2-slots",
+      "description": "This is a DCE with a slot\n---\n\n\n### **Slots:**\n - **slot2** - You can put some elements here",
+      "attributes": [],
+      "references": []
+    },
+    {
+      "name": "dce-3-slot",
+      "description": "This is a DCE with slots\n---\n\n\n### **Slots:**\n - _default_ - This is a default/unnamed slot",
+      "attributes": [],
+      "references": []
+    }
+  ]
+}

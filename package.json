@@ -15,8 +15,9 @@
     "type": "module",
     "types": "./custom-element.d.ts",
     "scripts": {
+        "analyze": "cem analyze",
         "dev:help": "echo \"needed for sandbox demo\"",
-        "dev": "bash bin/stackblitz.sh",
+        "dev": "npm run analyze && bash bin/stackblitz.sh",
         "start": "npm i --no-save @web/dev-server && web-dev-server --node-resolve",
         "test": "echo \"test would reside in https://github.com/EPA-WG/custom-element-test\" && exit 0",
         "typings": "npx -p typescript tsc custom-element.js --declaration --allowJs --emitDeclarationOnly "
@@ -45,5 +46,10 @@
     "funding": {
         "type": "patreon",
         "url": "https://www.patreon.com/sashafirsov"
+    },
+    "devDependencies": {
+        "@custom-elements-manifest/analyzer": "^0.9.2",
+        "custom-element-jet-brains-integration": "^1.4.3",
+        "custom-element-vs-code-integration": "^1.2.2"
     }
 }

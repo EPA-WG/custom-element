@@ -1,0 +1,49 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JetBrains/web-types/master/schema/web-types.json",
+  "name": "@epa-wg/custom-element",
+  "version": "0.0.16",
+  "description-markup": "markdown",
+  "contributions": {
+    "html": {
+      "elements": [
+        {
+          "name": "dce-link",
+          "description": "This is a DCE Link\n---\n\n\n### **Slots:**\n - _default_ - This is a default/unnamed slot",
+          "doc-url": "",
+          "attributes": [],
+          "slots": [
+            { "name": "", "description": "This is a default/unnamed slot" }
+          ],
+          "events": [],
+          "js": { "properties": [], "events": [] }
+        },
+        {
+          "name": "dce-2-slots",
+          "description": "This is a DCE with a slot\n---\n\n\n### **Slots:**\n - **slot2** - You can put some elements here",
+          "doc-url": "",
+          "attributes": [],
+          "slots": [
+            { "name": "slot2", "description": "You can put some elements here" }
+          ],
+          "events": [],
+          "js": { "properties": [], "events": [] }
+        },
+        {
+          "name": "dce-3-slot",
+          "description": "This is a DCE with slots\n---\n\n\n### **Slots:**\n - _default_ - This is a default/unnamed slot",
+          "doc-url": "",
+          "attributes": [],
+          "slots": [
+            { "name": "", "description": "This is a default/unnamed slot" }
+          ],
+          "events": [],
+          "js": { "properties": [], "events": [] }
+        }
+      ]
+    },
+    "css": {
+      "properties": [],
+      "pseudo-elements": []
+    }
+  }
+}

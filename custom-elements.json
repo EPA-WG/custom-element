@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "components/components.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "DceLink",
+          "slots": [
+            {
+              "description": "This is a default/unnamed slot",
+              "name": ""
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "dce-link",
+          "summary": "This is a DCE Link",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "Dce2Slots",
+          "slots": [
+            {
+              "description": "You can put some elements here",
+              "name": "slot2"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "dce-2-slots",
+          "summary": "This is a DCE with a slot",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "Dce3Slot",
+          "slots": [
+            {
+              "description": "This is a default/unnamed slot",
+              "name": ""
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "dce-3-slot",
+          "summary": "This is a DCE with slots",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "dce-link",
+          "declaration": {
+            "name": "DceLink",
+            "module": "components/components.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "dce-2-slots",
+          "declaration": {
+            "name": "Dce2Slots",
+            "module": "components/components.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "dce-3-slot",
+          "declaration": {
+            "name": "Dce3Slot",
+            "module": "components/components.js"
+          }
+        }
+      ]
+    }
+  ]
+}
