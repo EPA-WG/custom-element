@@ -386,6 +386,7 @@ export function assureUID(n,attr)
     export class
 CustomElement extends HTMLElement
 {
+    static observedAttributes = ['src','tag','hidden'];
     async connectedCallback()
     {
         const templateRoots = await loadTemplateRoots( attr( this, 'src' ), this )
@@ -521,10 +522,11 @@ CustomElement extends HTMLElement
             window.customElements.define( tag, DceElement);
         else
         {   const t = tagName;
+            this.setAttribute('tag', t );
             window.customElements.define( t, DceElement);
             const el = document.createElement(t);
             this.getAttributeNames().forEach(a=>el.setAttribute(a,this.getAttribute(a)));
-            el.append(...[...this.childNodes].filter(e=>e.localName!=='style'))
+            el.append(...[...this.childNodes].filter( e => e.localName!=='style') );
             this.append(el);
         }
     }

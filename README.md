@@ -1,7 +1,7 @@
 # custom-element
 `Declarative Custom Element` (DCE) is a part of pure `Declarative Web Application` stack. A proof of concept as a part of 
 [WCCG in Declarative custom elements](https://github.com/w3c/webcomponents-cg/issues/32#issuecomment-1321037301) and [Declarative Web Application](https://github.com/EPA-WG/dwa#readme)
-discussion. The functionality of DCE and its data access does not require programming using JavaScript. 
+discussion. **NO-JS** The functionality of DCE and its data access does not require programming using JavaScript. 
 
 It allows to define custom HTML tag with template filled from slots, attributes and data `slice` as of now from  
 [local-storage][local-storage-demo],  [http-request][http-request-demo], [location][location-demo].
@@ -133,10 +133,19 @@ constructor creates XML with
 
 DOM content is replaced with results of instance XML transformation by declaration XSLT.
 
+# `tag` attribute
+allows to define the Custom Element tag registered by `window.customElements.define()`.
+
+If omitted, the tag is auto-generated and the content is rendered inline.
+```html
+<custom-element> my tag is {tag} </custom-element>
+```
+See [demo](https://unpkg.com/@epa-wg/custom-element@0.0/demo/external-template.html) for `tag` attribute use.
+
 # `src` attribute
 allows to refer either external template or template within external library by `#id` hash in URL.
 
-See [demo](demo/external-template.html) with various samples.
+See [demo](https://unpkg.com/@epa-wg/custom-element@0.0/demo/external-template.html) with various samples.
 
 ## types of template
 * HTML with DCE syntax ( slots, data slices, xslt operators, etc. )
@@ -308,9 +317,9 @@ within template
 [github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
 [npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
-[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.16/coverage/coverage.svg
-[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.16/coverage/lcov-report/index.html
-[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.16/storybook-static/index.html?path=/story/welcome--introduction
+[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.17/coverage/coverage.svg
+[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.17/coverage/lcov-report/index.html
+[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.17/storybook-static/index.html?path=/story/welcome--introduction
 [sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
 [webcomponents-url]: https://www.webcomponents.org/element/@epa-wg/custom-element
 [webcomponents-img]: https://img.shields.io/badge/webcomponents.org-published-blue.svg
