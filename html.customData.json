@@ -1,5 +1,33 @@
 {
   "version": 1.1,
+  "globalAttributes": [
+    {
+      "name": "slice",
+      "description": {
+        "kind": "markdown",
+        "value": "Defines the name of data slice in DCE where the data from `value` will be propagated on `change` or by `slice-update` event\n\nOn: any component with `value` and associated change event"
+      },
+      "references": [
+        {
+          "name": "Demo",
+          "url": "https://unpkg.com/@epa-wg/custom-element/demo/dom-merge.html"
+        }
+      ]
+    },
+    {
+      "name": "slice-update",
+      "description": {
+        "kind": "markdown",
+        "value": "Defines the event name on which `value` would be synchronized with DCE slice\n\nOn: any component with `value` and associated change event"
+      },
+      "references": [
+        {
+          "name": "Demo",
+          "url": "https://unpkg.com/@epa-wg/custom-element/demo/dom-merge.html"
+        }
+      ]
+    }
+  ],
   "tags": [
     {
       "name": "custom-element",
