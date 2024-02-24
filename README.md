@@ -45,6 +45,8 @@ This project is a POC( Proof of Concept ) targeting to become a base for native 
 </details>
 
 # use
+
+Use the [bootstrap project](https://github.com/EPA-WG/custom-element-bootstrap) with all pre-configured or
 ## install
 use via CDN
 ```html
@@ -55,6 +57,32 @@ NPM, yarn
 npm i -P @epa-wg/custom-element
 yarn add @epa-wg/custom-element
 ```
+
+## enable IDE support
+<details>
+<summary> VS Code </summary>
+Copy into `.vscode/settings.json`
+
+    {
+      "html.customData": [
+        "./dist/html.customData-dce.json",
+        "./node_modules/@epa-wg/custom-element/html.customData.json"
+      ],
+    }
+After editing the DCE in the HTML, update `./dist/html.customData-dce.json` with custom tags and attributes.
+</details>
+
+<details>
+<summary> IntelliJ </summary>
+Append into `package.json`
+
+    {
+      "web-types": "./web-types.json"
+    }
+After editing the DCE in the HTML, update `./web-types.json` with custom tags and attributes.
+</details>
+
+
 
 ## [Live demo 🔗][demo-url]
 ```html

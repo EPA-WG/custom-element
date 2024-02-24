@@ -1,0 +1,38 @@
+{
+  "version": 1.1,
+  "tags": [
+    {
+      "name": "custom-element",
+      "description": "Declarative Cuestom ELement(DCE).  `<custom-element tag='my-element'></custom-element>`.",
+      "attributes": [
+        {
+          "name": "hidden",
+          "description": "hides DCE definition to prevent visual appearance of content. Wrap the payload into template tag to prevent applying the inline CSS in global scope.",
+          "type": "boolean"
+        },
+        {
+          "name": "tag",
+          "description": "HTML tag for Custom Element. Used for window.customElements.define(). If not set, would be generated and DCE instance rendered inline.",
+          "type": "string"
+        },
+        {
+          "name": "src",
+          "description": "full, relative, or hash URL to DCE template",
+          "type": "string",
+          "references": [
+            {
+              "name": "example",
+              "url": "https://unpkg.com/@epa-wg/custom-element/demo/external-template.html"
+            }
+          ]
+        }
+      ],
+      "references": [
+        {
+          "name": "custom-element",
+          "url": "https://github.com/EPA-WG/custom-element"
+        }
+      ]
+    }
+  ]
+}
