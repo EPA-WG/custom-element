@@ -58,29 +58,7 @@ npm i -P @epa-wg/custom-element
 yarn add @epa-wg/custom-element
 ```
 
-## enable IDE support
-<details>
-<summary> VS Code </summary>
-Copy into `.vscode/settings.json`
-
-    {
-      "html.customData": [
-        "./dist/html.customData-dce.json",
-        "./node_modules/@epa-wg/custom-element/html.customData.json"
-      ],
-    }
-After editing the DCE in the HTML, update `./dist/html.customData-dce.json` with custom tags and attributes.
-</details>
-
-<details>
-<summary> IntelliJ </summary>
-Append into `package.json`
-
-    {
-      "web-types": "./web-types.json"
-    }
-After editing the DCE in the HTML, update `./web-types.json` with custom tags and attributes.
-</details>
+## [enable IDE support](ide/IDE.md)
 
 
 
@@ -89,12 +67,12 @@ After editing the DCE in the HTML, update `./web-types.json` with custom tags an
 <custom-element tag="pokemon-tile" hidden>
     <h3>{title}</h3> <!-- title is an attribute in instance
                                                  mapped into /*/attributes/title -->
-    <xsl:if test="//smile">                 <!-- data-smile DCE instance attribute,
+    <if test="//smile">                 <!-- data-smile DCE instance attribute,
                                                  mapped into /*/dataset/smile
                                                  used in condition -->
                                             <!-- data-smile DCE instance attribute, used as HTML -->
         <div>Smile as: {//smile} </div>
-    </xsl:if>
+    </if>
     <!-- image would not be visible in sandbox, see live demo -->
     <img src="https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/{pokemon-id}.svg"
          alt="{title} image"/>
@@ -233,12 +211,12 @@ In same way as in DCE itself:
         </dce-2>
 ```
 ## Attributes
-To be served by IDE and to track the attributes changes, they have to be declared via `xsl:param` syntax:
+To be served by IDE and to track the attributes changes, they have to be declared via `attribute`:
 ```html
     <custom-element tag="dce-with-attrs" hidden>
-        <xsl:param name="p1" >default_P1</xsl:param>
-        <xsl:param name="p2" select="'always_p2'"  ></xsl:param>
-        <xsl:param name="p3" select="//p3 ?? 'def_P3' "  ></xsl:param>
+        <attribute name="p1" >default_P1                </attribute>
+        <attribute name="p2" select="'always_p2'"       ></attribute>
+        <attribute name="p3" select="//p3 ?? 'def_P3' " ></attribute>
         p1: {$p1} <br/> p2: {$p2} <br/> p3: {$p3}
     </custom-element>
     <dce-with-attrs p1="123" p3="qwe"></dce-with-attrs>
@@ -257,7 +235,7 @@ i.e.  slot `xxx` is matching `<i slot="xxx">...</i>` in payload.
 <custom-element tag="with-description" >
     <slot name="description">description is not available</slot>
     <!-- same as 
-        <xsl:value-of select='/*/payload/*[@slot="description"]'/>
+        <value-of select='/*/payload/*[@slot="description"]'/>
     -->
 </custom-element>
 <with-description>
@@ -266,12 +244,12 @@ i.e.  slot `xxx` is matching `<i slot="xxx">...</i>` in payload.
 ```
 
 ## loops, variables
-Loop implemented via [xsl:for-each](https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/for-each)
+Loop implemented via [for-each](https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/for-each)
 
 [Variables in XSLT](https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/variable) 
 
 ## [XPath](https://developer.mozilla.org/en-US/docs/Web/XSLT/Transforming_XML_with_XSLT/The_Netscape_XSLT_XPath_Reference)
-is available in `{}` in attributes, in `xsl:for-each`, `xsl:if`, `xsl:value-of`, and other XSL tags.
+is available in `{}` in attributes, in `for-each`, `if`, `value-of`, and other XSL tags.
 
 XPath is a selector language to navigate over custom element instance data, attributes, and payload.
 
@@ -290,12 +268,12 @@ in template. In such cases the `xhtml:` prefix in front of troubled tag would so
   <local-storage key="basket" slice="basket" live type="json"></local-storage>
   <xhtml:table xmlns:xhtml="http://www.w3.org/1999/xhtml"  >
     <xhtml:tbody>
-      <xsl:for-each select="//basket/@*">
+      <for-each select="//basket/@*">
         <xhtml:tr>
           <xhtml:th> {name()} </xhtml:th>
           <xhtml:td> {.}      </xhtml:td>
         </xhtml:tr>
-      </xsl:for-each>
+      </for-each>
     </xhtml:tbody>
     <xhtml:tfoot>
       <xhtml:tr>
@@ -330,7 +308,7 @@ run transformation under debugger.
 * try to add as attribute you could observe and put the value of node name or text to identify the current location in data 
 within template
 ```xml
-<b title="{name(*)} : {text()}">xml tag name: <xsl:value-of select='name()'/></b>
+<b title="{name(*)} : {text()}">xml tag name: <value-of select='name()'/></b>
 ```
 
 [git-url]:        https://github.com/EPA-WG/custom-element
@@ -345,9 +323,9 @@ within template
 [github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
 [npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
-[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.17/coverage/coverage.svg
-[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.17/coverage/lcov-report/index.html
-[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.17/storybook-static/index.html?path=/story/welcome--introduction
+[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.18/coverage/coverage.svg
+[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.18/coverage/lcov-report/index.html
+[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.18/storybook-static/index.html?path=/story/welcome--introduction
 [sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
 [webcomponents-url]: https://www.webcomponents.org/element/@epa-wg/custom-element
 [webcomponents-img]: https://img.shields.io/badge/webcomponents.org-published-blue.svg

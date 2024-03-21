@@ -5,7 +5,7 @@ export function log(x: any): void;
  * ```html
  * <custom-element tag="my-element">
  *             <template>
- *                 <xsl:param name="p1" >default_P1</xsl:param>
+ *                 <attribute name="p1" >default_P1</attribute>
  *                 <style>
  *                     color:green;
  *                     b{ color: blue;}

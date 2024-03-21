@@ -12,7 +12,15 @@ const attr = (el, attr)=> el.getAttribute?.(attr)
 ,   emptyNode = n=> { while(n.firstChild) n.firstChild.remove(); return n; }
 ,   createNS = ( ns, tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElementNS( ns, tag ))
 ,   xslNs = x => ( x?.setAttribute('xmlns:xsl', XSL_NS_URL ), x )
-,   xslHtmlNs = x => ( x?.setAttribute('xmlns:xhtml', HTML_NS_URL ), xslNs(x) );
+,   xslHtmlNs = x => ( x?.setAttribute('xmlns:xhtml', HTML_NS_URL ), xslNs(x) )
+,   cloneAs = (p,tag) =>
+{   const px = p.ownerDocument.createElementNS(p.namespaceURI,tag);
+    for( let a of p.attributes)
+        px.setAttribute(a.name, a.value);
+    while( p.firstChild )
+        px.append(p.firstChild);
+    return px;
+}
 
     function
 ASSERT(x)
@@ -204,14 +212,15 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     if( !fr )
         return console.error("transformation error",{ xml:tc.outerHTML, xsl: xmlString( sanitizeXsl ) });
     const params = [];
-    [...fr.querySelectorAll('dce-root>param')].forEach(p=>
-    {   payload.append(p);
+    [...fr.querySelectorAll('dce-root>attribute')].forEach(p=>
+    {   p = cloneAs(p,'xsl:param');
+        payload.append(p);
         let select = attr(p,'select')?.split('??')
         if( !select)
         {   select = ['//'+attr(p, 'name'), `'${p.textContent}'`];
             emptyNode(p);
         }
-        if( select?.length>1){
+        if( select?.length>1 ){
             p.removeAttribute('select');
             const c = $( xslDom, 'template[match="ignore"]>choose').cloneNode(true);
             c.firstElementChild.setAttribute('test',select[0]);

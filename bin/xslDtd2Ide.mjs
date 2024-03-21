@@ -68,7 +68,6 @@ for( const match of matches ){
         case 'ATTLIST':{
             const attrStr = body.split( name )[ 1 ].trim();
             const attrs = attrStr.split( '\n' ).map( s => s.trim() );
-            // if(name==='xsl:for-each'){debugger;}
             const elementAttrs = dtdObj.ELEMENT[ name ].attributes;
             for( let a of attrs ){
                 if( a.startsWith( '%' ) ) {
@@ -117,7 +116,7 @@ writeFileSync( '.././ide/customData-xsl.json', JSON.stringify( vsCode, undefined
 const intelliJ = {
     "$schema": "http://json.schemastore.org/web-types",
     "name": "@epa-wg/custom-element",
-    "version": "0.0.17",
+    "version": "0.0.18",
     "js-types-syntax": "typescript",
     "description-markup": "markdown",
     "contributions": {
