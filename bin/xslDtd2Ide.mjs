@@ -1,11 +1,11 @@
 /**
  * node xslDtd2Ide.cjs
- * would get xsl 1.0 schema and populate InjelliJ and VS Code IDE custom elements definitions
+ * would get xsl 1.0 schema and populate IntelliJ and VS Code IDE custom elements definitions
  *
  * This is one time use script as XSLT 1.0 schema is not changing.
  * DTD parsing here is not generic and cobers only particula XSLT 1.0 schema.
  */
-
+import { readFileSync, writeFileSync } from 'node:fs';
 
 
 const dtdText = await fetch( 'https://www.w3.org/1999/11/xslt10.dtd' )
@@ -40,7 +40,8 @@ for( const match of matches ){
             return as;
         const ar = as.split( ';' )
         const aa = ar[ 0 ].split( ' ' );
-        return { name: aa[ 0 ], type: resolveRef( aa[ 1 ] ), defValue: aa[ 2 ], required: ar[ 1 ] }
+        // if( aa[0].includes('select')){debugger;}
+        return { name: aa[ 0 ], type: resolveRef( aa[ 1 ] ), defValue: aa[ 1 ], required: (ar[1] || aa[ 2 ])?.trim() }
     };
     switch( arr[ 0 ] ){
         case 'ENTITY':{
@@ -67,6 +68,7 @@ for( const match of matches ){
         case 'ATTLIST':{
             const attrStr = body.split( name )[ 1 ].trim();
             const attrs = attrStr.split( '\n' ).map( s => s.trim() );
+            // if(name==='xsl:for-each'){debugger;}
             const elementAttrs = dtdObj.ELEMENT[ name ].attributes;
             for( let a of attrs ){
                 if( a.startsWith( '%' ) ) {
@@ -85,7 +87,74 @@ for( const match of matches ){
         }
     }
 }
-console.log( dtdObj );
 
 // replace the tags list in custom-element.js
+
+const tagsCsv = Object.keys( dtdObj.ELEMENT ).map( s => s.replace( 'xsl:', '' ) ).join( ',' );
+const jsText = readFileSync( '../custom-element.js', 'utf8' )
+const updatedJs = jsText.replace( /^.*export const xslTags = .*$/mg,
+    `export const xslTags = '${ tagsCsv }'.split(',');` );
+writeFileSync( '../custom-element.js', updatedJs );
+
+const vsCode = {
+    "version": 1.1, tags: Object.keys( dtdObj.ELEMENT ).map( s => (
+        {   name        : s.replace( 'xsl:', '' )
+        ,   description : `${ s }`
+        ,   attributes  : dtdObj.ELEMENT[ s ].attributes.map( a => (
+                            {   name         : a.name
+                            ,   description: `${ JSON.stringify( a ) }`
+                            ,   type       : "string"
+                            } ) )
+        ,    references : [ {   name: "MDN docs"
+                            ,   url : `https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/${s.replace( 'xsl:', '' )}`
+                            }]
+        } ) )
+};
+
+writeFileSync( '.././ide/customData-xsl.json', JSON.stringify( vsCode, undefined, 4 ) );
+
+const intelliJ = {
+    "$schema": "http://json.schemastore.org/web-types",
+    "name": "@epa-wg/custom-element",
+    "version": "0.0.17",
+    "js-types-syntax": "typescript",
+    "description-markup": "markdown",
+    "contributions": {
+        "html": {
+            "elements": [
+                ...Object.keys( dtdObj.ELEMENT ).map( s => (
+                    {   name        : s.replace( 'xsl:', '' )
+                        ,   description : `${ s }`
+                        ,   attributes  : dtdObj.ELEMENT[ s ].attributes.map( a => (
+                            {   name        : a.name
+                            ,   description : `${ JSON.stringify( a ) }`
+                            ,   type        : "string"
+                            ,   required    : a.required === '#REQUIRED'
+                            } ) )
+                        ,   'doc-url'   : `https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/${s.replace( 'xsl:', '' )}`
+                    } ) ),
+                {
+                    "name": "for-each",
+                    "description": "The <xsl:for-each> element selects a set of nodes and processes each of them in the same way. It is often used to iterate through a set of nodes or to change the current node. If one or more <xsl:sort> elements appear as the children of this element, sorting occurs before processing. Otherwise, nodes are processed in document order.",
+                    "doc-url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/for-each",
+                    "attributes": [
+                        {
+                            "name": "select",
+                            "description": "Uses an XPath expression to select nodes to be processed.",
+                            "required": true,
+                            "doc-url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/for-each#select",
+                            "value": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+};
+
+
+writeFileSync( '.././ide/web-types-xsl.json', JSON.stringify( intelliJ, undefined, 4 ) );
+
 

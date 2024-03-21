@@ -385,7 +385,7 @@ export function assureUID(n,attr)
         n.setAttribute(attr, crypto.randomUUID());
     return n.getAttribute(attr)
 }
-export const xslTags = 'apply-imports,apply-templates,attribute-set,attribute,call-template,choose,comment,copy-of,copy,decimal-format,element,fallback,for-each,if,import,include,key,message,namespace-alias,number,otherwise,output,param,preserve-space,processing-instruction,sort,strip-space,stylesheet,template,text,transform,value-of,variable,when,with-param'.split(',');
+export const xslTags = 'stylesheet,transform,import,include,strip-space,preserve-space,output,key,decimal-format,namespace-alias,template,value-of,copy-of,number,apply-templates,apply-imports,for-each,sort,if,choose,when,otherwise,attribute-set,call-template,with-param,variable,param,text,processing-instruction,element,attribute,comment,copy,message,fallback'.split(',');
 export const toXsl = (el, defParent) => {
     const x = create('xsl:'+el.localName);
     for( let a of el.attributes )

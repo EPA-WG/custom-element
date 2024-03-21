@@ -1,0 +1,919 @@
+{
+    "version": 1.1,
+    "tags": [
+        {
+            "name": "stylesheet",
+            "description": "xsl:stylesheet",
+            "attributes": [
+                {
+                    "name": "extension-element-prefixes",
+                    "description": "{\"name\":\"extension-element-prefixes\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "exclude-result-prefixes",
+                    "description": "{\"name\":\"exclude-result-prefixes\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "id",
+                    "description": "{\"name\":\"id\",\"type\":\"ID\",\"defValue\":\"ID\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "version",
+                    "description": "{\"name\":\"version\",\"type\":\"NMTOKEN\",\"defValue\":\"NMTOKEN\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "xmlns:xsl",
+                    "description": "{\"name\":\"xmlns:xsl\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#FIXED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "xml:space",
+                    "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/stylesheet"
+                }
+            ]
+        },
+        {
+            "name": "transform",
+            "description": "xsl:transform",
+            "attributes": [
+                {
+                    "name": "extension-element-prefixes",
+                    "description": "{\"name\":\"extension-element-prefixes\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "exclude-result-prefixes",
+                    "description": "{\"name\":\"exclude-result-prefixes\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "id",
+                    "description": "{\"name\":\"id\",\"type\":\"ID\",\"defValue\":\"ID\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "version",
+                    "description": "{\"name\":\"version\",\"type\":\"NMTOKEN\",\"defValue\":\"NMTOKEN\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "xmlns:xsl",
+                    "description": "{\"name\":\"xmlns:xsl\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#FIXED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "xml:space",
+                    "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/transform"
+                }
+            ]
+        },
+        {
+            "name": "import",
+            "description": "xsl:import",
+            "attributes": [
+                {
+                    "name": "href",
+                    "description": "{\"name\":\"href\",\"type\":\"CDATA\",\"defValue\":\"%URI\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/import"
+                }
+            ]
+        },
+        {
+            "name": "include",
+            "description": "xsl:include",
+            "attributes": [
+                {
+                    "name": "href",
+                    "description": "{\"name\":\"href\",\"type\":\"CDATA\",\"defValue\":\"%URI\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/include"
+                }
+            ]
+        },
+        {
+            "name": "strip-space",
+            "description": "xsl:strip-space",
+            "attributes": [
+                {
+                    "name": "elements",
+                    "description": "{\"name\":\"elements\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/strip-space"
+                }
+            ]
+        },
+        {
+            "name": "preserve-space",
+            "description": "xsl:preserve-space",
+            "attributes": [
+                {
+                    "name": "elements",
+                    "description": "{\"name\":\"elements\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/preserve-space"
+                }
+            ]
+        },
+        {
+            "name": "output",
+            "description": "xsl:output",
+            "attributes": [
+                {
+                    "name": "method",
+                    "description": "{\"name\":\"method\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "version",
+                    "description": "{\"name\":\"version\",\"type\":\"NMTOKEN\",\"defValue\":\"NMTOKEN\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "encoding",
+                    "description": "{\"name\":\"encoding\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "omit-xml-declaration",
+                    "description": "{\"name\":\"omit-xml-declaration\",\"type\":\"(yes|no)\",\"defValue\":\"(yes|no)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "standalone",
+                    "description": "{\"name\":\"standalone\",\"type\":\"(yes|no)\",\"defValue\":\"(yes|no)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "doctype-public",
+                    "description": "{\"name\":\"doctype-public\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "doctype-system",
+                    "description": "{\"name\":\"doctype-system\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "cdata-section-elements",
+                    "description": "{\"name\":\"cdata-section-elements\",\"type\":\"NMTOKENS\",\"defValue\":\"%qnames\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "indent",
+                    "description": "{\"name\":\"indent\",\"type\":\"(yes|no)\",\"defValue\":\"(yes|no)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "media-type",
+                    "description": "{\"name\":\"media-type\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/output"
+                }
+            ]
+        },
+        {
+            "name": "key",
+            "description": "xsl:key",
+            "attributes": [
+                {
+                    "name": "name",
+                    "description": "{\"name\":\"name\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "match",
+                    "description": "{\"name\":\"match\",\"type\":\"CDATA\",\"defValue\":\"%pattern\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "use",
+                    "description": "{\"name\":\"use\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/key"
+                }
+            ]
+        },
+        {
+            "name": "decimal-format",
+            "description": "xsl:decimal-format",
+            "attributes": [
+                {
+                    "name": "name",
+                    "description": "{\"name\":\"name\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "decimal-separator",
+                    "description": "{\"name\":\"decimal-separator\",\"type\":\"CDATA\",\"defValue\":\"%char\",\"required\":\"\\\".\\\"\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "grouping-separator",
+                    "description": "{\"name\":\"grouping-separator\",\"type\":\"CDATA\",\"defValue\":\"%char\",\"required\":\"\\\",\\\"\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "infinity",
+                    "description": "{\"name\":\"infinity\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"\\\"Infinity\\\"\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "minus-sign",
+                    "description": "{\"name\":\"minus-sign\",\"type\":\"CDATA\",\"defValue\":\"%char\",\"required\":\"\\\"-\\\"\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "NaN",
+                    "description": "{\"name\":\"NaN\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"\\\"NaN\\\"\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "percent",
+                    "description": "{\"name\":\"percent\",\"type\":\"CDATA\",\"defValue\":\"%char\",\"required\":\"\\\"&#x25\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "per-mille",
+                    "description": "{\"name\":\"per-mille\",\"type\":\"CDATA\",\"defValue\":\"%char\",\"required\":\"\\\"&#x2030\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "zero-digit",
+                    "description": "{\"name\":\"zero-digit\",\"type\":\"CDATA\",\"defValue\":\"%char\",\"required\":\"\\\"0\\\"\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "digit",
+                    "description": "{\"name\":\"digit\",\"type\":\"CDATA\",\"defValue\":\"%char\",\"required\":\"\\\"#\\\"\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "pattern-separator",
+                    "description": "{\"name\":\"pattern-separator\",\"type\":\"CDATA\",\"defValue\":\"%char\",\"required\":\"\\\"\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/decimal-format"
+                }
+            ]
+        },
+        {
+            "name": "namespace-alias",
+            "description": "xsl:namespace-alias",
+            "attributes": [
+                {
+                    "name": "stylesheet-prefix",
+                    "description": "{\"name\":\"stylesheet-prefix\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "result-prefix",
+                    "description": "{\"name\":\"result-prefix\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/namespace-alias"
+                }
+            ]
+        },
+        {
+            "name": "template",
+            "description": "xsl:template",
+            "attributes": [
+                {
+                    "name": "match",
+                    "description": "{\"name\":\"match\",\"type\":\"CDATA\",\"defValue\":\"%pattern\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "name",
+                    "description": "{\"name\":\"name\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "priority",
+                    "description": "{\"name\":\"priority\",\"type\":\"NMTOKEN\",\"defValue\":\"%priority\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "mode",
+                    "description": "{\"name\":\"mode\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "xml:space",
+                    "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/template"
+                }
+            ]
+        },
+        {
+            "name": "value-of",
+            "description": "xsl:value-of",
+            "attributes": [
+                {
+                    "name": "select",
+                    "description": "{\"name\":\"select\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "disable-output-escaping",
+                    "description": "{\"name\":\"disable-output-escaping\",\"type\":\"(yes|no)\",\"defValue\":\"(yes|no)\",\"required\":\"\\\"no\\\"\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/value-of"
+                }
+            ]
+        },
+        {
+            "name": "copy-of",
+            "description": "xsl:copy-of",
+            "attributes": [
+                {
+                    "name": "select",
+                    "description": "{\"name\":\"select\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/copy-of"
+                }
+            ]
+        },
+        {
+            "name": "number",
+            "description": "xsl:number",
+            "attributes": [
+                {
+                    "name": "level",
+                    "description": "{\"name\":\"level\",\"type\":\"(single|multiple|any)\",\"defValue\":\"(single|multiple|any)\",\"required\":\"\\\"single\\\"\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "count",
+                    "description": "{\"name\":\"count\",\"type\":\"CDATA\",\"defValue\":\"%pattern\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "from",
+                    "description": "{\"name\":\"from\",\"type\":\"CDATA\",\"defValue\":\"%pattern\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "value",
+                    "description": "{\"name\":\"value\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "format",
+                    "description": "{\"name\":\"format\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"'1'\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "lang",
+                    "description": "{\"name\":\"lang\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "letter-value",
+                    "description": "{\"name\":\"letter-value\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "grouping-separator",
+                    "description": "{\"name\":\"grouping-separator\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "grouping-size",
+                    "description": "{\"name\":\"grouping-size\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/number"
+                }
+            ]
+        },
+        {
+            "name": "apply-templates",
+            "description": "xsl:apply-templates",
+            "attributes": [
+                {
+                    "name": "select",
+                    "description": "{\"name\":\"select\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"\\\"node()\\\"\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "mode",
+                    "description": "{\"name\":\"mode\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/apply-templates"
+                }
+            ]
+        },
+        {
+            "name": "apply-imports",
+            "description": "xsl:apply-imports",
+            "attributes": [],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/apply-imports"
+                }
+            ]
+        },
+        {
+            "name": "for-each",
+            "description": "xsl:for-each",
+            "attributes": [
+                {
+                    "name": "select",
+                    "description": "{\"name\":\"select\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "xml:space",
+                    "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/for-each"
+                }
+            ]
+        },
+        {
+            "name": "sort",
+            "description": "xsl:sort",
+            "attributes": [
+                {
+                    "name": "select",
+                    "description": "{\"name\":\"select\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"\\\".\\\"\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "lang",
+                    "description": "{\"name\":\"lang\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "data-type",
+                    "description": "{\"name\":\"data-type\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"\\\"text\\\"\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "order",
+                    "description": "{\"name\":\"order\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"\\\"ascending\\\"\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "case-order",
+                    "description": "{\"name\":\"case-order\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/sort"
+                }
+            ]
+        },
+        {
+            "name": "if",
+            "description": "xsl:if",
+            "attributes": [
+                {
+                    "name": "test",
+                    "description": "{\"name\":\"test\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "xml:space",
+                    "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/if"
+                }
+            ]
+        },
+        {
+            "name": "choose",
+            "description": "xsl:choose",
+            "attributes": [
+                {
+                    "name": "xml:space",
+                    "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/choose"
+                }
+            ]
+        },
+        {
+            "name": "when",
+            "description": "xsl:when",
+            "attributes": [
+                {
+                    "name": "test",
+                    "description": "{\"name\":\"test\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "xml:space",
+                    "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/when"
+                }
+            ]
+        },
+        {
+            "name": "otherwise",
+            "description": "xsl:otherwise",
+            "attributes": [
+                {
+                    "name": "xml:space",
+                    "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/otherwise"
+                }
+            ]
+        },
+        {
+            "name": "attribute-set",
+            "description": "xsl:attribute-set",
+            "attributes": [
+                {
+                    "name": "name",
+                    "description": "{\"name\":\"name\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "use-attribute-sets",
+                    "description": "{\"name\":\"use-attribute-sets\",\"type\":\"NMTOKENS\",\"defValue\":\"%qnames\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/attribute-set"
+                }
+            ]
+        },
+        {
+            "name": "call-template",
+            "description": "xsl:call-template",
+            "attributes": [
+                {
+                    "name": "name",
+                    "description": "{\"name\":\"name\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/call-template"
+                }
+            ]
+        },
+        {
+            "name": "with-param",
+            "description": "xsl:with-param",
+            "attributes": [
+                {
+                    "name": "name",
+                    "description": "{\"name\":\"name\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "select",
+                    "description": "{\"name\":\"select\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/with-param"
+                }
+            ]
+        },
+        {
+            "name": "variable",
+            "description": "xsl:variable",
+            "attributes": [
+                {
+                    "name": "name",
+                    "description": "{\"name\":\"name\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "select",
+                    "description": "{\"name\":\"select\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/variable"
+                }
+            ]
+        },
+        {
+            "name": "param",
+            "description": "xsl:param",
+            "attributes": [
+                {
+                    "name": "name",
+                    "description": "{\"name\":\"name\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "select",
+                    "description": "{\"name\":\"select\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/param"
+                }
+            ]
+        },
+        {
+            "name": "text",
+            "description": "xsl:text",
+            "attributes": [
+                {
+                    "name": "disable-output-escaping",
+                    "description": "{\"name\":\"disable-output-escaping\",\"type\":\"(yes|no)\",\"defValue\":\"(yes|no)\",\"required\":\"\\\"no\\\"\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/text"
+                }
+            ]
+        },
+        {
+            "name": "processing-instruction",
+            "description": "xsl:processing-instruction",
+            "attributes": [
+                {
+                    "name": "name",
+                    "description": "{\"name\":\"name\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "xml:space",
+                    "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/processing-instruction"
+                }
+            ]
+        },
+        {
+            "name": "element",
+            "description": "xsl:element",
+            "attributes": [
+                {
+                    "name": "name",
+                    "description": "{\"name\":\"name\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "namespace",
+                    "description": "{\"name\":\"namespace\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "use-attribute-sets",
+                    "description": "{\"name\":\"use-attribute-sets\",\"type\":\"NMTOKENS\",\"defValue\":\"%qnames\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "xml:space",
+                    "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/element"
+                }
+            ]
+        },
+        {
+            "name": "attribute",
+            "description": "xsl:attribute",
+            "attributes": [
+                {
+                    "name": "name",
+                    "description": "{\"name\":\"name\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#REQUIRED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "namespace",
+                    "description": "{\"name\":\"namespace\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "xml:space",
+                    "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/attribute"
+                }
+            ]
+        },
+        {
+            "name": "comment",
+            "description": "xsl:comment",
+            "attributes": [
+                {
+                    "name": "xml:space",
+                    "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/comment"
+                }
+            ]
+        },
+        {
+            "name": "copy",
+            "description": "xsl:copy",
+            "attributes": [
+                {
+                    "name": "xml:space",
+                    "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "use-attribute-sets",
+                    "description": "{\"name\":\"use-attribute-sets\",\"type\":\"NMTOKENS\",\"defValue\":\"%qnames\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/copy"
+                }
+            ]
+        },
+        {
+            "name": "message",
+            "description": "xsl:message",
+            "attributes": [
+                {
+                    "name": "xml:space",
+                    "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                },
+                {
+                    "name": "terminate",
+                    "description": "{\"name\":\"terminate\",\"type\":\"(yes|no)\",\"defValue\":\"(yes|no)\",\"required\":\"\\\"no\\\"\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/message"
+                }
+            ]
+        },
+        {
+            "name": "fallback",
+            "description": "xsl:fallback",
+            "attributes": [
+                {
+                    "name": "xml:space",
+                    "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
+                    "type": "string"
+                }
+            ],
+            "references": [
+                {
+                    "name": "MDN docs",
+                    "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/fallback"
+                }
+            ]
+        }
+    ]
+}

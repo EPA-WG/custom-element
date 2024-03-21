@@ -1,7 +1,7 @@
 {
   "html.customData": [
-    "./html.customData.json",
-    "./dist/html.customData-dce.json"
+    "./ide/customData-dce.json",
+    "./ide/customData-xsl.json"
   ],
   "terminal.integrated.profiles.windows": {
 
