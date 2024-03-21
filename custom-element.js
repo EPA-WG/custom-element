@@ -12,7 +12,15 @@ const attr = (el, attr)=> el.getAttribute?.(attr)
 ,   emptyNode = n=> { while(n.firstChild) n.firstChild.remove(); return n; }
 ,   createNS = ( ns, tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElementNS( ns, tag ))
 ,   xslNs = x => ( x?.setAttribute('xmlns:xsl', XSL_NS_URL ), x )
-,   xslHtmlNs = x => ( x?.setAttribute('xmlns:xhtml', HTML_NS_URL ), xslNs(x) );
+,   xslHtmlNs = x => ( x?.setAttribute('xmlns:xhtml', HTML_NS_URL ), xslNs(x) )
+,   cloneAs = (p,tag) =>
+{   const px = p.ownerDocument.createElementNS(p.namespaceURI,tag);
+    for( let a of p.attributes)
+        px.setAttribute(a.name, a.value);
+    while( p.firstChild )
+        px.append(p.firstChild);
+    return px;
+}
 
     function
 ASSERT(x)
@@ -141,6 +149,8 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     ,   tc = (n =>
         {
             forEach$(n,'script', s=> s.remove() );
+            const xslRoot = n.content ?? n.firstElementChild?.content ?? n.body ?? n;
+            xslTags.forEach( tag => forEach$( xslRoot, tag, el=>toXsl(el,xslRoot) ) );
             const e = n.firstElementChild?.content || n.content
             , asXmlNode = r => {
                 const d = xml2dom( '<xhtml/>' )
@@ -202,14 +212,15 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     if( !fr )
         return console.error("transformation error",{ xml:tc.outerHTML, xsl: xmlString( sanitizeXsl ) });
     const params = [];
-    [...fr.querySelectorAll('dce-root>param')].forEach(p=>
-    {   payload.append(p);
+    [...fr.querySelectorAll('dce-root>attribute')].forEach(p=>
+    {   p = cloneAs(p,'xsl:param');
+        payload.append(p);
         let select = attr(p,'select')?.split('??')
         if( !select)
         {   select = ['//'+attr(p, 'name'), `'${p.textContent}'`];
             emptyNode(p);
         }
-        if( select?.length>1){
+        if( select?.length>1 ){
             p.removeAttribute('select');
             const c = $( xslDom, 'template[match="ignore"]>choose').cloneNode(true);
             c.firstElementChild.setAttribute('test',select[0]);
@@ -383,6 +394,26 @@ export function assureUID(n,attr)
         n.setAttribute(attr, crypto.randomUUID());
     return n.getAttribute(attr)
 }
+export const xslTags = 'stylesheet,transform,import,include,strip-space,preserve-space,output,key,decimal-format,namespace-alias,template,value-of,copy-of,number,apply-templates,apply-imports,for-each,sort,if,choose,when,otherwise,attribute-set,call-template,with-param,variable,param,text,processing-instruction,element,attribute,comment,copy,message,fallback'.split(',');
+export const toXsl = (el, defParent) => {
+    const x = create('xsl:'+el.localName);
+    for( let a of el.attributes )
+        x.setAttribute( a.name, a.value );
+    while(el.firstChild)
+        x.append(el.firstChild);
+    if( el.parentElement )
+        el.parentElement.replaceChild( x, el );
+    else
+    {  const p = (el.parentElement || defParent)
+        ,  arr = [...p.childNodes];
+        arr.forEach((n, i) => {
+            if (n === el)
+                arr[i] = x;
+        });
+        p.replaceChildren(...arr);
+    }
+};
+
     export class
 CustomElement extends HTMLElement
 {

@@ -69,20 +69,20 @@
             }
         </style>
         <nav>
-            <xsl:for-each select="/datadom/payload/xhtml:*">
-                <xsl:if test="local-name(.) = 'style'">
-                    <xsl:copy-of select="." />
-                </xsl:if>
+            <for-each select="/datadom/payload/xhtml:*">
+                <if test="local-name(.) = 'style'">
+                    <copy-of select="." />
+                </if>
                 <!-- sanitize blank spans -->
-                <xsl:if test="local-name(.) != 'style' and (local-name(.) != 'span' or normalize-space(.) != '')">
+                <if test="local-name(.) != 'style' and (local-name(.) != 'span' or normalize-space(.) != '')">
                     <section>
                         <button class="action">
                             {@alt}
-                            <xsl:copy-of select="."/>
+                            <copy-of select="."/>
                         </button>
                     </section>
-                </xsl:if>
-            </xsl:for-each>
+                </if>
+            </for-each>
         </nav>
     </template>
 </custom-element>
@@ -152,14 +152,14 @@
                 }
             }
         </style>
-        <xsl:for-each select="/datadom/payload/xhtml:*">
+        <for-each select="/datadom/payload/xhtml:*">
             <!-- sanitize blank spans -->
-            <xsl:if test="local-name(.) != 'span' or normalize-space(.) != ''">
+            <if test="local-name(.) != 'span' or normalize-space(.) != ''">
                 <hex-grid>
-                    <xsl:copy-of select="."/>
+                    <copy-of select="."/>
                 </hex-grid>
-            </xsl:if>
-        </xsl:for-each>
+            </if>
+        </for-each>
     </template>
 </custom-element>
 <hex-row class="grid2x">
