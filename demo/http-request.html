@@ -43,18 +43,18 @@
             method="GET"
             header-accept="application/json"
             ></http-request>
-        <xsl:variable name="slides-url"
-            >https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world</xsl:variable>
-        <xsl:for-each select="//slice/page/data/results/*">
-            <xsl:variable name="pokeid"
+        <variable name="slides-url"
+            >https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world</variable>
+        <for-each select="//slice/page/data/results/*">
+            <variable name="pokeid"
                 select="substring-before( substring-after( @url, 'https://pokeapi.co/api/v2/pokemon/'),'/')"
-                ></xsl:variable>
+                ></variable>
             <button>
                 <img src="{$slides-url}/{$pokeid}.svg"
                      alt="{@name}"/>
                 {@name}
             </button>
-        </xsl:for-each>
+        </for-each>
     </template>
 </custom-element>
     </template>
@@ -86,22 +86,22 @@
                     <tr><th>  //slice/request_slice/response/@status  </th>
                         <td>{ //slice/request_slice/response/@status }</td></tr>
                 </table>
-                <xsl:apply-templates mode="display" select="//slice/request_slice/*"></xsl:apply-templates>
-                <xsl:template mode="display" match="*">
+                <apply-templates mode="display" select="//slice/request_slice/*"></apply-templates>
+                <template mode="display" match="*">
                     <fieldset>
                         <legend> {local-name(.)} </legend>
                         <ul>
-                            <xsl:for-each select="@*">
+                            <for-each select="@*">
                                 <li>
                                     <var data-testid="section-attribute">@{local-name(.)}</var>
                                     =
-                                    <code><xsl:value-of select='.'/></code>
+                                    <code><value-of select='.'/></code>
                                 </li>
-                            </xsl:for-each>
+                            </for-each>
                         </ul>
-                        <xsl:apply-templates mode="display" select="*"></xsl:apply-templates>
+                        <apply-templates mode="display" select="*"></apply-templates>
                     </fieldset>
-                </xsl:template>
+                </template>
             </template>
         </custom-element>
     </template>

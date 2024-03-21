@@ -104,6 +104,7 @@ const vsCode = {
                             {   name         : a.name
                             ,   description: `${ JSON.stringify( a ) }`
                             ,   type       : "string"
+                            ,   required    : a.required === '#REQUIRED'
                             } ) )
         ,    references : [ {   name: "MDN docs"
                             ,   url : `https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/${s.replace( 'xsl:', '' )}`

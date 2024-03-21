@@ -8,32 +8,38 @@
                 {
                     "name": "extension-element-prefixes",
                     "description": "{\"name\":\"extension-element-prefixes\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "exclude-result-prefixes",
                     "description": "{\"name\":\"exclude-result-prefixes\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "id",
                     "description": "{\"name\":\"id\",\"type\":\"ID\",\"defValue\":\"ID\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "version",
                     "description": "{\"name\":\"version\",\"type\":\"NMTOKEN\",\"defValue\":\"NMTOKEN\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 },
                 {
                     "name": "xmlns:xsl",
                     "description": "{\"name\":\"xmlns:xsl\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#FIXED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "xml:space",
                     "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -50,32 +56,38 @@
                 {
                     "name": "extension-element-prefixes",
                     "description": "{\"name\":\"extension-element-prefixes\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "exclude-result-prefixes",
                     "description": "{\"name\":\"exclude-result-prefixes\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "id",
                     "description": "{\"name\":\"id\",\"type\":\"ID\",\"defValue\":\"ID\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "version",
                     "description": "{\"name\":\"version\",\"type\":\"NMTOKEN\",\"defValue\":\"NMTOKEN\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 },
                 {
                     "name": "xmlns:xsl",
                     "description": "{\"name\":\"xmlns:xsl\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#FIXED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "xml:space",
                     "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -92,7 +104,8 @@
                 {
                     "name": "href",
                     "description": "{\"name\":\"href\",\"type\":\"CDATA\",\"defValue\":\"%URI\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 }
             ],
             "references": [
@@ -109,7 +122,8 @@
                 {
                     "name": "href",
                     "description": "{\"name\":\"href\",\"type\":\"CDATA\",\"defValue\":\"%URI\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 }
             ],
             "references": [
@@ -126,7 +140,8 @@
                 {
                     "name": "elements",
                     "description": "{\"name\":\"elements\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 }
             ],
             "references": [
@@ -143,7 +158,8 @@
                 {
                     "name": "elements",
                     "description": "{\"name\":\"elements\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 }
             ],
             "references": [
@@ -160,52 +176,62 @@
                 {
                     "name": "method",
                     "description": "{\"name\":\"method\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "version",
                     "description": "{\"name\":\"version\",\"type\":\"NMTOKEN\",\"defValue\":\"NMTOKEN\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "encoding",
                     "description": "{\"name\":\"encoding\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "omit-xml-declaration",
                     "description": "{\"name\":\"omit-xml-declaration\",\"type\":\"(yes|no)\",\"defValue\":\"(yes|no)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "standalone",
                     "description": "{\"name\":\"standalone\",\"type\":\"(yes|no)\",\"defValue\":\"(yes|no)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "doctype-public",
                     "description": "{\"name\":\"doctype-public\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "doctype-system",
                     "description": "{\"name\":\"doctype-system\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "cdata-section-elements",
                     "description": "{\"name\":\"cdata-section-elements\",\"type\":\"NMTOKENS\",\"defValue\":\"%qnames\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "indent",
                     "description": "{\"name\":\"indent\",\"type\":\"(yes|no)\",\"defValue\":\"(yes|no)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "media-type",
                     "description": "{\"name\":\"media-type\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -222,17 +248,20 @@
                 {
                     "name": "name",
                     "description": "{\"name\":\"name\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 },
                 {
                     "name": "match",
                     "description": "{\"name\":\"match\",\"type\":\"CDATA\",\"defValue\":\"%pattern\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 },
                 {
                     "name": "use",
                     "description": "{\"name\":\"use\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 }
             ],
             "references": [
@@ -249,57 +278,68 @@
                 {
                     "name": "name",
                     "description": "{\"name\":\"name\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "decimal-separator",
                     "description": "{\"name\":\"decimal-separator\",\"type\":\"CDATA\",\"defValue\":\"%char\",\"required\":\"\\\".\\\"\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "grouping-separator",
                     "description": "{\"name\":\"grouping-separator\",\"type\":\"CDATA\",\"defValue\":\"%char\",\"required\":\"\\\",\\\"\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "infinity",
                     "description": "{\"name\":\"infinity\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"\\\"Infinity\\\"\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "minus-sign",
                     "description": "{\"name\":\"minus-sign\",\"type\":\"CDATA\",\"defValue\":\"%char\",\"required\":\"\\\"-\\\"\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "NaN",
                     "description": "{\"name\":\"NaN\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"\\\"NaN\\\"\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "percent",
                     "description": "{\"name\":\"percent\",\"type\":\"CDATA\",\"defValue\":\"%char\",\"required\":\"\\\"&#x25\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "per-mille",
                     "description": "{\"name\":\"per-mille\",\"type\":\"CDATA\",\"defValue\":\"%char\",\"required\":\"\\\"&#x2030\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "zero-digit",
                     "description": "{\"name\":\"zero-digit\",\"type\":\"CDATA\",\"defValue\":\"%char\",\"required\":\"\\\"0\\\"\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "digit",
                     "description": "{\"name\":\"digit\",\"type\":\"CDATA\",\"defValue\":\"%char\",\"required\":\"\\\"#\\\"\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "pattern-separator",
                     "description": "{\"name\":\"pattern-separator\",\"type\":\"CDATA\",\"defValue\":\"%char\",\"required\":\"\\\"\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -316,12 +356,14 @@
                 {
                     "name": "stylesheet-prefix",
                     "description": "{\"name\":\"stylesheet-prefix\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 },
                 {
                     "name": "result-prefix",
                     "description": "{\"name\":\"result-prefix\",\"type\":\"CDATA\",\"defValue\":\"CDATA\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 }
             ],
             "references": [
@@ -338,27 +380,32 @@
                 {
                     "name": "match",
                     "description": "{\"name\":\"match\",\"type\":\"CDATA\",\"defValue\":\"%pattern\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "name",
                     "description": "{\"name\":\"name\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "priority",
                     "description": "{\"name\":\"priority\",\"type\":\"NMTOKEN\",\"defValue\":\"%priority\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "mode",
                     "description": "{\"name\":\"mode\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "xml:space",
                     "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -375,12 +422,14 @@
                 {
                     "name": "select",
                     "description": "{\"name\":\"select\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 },
                 {
                     "name": "disable-output-escaping",
                     "description": "{\"name\":\"disable-output-escaping\",\"type\":\"(yes|no)\",\"defValue\":\"(yes|no)\",\"required\":\"\\\"no\\\"\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -397,7 +446,8 @@
                 {
                     "name": "select",
                     "description": "{\"name\":\"select\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 }
             ],
             "references": [
@@ -414,47 +464,56 @@
                 {
                     "name": "level",
                     "description": "{\"name\":\"level\",\"type\":\"(single|multiple|any)\",\"defValue\":\"(single|multiple|any)\",\"required\":\"\\\"single\\\"\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "count",
                     "description": "{\"name\":\"count\",\"type\":\"CDATA\",\"defValue\":\"%pattern\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "from",
                     "description": "{\"name\":\"from\",\"type\":\"CDATA\",\"defValue\":\"%pattern\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "value",
                     "description": "{\"name\":\"value\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "format",
                     "description": "{\"name\":\"format\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"'1'\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "lang",
                     "description": "{\"name\":\"lang\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "letter-value",
                     "description": "{\"name\":\"letter-value\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "grouping-separator",
                     "description": "{\"name\":\"grouping-separator\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "grouping-size",
                     "description": "{\"name\":\"grouping-size\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -471,12 +530,14 @@
                 {
                     "name": "select",
                     "description": "{\"name\":\"select\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"\\\"node()\\\"\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "mode",
                     "description": "{\"name\":\"mode\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -504,12 +565,14 @@
                 {
                     "name": "select",
                     "description": "{\"name\":\"select\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 },
                 {
                     "name": "xml:space",
                     "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -526,27 +589,32 @@
                 {
                     "name": "select",
                     "description": "{\"name\":\"select\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"\\\".\\\"\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "lang",
                     "description": "{\"name\":\"lang\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "data-type",
                     "description": "{\"name\":\"data-type\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"\\\"text\\\"\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "order",
                     "description": "{\"name\":\"order\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"\\\"ascending\\\"\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "case-order",
                     "description": "{\"name\":\"case-order\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -563,12 +631,14 @@
                 {
                     "name": "test",
                     "description": "{\"name\":\"test\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 },
                 {
                     "name": "xml:space",
                     "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -585,7 +655,8 @@
                 {
                     "name": "xml:space",
                     "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -602,12 +673,14 @@
                 {
                     "name": "test",
                     "description": "{\"name\":\"test\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 },
                 {
                     "name": "xml:space",
                     "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -624,7 +697,8 @@
                 {
                     "name": "xml:space",
                     "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -641,12 +715,14 @@
                 {
                     "name": "name",
                     "description": "{\"name\":\"name\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 },
                 {
                     "name": "use-attribute-sets",
                     "description": "{\"name\":\"use-attribute-sets\",\"type\":\"NMTOKENS\",\"defValue\":\"%qnames\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -663,7 +739,8 @@
                 {
                     "name": "name",
                     "description": "{\"name\":\"name\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 }
             ],
             "references": [
@@ -680,12 +757,14 @@
                 {
                     "name": "name",
                     "description": "{\"name\":\"name\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 },
                 {
                     "name": "select",
                     "description": "{\"name\":\"select\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -702,12 +781,14 @@
                 {
                     "name": "name",
                     "description": "{\"name\":\"name\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 },
                 {
                     "name": "select",
                     "description": "{\"name\":\"select\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -724,12 +805,14 @@
                 {
                     "name": "name",
                     "description": "{\"name\":\"name\",\"type\":\"NMTOKEN\",\"defValue\":\"%qname\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 },
                 {
                     "name": "select",
                     "description": "{\"name\":\"select\",\"type\":\"CDATA\",\"defValue\":\"%expr\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -746,7 +829,8 @@
                 {
                     "name": "disable-output-escaping",
                     "description": "{\"name\":\"disable-output-escaping\",\"type\":\"(yes|no)\",\"defValue\":\"(yes|no)\",\"required\":\"\\\"no\\\"\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -763,12 +847,14 @@
                 {
                     "name": "name",
                     "description": "{\"name\":\"name\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 },
                 {
                     "name": "xml:space",
                     "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -785,22 +871,26 @@
                 {
                     "name": "name",
                     "description": "{\"name\":\"name\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 },
                 {
                     "name": "namespace",
                     "description": "{\"name\":\"namespace\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "use-attribute-sets",
                     "description": "{\"name\":\"use-attribute-sets\",\"type\":\"NMTOKENS\",\"defValue\":\"%qnames\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "xml:space",
                     "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -817,17 +907,20 @@
                 {
                     "name": "name",
                     "description": "{\"name\":\"name\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#REQUIRED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": true
                 },
                 {
                     "name": "namespace",
                     "description": "{\"name\":\"namespace\",\"type\":\"CDATA\",\"defValue\":\"%avt\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "xml:space",
                     "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -844,7 +937,8 @@
                 {
                     "name": "xml:space",
                     "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -861,12 +955,14 @@
                 {
                     "name": "xml:space",
                     "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "use-attribute-sets",
                     "description": "{\"name\":\"use-attribute-sets\",\"type\":\"NMTOKENS\",\"defValue\":\"%qnames\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -883,12 +979,14 @@
                 {
                     "name": "xml:space",
                     "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 },
                 {
                     "name": "terminate",
                     "description": "{\"name\":\"terminate\",\"type\":\"(yes|no)\",\"defValue\":\"(yes|no)\",\"required\":\"\\\"no\\\"\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
@@ -905,7 +1003,8 @@
                 {
                     "name": "xml:space",
                     "description": "{\"name\":\"xml:space\",\"type\":\"(defaultpreserve)\",\"defValue\":\"(defaultpreserve)\",\"required\":\"#IMPLIED\"}",
-                    "type": "string"
+                    "type": "string",
+                    "required": false
                 }
             ],
             "references": [
