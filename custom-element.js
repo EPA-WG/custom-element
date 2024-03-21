@@ -141,6 +141,8 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     ,   tc = (n =>
         {
             forEach$(n,'script', s=> s.remove() );
+            const xslRoot = n.content ?? n.firstElementChild?.content ?? n.body ?? n;
+            xslTags.forEach( tag => forEach$( xslRoot, tag, el=>toXsl(el,xslRoot) ) );
             const e = n.firstElementChild?.content || n.content
             , asXmlNode = r => {
                 const d = xml2dom( '<xhtml/>' )
@@ -383,6 +385,26 @@ export function assureUID(n,attr)
         n.setAttribute(attr, crypto.randomUUID());
     return n.getAttribute(attr)
 }
+export const xslTags = 'apply-imports,apply-templates,attribute-set,attribute,call-template,choose,comment,copy-of,copy,decimal-format,element,fallback,for-each,if,import,include,key,message,namespace-alias,number,otherwise,output,param,preserve-space,processing-instruction,sort,strip-space,stylesheet,template,text,transform,value-of,variable,when,with-param'.split(',');
+export const toXsl = (el, defParent) => {
+    const x = create('xsl:'+el.localName);
+    for( let a of el.attributes )
+        x.setAttribute( a.name, a.value );
+    while(el.firstChild)
+        x.append(el.firstChild);
+    if( el.parentElement )
+        el.parentElement.replaceChild( x, el );
+    else
+    {  const p = (el.parentElement || defParent)
+        ,  arr = [...p.childNodes];
+        arr.forEach((n, i) => {
+            if (n === el)
+                arr[i] = x;
+        });
+        p.replaceChildren(...arr);
+    }
+};
+
     export class
 CustomElement extends HTMLElement
 {

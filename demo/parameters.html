@@ -27,9 +27,9 @@ params needed to declare DCE attributes and track the attributes changes. It als
 ">
     <template>
         <custom-element tag="dce-link" hidden>
-            <xsl:param name="p1" >default_P1</xsl:param>
-            <xsl:param name="p2" select="'always_p2'"  ></xsl:param>
-            <xsl:param name="p3" select="//p3 ?? 'def_P3' "  ></xsl:param>
+            <param name="p1" >default_P1</param>
+            <param name="p2" select="'always_p2'"  ></param>
+            <param name="p3" select="//p3 ?? 'def_P3' "  ></param>
             p1:{$p1} <br/> p2: {$p2} <br/> p3: {$p3}
         </custom-element>
         <dce-link id="dce1" ></dce-link>
