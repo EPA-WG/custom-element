@@ -212,8 +212,9 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     if( !fr )
         return console.error("transformation error",{ xml:tc.outerHTML, xsl: xmlString( sanitizeXsl ) });
     const params = [];
-    [...fr.querySelectorAll('dce-root>attribute')].forEach(p=>
-    {   p = cloneAs(p,'xsl:param');
+    [...fr.querySelectorAll('dce-root>attribute')].forEach( a=>
+    {
+        const p = cloneAs(a,'xsl:param');
         payload.append(p);
         let select = attr(p,'select')?.split('??')
         if( !select)
@@ -226,8 +227,11 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
             c.firstElementChild.setAttribute('test',select[0]);
             emptyNode(c.firstElementChild).append( createText(c,'{'+select[0]+'}'));
             emptyNode(c.lastElementChild ).append( createText(c,'{'+select[1]+'}'));
-            p.append(c)
-        }
+            p.append(c);
+            a.append(c.cloneNode(true));
+        }else
+            a.append(cloneAs(a,'xsl:value-of'));
+        a.removeAttribute('select');
         params.push(p)
     });
 
@@ -527,6 +531,12 @@ CustomElement extends HTMLElement
                             if( hasInitValue(el) )
                                 changeCb(el)
                         }
+                    });
+                    // merge attributes from dce-root to `this`
+                    [...this.firstElementChild.attributes].map(a=> {
+                        if( a.value !== this.getAttribute(a.name))
+                            this.setAttribute(a.name, a.value);
+                        // this.firstElementChild.removeAttributeNode(a);
                     })
                 };
                 transform();
