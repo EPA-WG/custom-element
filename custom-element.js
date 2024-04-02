@@ -436,16 +436,15 @@ CustomElement extends HTMLElement
 
         Object.defineProperty( this, "xsltString", { get: ()=>templateDocs.map( td => xmlString(td) ).join('\n') });
 
-        const dce = this;
-        const sliceNames = [...this.templateNode.querySelectorAll('[slice]')].map(e=>attr(e,'slice'));
+        const dce = this
+        , sliceNodes = [...this.templateNode.querySelectorAll('[slice]')]
+        , sliceNames = sliceNodes.map(e=>attr(e,'slice')).filter(n=>!n.includes('/'))
+        , declaredAttributes = templateDocs.reduce( (ret,t) => { if( t.params ) ret.push( ...t.params ); return ret; }, [] );
+
         class DceElement extends HTMLElement
         {
-            static get observedAttributes()
-            {   return templateDocs.reduce( (ret,t) =>
-                {   if( t.params ) ret.push( ...t.params.map(e=>attr(e,'name')) );
-                    return ret;
-                }, [] );
-            }
+            static get observedAttributes(){ return declaredAttributes.map( a=>attr(a,'name')); }
+
             connectedCallback()
             {   if( this.firstElementChild?.tagName === 'TEMPLATE' )
                 {   const t = this.firstElementChild;

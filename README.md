@@ -58,7 +58,8 @@ npm i -P @epa-wg/custom-element
 yarn add @epa-wg/custom-element
 ```
 
-## [enable IDE support](ide/IDE.md)
+## Enable IDE support
+[IDE.md](ide/IDE.md)
 
 
 
