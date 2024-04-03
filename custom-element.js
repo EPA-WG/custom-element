@@ -296,16 +296,24 @@ deepEqual(a, b, O=false)
 }
 
     export function
-injectSlice( x, s, data )
+injectSlice( x, s, data, dce )
 {
+    if( s.includes('/') )
+    {   const it = x.ownerDocument.evaluate(s,x)
+        ,     n = it.iterateNext();
+        if( n.parentNode.localName ==='attributes')
+            dce.setAttribute( n.localName, data );
+        n.textContent = data;
+        return
+    }
     const isString = typeof data === 'string' ;
     const createXmlNode = ( tag, t = '' ) => ( e => ((e.append( createText(x, t||''))),e) )(x.ownerDocument.createElement( tag ))
     const el = isString
         ? createXmlNode(s, data)
         : document.adoptNode( xml2dom( Json2Xml( data, s ) ).documentElement);
     [...x.children].filter( e=>e.localName === s ).map( el=>el.remove() );
-    el.data = data
-        x.append(el);
+    el.data = data;
+    x.append(el);
 }
 
 function forEach$( el, css, cb){
@@ -401,6 +409,18 @@ export function assureUID(n,attr)
         n.setAttribute(attr, crypto.randomUUID());
     return n.getAttribute(attr)
 }
+export const xPath = (x,root)=>{
+    let ret = '';
+    const it = root.ownerDocument.evaluate(x, root);
+    let thisNode = it.iterateNext();
+
+  while (thisNode) {
+    console.log(thisNode.textContent);
+    ret+= thisNode.textContent;
+    thisNode = it.iterateNext();
+  }
+  return ret
+}
 export const xslTags = 'stylesheet,transform,import,include,strip-space,preserve-space,output,key,decimal-format,namespace-alias,template,value-of,copy-of,number,apply-templates,apply-imports,for-each,sort,if,choose,when,otherwise,attribute-set,call-template,with-param,variable,param,text,processing-instruction,element,attribute,comment,copy,message,fallback'.split(',');
 export const toXsl = (el, defParent) => {
     const x = create('xsl:'+el.localName);
@@ -479,7 +499,8 @@ CustomElement extends HTMLElement
                 this.innerHTML='';
                 injectData( x, 'attributes' , this.attributes, e => createXmlNode( e.nodeName, e.value ) );
                 injectData( x, 'dataset', Object.keys( this.dataset ), k => createXmlNode( k, this.dataset[ k ] ) );
-                const sliceRoot = injectData( x, 'slice', sliceNames, k => createXmlNode( k, '' ) );
+                const sliceRoot = injectData( x, 'slice', sliceNames, k => createXmlNode( k, '' ) )
+                ,     slicePath = x => xPath(x, sliceRoot);
                 this.xml = x;
 
                 const sliceEvents=[];
@@ -490,7 +511,7 @@ CustomElement extends HTMLElement
                     {   const s = attr( ev.target, 'slice');
                         if( processed[s] )
                             continue;
-                        injectSlice( sliceRoot, s, 'object' === typeof ev.detail ? {...ev.detail}: ev.detail );
+                        injectSlice( sliceRoot, s, 'object' === typeof ev.detail ? {...ev.detail}: ev.detail, this );
                         processed[s] = ev;
                     }
                     Object.keys(processed).length !== 0 && transform();
@@ -533,6 +554,8 @@ CustomElement extends HTMLElement
                             el.addEventListener( attr(el,'slice-update')|| 'change', ()=>changeCb(el) )
                             if( hasInitValue(el) )
                                 changeCb(el)
+                            else
+                                el.value = slicePath( attr(el,'slice') )
                         }
                     });
                     DceElement.observedAttributes.map( a => {
