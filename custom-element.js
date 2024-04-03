@@ -131,7 +131,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
 {
     if( templateNode.tagName === S || templateNode.documentElement?.tagName === S )
         return tagUid(templateNode)
-    const sanitizeXsl = xml2dom(`<xsl:stylesheet version="1.0" xmlns:xsl="${ XSL_NS_URL }" xmlns:xhtml="${ HTML_NS_URL }" xmlns:exsl="${EXSL_NS_URL}" exclude-result-prefixes="exsl" >   
+    const sanitizeXsl = xml2dom(`<xsl:stylesheet version="1.0" xmlns:xsl="${ XSL_NS_URL }" xmlns:xhtml="${ HTML_NS_URL }" xmlns:exsl="${EXSL_NS_URL}" exclude-result-prefixes="exsl" >
         <xsl:output method="xml" />
         <xsl:template match="/"><dce-root xmlns="${ HTML_NS_URL }"><xsl:apply-templates select="*"/></dce-root></xsl:template>
         <xsl:template match="*[name()='template']"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
@@ -221,6 +221,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         {   select = ['//'+attr(p, 'name'), `'${p.textContent}'`];
             emptyNode(p);
         }
+                                                                let val;
         if( select?.length>1 ){
             p.removeAttribute('select');
             const c = $( xslDom, 'template[match="ignore"]>choose').cloneNode(true);
@@ -228,9 +229,11 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
             emptyNode(c.firstElementChild).append( createText(c,'{'+select[0]+'}'));
             emptyNode(c.lastElementChild ).append( createText(c,'{'+select[1]+'}'));
             p.append(c);
-            a.append(c.cloneNode(true));
+            val = c.cloneNode(true);
         }else
-            a.append(cloneAs(a,'xsl:value-of'));
+            val=cloneAs(a,'xsl:value-of');
+        val.removeAttribute('name');
+        a.append(val);
         a.removeAttribute('select');
         params.push(p)
     });
@@ -385,7 +388,7 @@ export function merge( parent, fromArr )
             {   if( o.nodeValue !== e.nodeValue )
                     o.nodeValue = e.nodeValue;
             }else
-            {   mergeAttr(o,e)
+            {   mergeAttr(e,o)
                 if( o.childNodes.length || e.childNodes.length )
                     merge(o, e.childNodes)
             }
@@ -532,11 +535,9 @@ CustomElement extends HTMLElement
                                 changeCb(el)
                         }
                     });
-                    // merge attributes from dce-root to `this`
-                    [...this.firstElementChild.attributes].map(a=> {
-                        if( a.value !== this.getAttribute(a.name))
-                            this.setAttribute(a.name, a.value);
-                        // this.firstElementChild.removeAttributeNode(a);
+                    DceElement.observedAttributes.map( a => {
+                        if( attr(this.firstElementChild,a) !== attr(this,a) )
+                            this.setAttribute( a, attr(this.firstElementChild,a) );
                     })
                 };
                 transform();
