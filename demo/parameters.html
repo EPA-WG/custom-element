@@ -47,12 +47,15 @@ params needed to declare DCE attributes and track the attributes changes. It als
 <html-demo-element legend="slice propagates attribute" description="
 when slice value points to attribute, it would be populated on slice change
 ">
-    Type in the input field to see the variable $title change. Hover the mouse to see the title attribute text popup.
+    Type in the input field to see the variable $title change. <br/>
+    Hover the mouse to see the title attribute text popup.<br/>
+    Inspect DCE node in dev tools to see `title` attribute updated while typing.
+
     <template>
         <custom-element>
             <template>
                 <attribute name="title" select="//title ?? '😃'" ></attribute>
-                <input slice="/datadom/attributes/title" slice-update="keyup"/>
+                <input slice="/datadom/attributes/title" slice-event="keyup"/>
                 title attribute: {$title}
             </template>
         </custom-element>

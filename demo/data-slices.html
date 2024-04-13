@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Data slices - Declarative Custom Element implementation demo</title>
+    <link rel="icon" href="./wc-square.svg"/>
+
+    <script type="module" src="../http-request.js"></script>
+    <script type="module" src="../input-text.js"></script>
+    <script type="module" src="../custom-element.js"></script>
+    <style>
+        @import "./demo.css";
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="../index.html"><h3><code>custom-element</code> demo</h3></a>
+    <h3>Data slices propagation by events.</h3>
+</nav>
+
+<html-demo-element legend="0. slice initialization, change on event"
+                   description="initial value should be 0; + and - should change the number in input field">
+    <template>
+        <custom-element>
+            <template>
+                <button slice="clickcount"
+                        slice-event="click"
+                        slice-value="//clickcount + 1"   >
+                    +
+                </button>
+                <button slice="clickcount"
+                        slice-event="click"
+                        slice-value="//clickcount - 1"   >
+                    -
+                </button>
+                <input slice="clickcount" type="number" value="{//clickcount ?? 0}" />
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="1. slice in attribute"
+                   description="initial attribute value should be smile as emoji and :) on blur from input it should be updated from value">
+    <template>
+        <custom-element tag="emotional-element">
+            <template>
+                <attribute name="emotion" select="//emotion ?? '😃'"></attribute>
+                <input slice="/datadom/attributes/emotion"/>
+                Type and unfocus to update emotion attribute: {emotion}
+            </template>
+        </custom-element>
+        <emotional-element emotion=":)"></emotional-element>
+        <emotional-element></emotional-element>
+    </template>
+</html-demo-element>
+
+
+<!--<html-demo-element legend="0. multiple slices and events"-->
+<!--                   description="+ and - should change the number in input field">-->
+<!--    <template>-->
+<!--        <custom-element>-->
+<!--            <template>-->
+<!--                <attribute name="focused" select="true"></attribute>-->
+<!--                <label>-->
+<!--                    tap here to focus. Focused: {$focused}-->
+<!--                    <button>-->
+<!--                        <slice-event event="click tap" slice="clickcount" value="//clickcount+1"   ></slice-event>-->
+<!--                        <slice-event event="focusin" slice="//attributes/focused" value="FOCUSIN"     ></slice-event>-->
+<!--                        <slice-event event="focusout" slice="//attributes/focused" value="FOCUSOUT"   ></slice-event>-->
+<!--                        +-->
+<!--                    </button>-->
+<!--                </label>-->
+<!--                <button>-->
+<!--                    <slice-event event="click tap" slice="clickcount" value="//clickcount-1"   ></slice-event>-->
+<!--                    - -->
+<!--                </button>-->
+<!--                <input slice="clickcount" type="number" value="0"/>-->
+<!--            </template>-->
+<!--        </custom-element>-->
+<!--    </template>-->
+<!--</html-demo-element>-->
+
+<script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
+
+</body>
+</html>

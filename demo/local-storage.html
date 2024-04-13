@@ -45,7 +45,7 @@
                 <local-storage key="basket" slice="basket" live type="json"></local-storage>
                 <xhtml:table xmlns:xhtml="http://www.w3.org/1999/xhtml"  >
                     <xhtml:tbody>
-                        <for-each select="//basket/@*">
+                        <for-each select="//basket/value/@*">
                             <xhtml:tr>
                                 <xhtml:th> {name()} </xhtml:th>
                                 <xhtml:td> {.}      </xhtml:td>
@@ -55,7 +55,7 @@
                     <xhtml:tfoot>
                         <xhtml:tr>
                             <xhtml:td><slot>🤔</slot></xhtml:td>
-                            <xhtml:th> {sum(//slice/basket/@*)} </xhtml:th>
+                            <xhtml:th> {sum(//slice/basket/value/@*)} </xhtml:th>
                         </xhtml:tr>
                     </xhtml:tfoot>
                 </xhtml:table>
