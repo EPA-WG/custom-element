@@ -9,7 +9,7 @@ const attr = (el, attr)=> el.getAttribute?.(attr)
 ,   isText = e => e.nodeType === 3
 ,   isString = s => typeof s === 'string'
 ,   isNode = e => e && typeof e.nodeType === 'number'
-,   create = ( tag, t = '', d=document ) => ( e => ((e.innerText = t||''),e) )((d.ownerDocument || d ).createElement( tag ))
+,   create = ( tag, t = '', d=document ) => ( e => ((t && e.append(createText(d.ownerDocument||d, t))),e) )((d.ownerDocument || d ).createElement( tag ))
 ,   createText = ( d, t) => (d.ownerDocument || d ).createTextNode( t )
 ,   emptyNode = n => { while(n.firstChild) n.firstChild.remove(); n.getAttributeNames().map( a => n.removeAttribute(a) ); return n; }
 ,   createNS = ( ns, tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElementNS( ns, tag ))
@@ -105,6 +105,7 @@ obj2node( o, tag, doc )
     if( o instanceof Array )
     {   const ret = create('array');
         o.map( ae => ret.append( obj2node(ae,tag,doc)) );
+        return ret
     }
     const ret = create(tag,'',doc);
     for( let k in o )
@@ -569,8 +570,13 @@ CustomElement extends HTMLElement
             static get observedAttributes(){ return declaredAttributes.map( a=>attr(a,'name')); }
 
             connectedCallback()
-            {   if( this.firstElementChild?.tagName === 'TEMPLATE' )
-                {   const t = this.firstElementChild;
+            {   let payload = this.childNodes;
+                if( this.firstElementChild?.tagName === 'TEMPLATE' )
+                {
+                    const t = this.firstElementChild;
+                    t.remove();
+                    payload = t.content.childNodes;
+
                     for( const n of [...t.content.childNodes] )
                         if( n.localName === 'style' ){
                             const id = assureUID(this,'data-dce-style')
@@ -581,9 +587,6 @@ CustomElement extends HTMLElement
                                 t.insertAdjacentElement('beforebegin',n);
                             else if(n.nodeType===3)
                                 t.insertAdjacentText('beforebegin',n.data);
-
-                    t.remove();
-
                 }
                 const x = xml2dom( '<datadom/>' ).documentElement;
                 const createXmlNode = ( tag, t = '' ) => ( e =>
@@ -591,7 +594,7 @@ CustomElement extends HTMLElement
                         e.append( createText( x, t ))
                     return e;
                 })(x.ownerDocument.createElement( tag ))
-                injectData( x, 'payload'    , this.childNodes, assureSlot );
+                injectData( x, 'payload'    , payload , assureSlot );
                 this.innerHTML='';
                 injectData( x, 'attributes' , this.attributes, e => createXmlNode( e.nodeName, e.value ) );
                 injectData( x, 'dataset', Object.keys( this.dataset ), k => createXmlNode( k, this.dataset[ k ] ) );
