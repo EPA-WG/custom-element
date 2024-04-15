@@ -37,6 +37,7 @@
     <template>
 <custom-element>
     <template><!-- wrapping into template to prevent images loading within DCE declaration -->
+        <p>Pokemon buttons from API</p>
         <http-request
             url="https://pokeapi.co/api/v2/pokemon?limit=6&offset=0"
             slice="page"
@@ -45,7 +46,7 @@
             ></http-request>
         <variable name="slides-url"
             >https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world</variable>
-        <for-each select="//slice/page/data/results/*">
+        <for-each select="//results">
             <variable name="pokeid"
                 select="substring-before( substring-after( @url, 'https://pokeapi.co/api/v2/pokemon/'),'/')"
                 ></variable>
@@ -67,6 +68,7 @@
         <custom-element url="https://pokeapi.co/api/v2/pokemon?offset=6&limit=6">
             <template> <!-- IMPORTANT! to wrap DCE payload into template to avoid
                                http-request initializing out of instance -->
+                <attribute name="url"></attribute>
                 <http-request
                         url="{url}"
                         slice="request_slice"
@@ -79,15 +81,15 @@
 
                 <h3>Samples</h3>
                 <table>
-                    <tr><th>  //slice/request_slice/request/@mode  </th>
-                        <td>{ //slice/request_slice/request/@mode }</td></tr>
-                    <tr><th>  //slice/request_slice/response/headers/@content-type  </th>
-                        <td>{ //slice/request_slice/response/headers/@content-type }</td></tr>
-                    <tr><th>  //slice/request_slice/response/@status  </th>
-                        <td>{ //slice/request_slice/response/@status }</td></tr>
+                    <tr><th>  //slice/request_slice/value/request/@mode  </th>
+                        <td>{ //slice/request_slice/value/request/@mode }</td></tr>
+                    <tr><th>  //slice/request_slice/value/response/headers/@content-type  </th>
+                        <td>{ //slice/request_slice/value/response/headers/@content-type }</td></tr>
+                    <tr><th>  //slice/request_slice/value/response/@status  </th>
+                        <td>{ //slice/request_slice/value/response/@status }</td></tr>
                 </table>
-                <apply-templates mode="display" select="//slice/request_slice/*"></apply-templates>
-                <template mode="display" match="*">
+                <apply-templates mode="display" select="//slice/request_slice/value/*"></apply-templates>
+                <xsl:template mode="display" match="*">
                     <fieldset>
                         <legend> {local-name(.)} </legend>
                         <ul>
@@ -101,7 +103,7 @@
                         </ul>
                         <apply-templates mode="display" select="*"></apply-templates>
                     </fieldset>
-                </template>
+                </xsl:template>
             </template>
         </custom-element>
     </template>

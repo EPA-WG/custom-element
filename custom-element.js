@@ -96,9 +96,7 @@ Json2Xml( o, tag )
     export function
 obj2node( o, tag, doc )
 {
-    if( typeof o === 'function')
-    {debugger}
-    // tag = tag.replace( /[^a-z0-9\-]/gi,'_' ).toLowerCase();
+    if( typeof o === 'function'){debugger}
     if( typeof o === 'string' )
         return create(tag,o,doc);
 
@@ -377,24 +375,6 @@ event2slice( x, sliceNames, ev, dce )
         }
         s.append( obj2node( ev, 'event', d ) );
     })
-    // if( s.includes('/') )
-    // {   const it = x.ownerDocument.evaluate(s,x)
-    //     ,      n = it.iterateNext();
-    //     if( n.parentNode.localName ==='attributes' )
-    //         dce.setAttribute( n.localName, data );
-    //     n.textContent = data;
-    //     return
-    // }
-    // const isString = typeof data === 'string' ;
-    // if( isString )
-    //     data = ''+xPath(data, x);
-    // const createXmlNode = ( tag, t = '' ) => ( e => ((e.append( createText(x, t||''))),e) )(x.ownerDocument.createElement( tag ))
-    // const el = isString
-    //     ? createXmlNode(s, data)
-    //     : document.adoptNode( xml2dom( Json2Xml( data, s ) ).documentElement);
-    // [...x.children].filter( e=>e.localName === s ).map( el=>el.remove() );
-    // el.data = data;
-    // x.append(el);
 }
 
 function forEach$( el, css, cb){
@@ -568,7 +548,7 @@ CustomElement extends HTMLElement
         class DceElement extends HTMLElement
         {
             static get observedAttributes(){ return declaredAttributes.map( a=>attr(a,'name')); }
-
+            #inTransform = 0;
             connectedCallback()
             {   let payload = this.childNodes;
                 if( this.firstElementChild?.tagName === 'TEMPLATE' )
@@ -619,10 +599,6 @@ CustomElement extends HTMLElement
 
                 this.onSlice = ev=>
                 {   ev.stopPropagation?.();
-                    const s = attr( ev.target, 'slice')
-                    // if( deepEqual( ev.detail, [...sliceRoot.children].find( e=>e.localName === s )?.data ) )
-                    //     return
-
                     sliceEvents.push(ev);
                     if( !timeoutID )
                         timeoutID = setTimeout(()=>
@@ -631,7 +607,9 @@ CustomElement extends HTMLElement
                         },10);
                 };
                 const transform = this.transform = ()=>
-                {
+                {   if(this.#inTransform){ debugger }
+                    this.#inTransform = 1;
+
                     const ff = xp.map( (p,i) =>
                     {   const f = p.transformToFragment(x.ownerDocument, document)
                         if( !f )
@@ -645,9 +623,12 @@ CustomElement extends HTMLElement
                         merge( this, f.childNodes )
                     })
 
-                    DceElement.observedAttributes.map( a => {
-                        if( attr(this.firstElementChild,a) !== attr(this,a) )
-                            this.setAttribute( a, attr(this.firstElementChild,a) );
+                    DceElement.observedAttributes.map( a =>
+                    {   let v = attr(this.firstElementChild,a);
+                        if( v !== attr(this,a) )
+                        {   this.setAttribute( a, v );
+                            this.#applyAttribute( a, v );
+                        }
                     })
 
                     forEach$( this,'[slice]', el =>
@@ -663,24 +644,28 @@ CustomElement extends HTMLElement
                             }
                         }
                     });
+                    this.#inTransform = 0;
                 };
                 transform();
                 applySlices();
             }
-            attributeChangedCallback(name, oldValue, newValue)
-            {   if( !this.xml )
-                    return;
-                let a = this.xml.querySelector(`attributes>${name}`);
+            #applyAttribute(name, newValue)
+            {   let a = this.xml.querySelector(`attributes>${name}`);
                 if( a )
-                    emptyNode(a).append( createText(a,newValue));
+                    emptyNode(a).append( createText(a,newValue) );
                 else
                 {   a = create( name, newValue, this.xml );
                     a.append( createText(a,newValue) );
                     this.xml.querySelector('attributes').append( a );
                 }
-
+            }
+            attributeChangedCallback(name, oldValue, newValue)
+            {   if( !this.xml || this.#inTransform )
+                    return;
+                this.#applyAttribute(name, newValue);
                 this.transform(); // needs throttling
             }
+
             get dce(){ return dce }
         }
         if(tag)
