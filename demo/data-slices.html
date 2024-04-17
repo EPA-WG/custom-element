@@ -76,13 +76,30 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="5. initial slice value from attribute, slice change on event."
-                   description="initial value from input as 'xB'; type and unfocus to see slice changed">
+<html-demo-element legend="5. slice event data."
+                   description="move the mouse and click to see slice and slice event changed">
     <template>
         <custom-element>
             <template>
-                <input slice="s" slice-value="concat('x:', //@pageX)"  slice-event="mousemove" />
-                //slice/s : {//slice/s}
+                <textarea slice="s" slice-value="concat('x:', //@pageX)"
+                          slice-event="mousemove click"
+                          style="width:16rem;height:16rem;box-shadow: inset {//@offsetX}px {//@offsetY}px gold;" ></textarea><br/>
+                //slice/s : {//slice/s}   <br/>
+                //slice/s/event/@offsetY: {//slice/s/event/@offsetY}  <br/>
+                event type:{//slice/s/event/@type}
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="6. initial slice value from input, button ignored till change on click."
+                   description="initial value from input as 'anonymous'; on button click change to 'broccoli'">
+    <template>
+        <custom-element>
+            <template>
+            <input slice="nickname" value="anonymous" />
+            <button slice="nickname" slice-value="'broccoli'" slice-event="click">🥦</button>
+            {//nickname}
             </template>
         </custom-element>
     </template>

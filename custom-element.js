@@ -636,7 +636,7 @@ CustomElement extends HTMLElement
                     {   if( !el.dceInitialized )
                         {   el.dceInitialized = 1;
                             const evs = attr(el,'slice-event');
-                            el.addEventListener( evs || 'change', ev=>this.onSlice(ev) );
+                            (evs || 'change').split(' ').forEach( t=> el.addEventListener( t, ev=>this.onSlice(ev) ));
                             if( !evs || evs.includes('init') )
                             {   if( el.hasAttribute('slice-value') || el.hasAttribute('value') || el.value )
                                     this.onSlice({type:'init', target: el })
