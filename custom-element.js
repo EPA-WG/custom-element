@@ -655,7 +655,6 @@ CustomElement extends HTMLElement
                     emptyNode(a).append( createText(a,newValue) );
                 else
                 {   a = create( name, newValue, this.xml );
-                    a.append( createText(a,newValue) );
                     this.xml.querySelector('attributes').append( a );
                 }
             }
