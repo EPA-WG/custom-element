@@ -19,6 +19,75 @@
     <h3>Data slices propagation by events.</h3>
 </nav>
 
+<html-demo-element legend="0. slice change on event. 1:1 slice⮂value"
+                   description="initial value blank; type and unfocus to see slice changed">
+    <template>
+
+        <custom-element>
+            <input slice="typed" /> //slice/typed : {//slice/typed}
+        </custom-element>
+    </template>
+</html-demo-element>
+
+
+<html-demo-element legend="1. initial slice value, slice change on event. slice⮂value, w/ initial"
+                   description="initial value from input; type and unfocus to see slice changed">
+    <template>
+        <custom-element>
+            <input slice="s" value="A" /> //slice/s : {//slice/s}
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="2. initial slice value, slice change on event. slice⮂value, w/ initial"
+                   description="initial value from input; type to see slice changed">
+    <template>
+        <custom-element>
+            <input slice="s" value="B" slice-event="keyup"/> //slice/s : {//slice/s}
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="3. initial slice value from attribute, slice change on event."
+                   description="initial value from input; type to see slice changed">
+    <template>
+        <custom-element tag="dce-1">
+            <template>
+                <attribute name="a" >😁</attribute>
+                <input slice="s" value="{$a}" slice-event="keyup" />
+                attribute 'a' : {$a}
+                //slice/s : {//slice/s}
+            </template>
+        </custom-element>
+        <dce-1></dce-1>
+        <dce-1 a="🤗"></dce-1>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="4. initial slice value from attribute, slice change on event."
+                   description="initial value from input as 'xB'; type and unfocus to see slice changed">
+    <template>
+        <custom-element>
+            <template>
+                <input slice="s" value="B" slice-value="concat('x', @value )" />
+                //slice/s : {//slice/s}
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="5. initial slice value from attribute, slice change on event."
+                   description="initial value from input as 'xB'; type and unfocus to see slice changed">
+    <template>
+        <custom-element>
+            <template>
+                <input slice="s" slice-value="concat('x:', //@pageX)"  slice-event="mousemove" />
+                //slice/s : {//slice/s}
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
 <html-demo-element legend="0. slice initialization, change on event"
                    description="initial value should be 0; + and - should change the number in input field">
     <template>

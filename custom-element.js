@@ -361,8 +361,10 @@ event2slice( x, sliceNames, ev, dce )
         el.getAttributeNames().map( a => s.setAttribute( a, attr(el,a) ) );
         [...s.childNodes].filter(n=>n.localName==='event').map(n=>n.remove());
         ev.type==='init' && cleanSliceValue();
+        s.append( obj2node( ev, 'event', d ) );
         if( el.hasAttribute('slice-value') )
-        {   const v = xPath( attr( el, 'slice-value'),s );
+        {   s.setAttribute('value', el.value );
+            const v = xPath( attr( el, 'slice-value'),s );
             cleanSliceValue();
             s.append( createText( d, v ) );
         }else
@@ -373,7 +375,6 @@ event2slice( x, sliceNames, ev, dce )
             else
                 s.append( obj2node(v,'value',s.ownerDocument) )
         }
-        s.append( obj2node( ev, 'event', d ) );
     })
 }
 
