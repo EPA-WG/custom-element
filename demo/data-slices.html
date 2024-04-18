@@ -120,6 +120,26 @@
     </template>
 </html-demo-element>
 
+<html-demo-element legend="8. initial slices value from SLICE element, button ignored till change on click."
+                   description="synthetic SLICE elements serve as initial value holder">
+    <template>
+        <custom-element>
+            <template>
+                <button>
+                    <slice slice="clicked" value="{0}" ></slice>
+                    <slice slice="focused" value="{0}" ></slice>
+                    <slice slice-event="click tap" slice="clicked" slice-value="//clicked+1" ></slice>
+                    <slice slice-event="focus"     slice="focused" slice-value="1" ></slice>
+                    <slice slice-event="blur"      slice="focused" slice-value="0" ></slice>
+                     click/tap, focus/blur
+                </button> <br/>
+                //clicked : {//clicked} <br/>
+                //focused : {//focused}
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
 <html-demo-element legend="0. slice initialization, change on event"
                    description="initial value should be 0; + and - should change the number in input field">
     <template>

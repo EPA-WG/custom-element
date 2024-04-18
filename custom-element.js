@@ -357,18 +357,19 @@ event2slice( x, sliceNames, ev, dce )
     {
         const d = x.ownerDocument
         ,    el = ev.sliceEventSource
+        ,   sel = ev.sliceElement
         ,   cleanSliceValue = ()=>[...s.childNodes].filter(n=>n.nodeType===3 || n.localName==='value').map(n=>n.remove());
         el.getAttributeNames().map( a => s.setAttribute( a, attr(el,a) ) );
         [...s.childNodes].filter(n=>n.localName==='event').map(n=>n.remove());
         ev.type==='init' && cleanSliceValue();
         s.append( obj2node( ev, 'event', d ) );
-        if( el.hasAttribute('slice-value') )
+        if( sel.hasAttribute('slice-value') )
         {   s.setAttribute('value', el.value );
-            const v = xPath( attr( el, 'slice-value'),s );
+            const v = xPath( attr( sel, 'slice-value'),s );
             cleanSliceValue();
             s.append( createText( d, v ) );
         }else
-        {   const v = el.value || attr( el, 'value' ) ;
+        {   const v = el.value || attr( sel, 'value' ) ;
             cleanSliceValue();
             if( isString(v) )
                 s.append( createText( d, v) );
@@ -588,7 +589,7 @@ CustomElement extends HTMLElement
                 {   const processed = {}
 
                     for(let ev; ev = sliceEvents.pop(); )
-                    {   const s = attr( ev.sliceEventSource, 'slice');
+                    {   const s = attr( ev.sliceElement, 'slice');
                         if( processed[s] )
                             continue;
                         event2slice( sliceRoot, s, ev, this );
@@ -637,10 +638,16 @@ CustomElement extends HTMLElement
                     {   if( !el.dceInitialized )
                         {   el.dceInitialized = 1;
                             const evs = attr(el,'slice-event');
-                            (evs || 'change').split(' ').forEach( t=> el.addEventListener( t, ev=>this.onSlice(ev) ));
+                            (evs || 'change')
+                                .split(' ')
+                                .forEach( t=> (el.localName==='slice'? el.parentElement : el)
+                                                .addEventListener( t, ev=>
+                                                {   ev.sliceElement = el;
+                                                    this.onSlice(ev)
+                                                } ));
                             if( !evs || evs.includes('init') )
                             {   if( el.hasAttribute('slice-value') || el.hasAttribute('value') || el.value )
-                                    this.onSlice({type:'init', target: el })
+                                    this.onSlice({type:'init', target: el, sliceElement:el })
                                 else
                                     el.value = sliceXPath( attr(el,'slice') )
                             }
