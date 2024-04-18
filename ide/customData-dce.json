@@ -97,6 +97,16 @@
           "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/for-each"
         }
       ]
+    },
+    {
+      "name": "slice",
+      "description": "Synthetic element for defining the slice-attributed when more then one slice/event/value associated with parent element",
+      "references": [
+        {
+          "name": "README",
+          "url": "https://github.com/EPA-WG/custom-element/tree/develop?tab=readme-ov-file#interactivity-via-data-slice-triggered-by-events"
+        }
+      ]
     }
   ]
 }
