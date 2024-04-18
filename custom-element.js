@@ -356,7 +356,7 @@ event2slice( x, sliceNames, ev, dce )
     assureSlices(x,sliceNames).map( s =>
     {
         const d = x.ownerDocument
-        ,    el = ev.target
+        ,    el = ev.sliceEventSource
         ,   cleanSliceValue = ()=>[...s.childNodes].filter(n=>n.nodeType===3 || n.localName==='value').map(n=>n.remove());
         el.getAttributeNames().map( a => s.setAttribute( a, attr(el,a) ) );
         [...s.childNodes].filter(n=>n.localName==='event').map(n=>n.remove());
@@ -588,7 +588,7 @@ CustomElement extends HTMLElement
                 {   const processed = {}
 
                     for(let ev; ev = sliceEvents.pop(); )
-                    {   const s = attr( ev.target, 'slice');
+                    {   const s = attr( ev.sliceEventSource, 'slice');
                         if( processed[s] )
                             continue;
                         event2slice( sliceRoot, s, ev, this );
@@ -600,6 +600,7 @@ CustomElement extends HTMLElement
 
                 this.onSlice = ev=>
                 {   ev.stopPropagation?.();
+                    ev.sliceEventSource = ev.currentTarget || ev.target;
                     sliceEvents.push(ev);
                     if( !timeoutID )
                         timeoutID = setTimeout(()=>

@@ -105,6 +105,21 @@
     </template>
 </html-demo-element>
 
+<html-demo-element legend="7. initial slice value from SLICE element, button ignored till change on click."
+                   description="synthetic SLICE element serves as initial value holder">
+    <template>
+        <custom-element>
+            <template>
+                <button slice="clickcount" slice-event="click tap" slice-value="//clickcount + 1">
+                    <slice slice="clickcount" value="0" ></slice>
+                     click/tap
+                </button>
+                //clickcount : {//clickcount} <br/>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
 <html-demo-element legend="0. slice initialization, change on event"
                    description="initial value should be 0; + and - should change the number in input field">
     <template>
