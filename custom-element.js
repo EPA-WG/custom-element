@@ -417,7 +417,10 @@ export function mergeAttr( from, to )
         return
     }
     for( let a of from.attributes)
-        a.namespaceURI? to.setAttributeNS( a.namespaceURI, a.name, a.value ) : to.setAttribute( a.name, a.value )
+    {   a.namespaceURI? to.setAttributeNS( a.namespaceURI, a.name, a.value ) : to.setAttribute( a.name, a.value )
+        if( a.name === 'value')
+            to.value = a.value
+    }
 }
 export function assureUnique(n, id=0)
 {

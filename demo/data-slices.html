@@ -19,7 +19,45 @@
     <h3>Data slices propagation by events.</h3>
 </nav>
 
-<html-demo-element legend="0. slice change on event. 1:1 slice⮂value"
+<html-demo-element legend="A. slice initialization, change on event"
+                   description="initial value should be 0; + and - should change the number in input field">
+    <template>
+        <custom-element>
+            <template>
+                <button slice="clickcount"
+                        slice-event="click"
+                        slice-value="//clickcount + 1"   >
+                    +
+                </button>
+                <button slice="clickcount"
+                        slice-event="click"
+                        slice-value="//clickcount - 1"   >
+                    -
+                </button>
+                <input slice="clickcount" type="number" value="{//clickcount ?? 0}" />
+                {//clickcount}
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="B. slice event data."
+                   description="move the mouse over TEXTAREA and click to see slice and slice event changed">
+    <template>
+        <custom-element>
+            <template>
+                <textarea slice="s" slice-value="concat('x:', //@pageX)"
+                          slice-event="mousemove click"
+                          style="width:16rem;height:16rem;box-shadow: inset {//@offsetX}px {//@offsetY}px gold;" ></textarea><br/>
+                //slice/s : {//slice/s}   <br/>
+                //slice/s/event/@offsetY: {//slice/s/event/@offsetY}  <br/>
+                event type:{//slice/s/event/@type}
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="1. slice change on event. 1:1 slice⮂value"
                    description="initial value blank; type and unfocus to see slice changed">
     <template>
 
@@ -30,7 +68,7 @@
 </html-demo-element>
 
 
-<html-demo-element legend="1. initial slice value, slice change on event. slice⮂value, w/ initial"
+<html-demo-element legend="2. initial slice value, slice change on event. slice⮂value, w/ initial"
                    description="initial value from input; type and unfocus to see slice changed">
     <template>
         <custom-element>
@@ -39,7 +77,7 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="2. initial slice value, slice change on event. slice⮂value, w/ initial"
+<html-demo-element legend="3. initial slice value, slice change on event. slice⮂value, w/ initial"
                    description="initial value from input; type to see slice changed">
     <template>
         <custom-element>
@@ -48,7 +86,7 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="3. initial slice value from attribute, slice change on event."
+<html-demo-element legend="4. initial slice value from attribute, slice change on event."
                    description="initial value from input; type to see slice changed">
     <template>
         <custom-element tag="dce-1">
@@ -64,7 +102,7 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="4. initial slice value from attribute, slice change on event."
+<html-demo-element legend="5. initial slice value from attribute, slice change on event."
                    description="initial value from input as 'xB'; type and unfocus to see slice changed">
     <template>
         <custom-element>
@@ -76,21 +114,6 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="5. slice event data."
-                   description="move the mouse and click to see slice and slice event changed">
-    <template>
-        <custom-element>
-            <template>
-                <textarea slice="s" slice-value="concat('x:', //@pageX)"
-                          slice-event="mousemove click"
-                          style="width:16rem;height:16rem;box-shadow: inset {//@offsetX}px {//@offsetY}px gold;" ></textarea><br/>
-                //slice/s : {//slice/s}   <br/>
-                //slice/s/event/@offsetY: {//slice/s/event/@offsetY}  <br/>
-                event type:{//slice/s/event/@type}
-            </template>
-        </custom-element>
-    </template>
-</html-demo-element>
 
 <html-demo-element legend="6. initial slice value from input, button ignored till change on click."
                    description="initial value from input as 'anonymous'; on button click change to 'broccoli'">
@@ -120,7 +143,7 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="8. initial slices value from SLICE element, button ignored till change on click."
+<html-demo-element legend="8. multiple slices by SLICE element, button ignored till change on click."
                    description="synthetic SLICE elements serve as initial value holder">
     <template>
         <custom-element>
@@ -140,28 +163,8 @@
     </template>
 </html-demo-element>
 
-<html-demo-element legend="0. slice initialization, change on event"
-                   description="initial value should be 0; + and - should change the number in input field">
-    <template>
-        <custom-element>
-            <template>
-                <button slice="clickcount"
-                        slice-event="click"
-                        slice-value="//clickcount + 1"   >
-                    +
-                </button>
-                <button slice="clickcount"
-                        slice-event="click"
-                        slice-value="//clickcount - 1"   >
-                    -
-                </button>
-                <input slice="clickcount" type="number" value="{//clickcount ?? 0}" />
-            </template>
-        </custom-element>
-    </template>
-</html-demo-element>
 
-<html-demo-element legend="1. slice in attribute"
+<html-demo-element legend="9. slice in attribute"
                    description="initial attribute value should be smile as emoji and :) on blur from input it should be updated from value">
     <template>
         <custom-element tag="emotional-element">
@@ -175,32 +178,6 @@
         <emotional-element></emotional-element>
     </template>
 </html-demo-element>
-
-
-<!--<html-demo-element legend="0. multiple slices and events"-->
-<!--                   description="+ and - should change the number in input field">-->
-<!--    <template>-->
-<!--        <custom-element>-->
-<!--            <template>-->
-<!--                <attribute name="focused" select="true"></attribute>-->
-<!--                <label>-->
-<!--                    tap here to focus. Focused: {$focused}-->
-<!--                    <button>-->
-<!--                        <slice-event event="click tap" slice="clickcount" value="//clickcount+1"   ></slice-event>-->
-<!--                        <slice-event event="focusin" slice="//attributes/focused" value="FOCUSIN"     ></slice-event>-->
-<!--                        <slice-event event="focusout" slice="//attributes/focused" value="FOCUSOUT"   ></slice-event>-->
-<!--                        +-->
-<!--                    </button>-->
-<!--                </label>-->
-<!--                <button>-->
-<!--                    <slice-event event="click tap" slice="clickcount" value="//clickcount-1"   ></slice-event>-->
-<!--                    - -->
-<!--                </button>-->
-<!--                <input slice="clickcount" type="number" value="0"/>-->
-<!--            </template>-->
-<!--        </custom-element>-->
-<!--    </template>-->
-<!--</html-demo-element>-->
 
 <script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
 
