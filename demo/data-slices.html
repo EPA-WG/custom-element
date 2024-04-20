@@ -72,7 +72,7 @@
                    description="initial value from input; type and unfocus to see slice changed">
     <template>
         <custom-element>
-            <input slice="s" value="A" /> //slice/s : {//slice/s}
+            <input slice="s" value="{//s ?? 'B'}" /> //slice/s : {//slice/s}
         </custom-element>
     </template>
 </html-demo-element>
@@ -81,7 +81,7 @@
                    description="initial value from input; type to see slice changed">
     <template>
         <custom-element>
-            <input slice="s" value="B" slice-event="keyup"/> //slice/s : {//slice/s}
+            <input slice="s" value="{//s ?? 'B'}" slice-event="input"/> //slice/s : {//slice/s}
         </custom-element>
     </template>
 </html-demo-element>
@@ -92,7 +92,7 @@
         <custom-element tag="dce-1">
             <template>
                 <attribute name="a" >😁</attribute>
-                <input slice="s" value="{$a}" slice-event="keyup" />
+                <input slice="s" value="{//s ?? $a}" slice-event="keyup" />
                 attribute 'a' : {$a}
                 //slice/s : {//slice/s}
             </template>
@@ -107,7 +107,7 @@
     <template>
         <custom-element>
             <template>
-                <input slice="s" value="B" slice-value="concat('x', @value )" />
+                <input slice="s" value="{substring(//s, 2) ?? 'B'}" slice-value="concat('x', @value )" />
                 //slice/s : {//slice/s}
             </template>
         </custom-element>
@@ -137,7 +137,7 @@
                     <slice slice="clickcount" value="0" ></slice>
                      click/tap
                 </button>
-                //clickcount : {//clickcount} <br/>
+                //clickcount : {//clickcount}
             </template>
         </custom-element>
     </template>
