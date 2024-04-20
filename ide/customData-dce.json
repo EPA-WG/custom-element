@@ -5,7 +5,7 @@
       "name": "slice",
       "description": {
         "kind": "markdown",
-        "value": "Defines the name of data slice in DCE where the data from `value` will be propagated on `change` or by `slice-update` event\n\nOn: any component with `value` and associated change event"
+        "value": "Defines the name of data slice in DCE where the data from `value` will be propagated on `change` or by `slice-event` event\n\nOn: any component with `value` and associated change event"
       },
       "references": [
         {
@@ -15,7 +15,7 @@
       ]
     },
     {
-      "name": "slice-update",
+      "name": "slice-event",
       "description": {
         "kind": "markdown",
         "value": "Defines the event name on which `value` would be synchronized with DCE slice\n\nOn: any component with `value` and associated change event"
@@ -24,6 +24,19 @@
         {
           "name": "Demo",
           "url": "https://unpkg.com/@epa-wg/custom-element/demo/dom-merge.html"
+        }
+      ]
+    },
+    {
+      "name": "slice-value",
+      "description": {
+        "kind": "markdown",
+        "value": "XPath expression to populate into the slice"
+      },
+      "references": [
+        {
+          "name": "Demo",
+          "url": "https://unpkg.com/@epa-wg/custom-element/demo/data-slices.html"
         }
       ]
     }
@@ -82,6 +95,16 @@
         {
           "name": "for-each",
           "url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/for-each"
+        }
+      ]
+    },
+    {
+      "name": "slice",
+      "description": "Synthetic element for defining the slice-attributed when more then one slice/event/value associated with parent element",
+      "references": [
+        {
+          "name": "README",
+          "url": "https://github.com/EPA-WG/custom-element/tree/develop?tab=readme-ov-file#interactivity-via-data-slice-triggered-by-events"
         }
       ]
     }

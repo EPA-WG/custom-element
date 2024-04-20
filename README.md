@@ -22,16 +22,17 @@ UI is re-rendered on each data slice change triggered by initialization or DOM e
 <details>
 <summary> What is DCE? </summary>
 DCE provides the next level of abstraction in HTML - native composition. With native implementation which is 
-streaming parser, streaming transformation, multithreading. native assumes the C/Rust compiled code. There is no place for JavaScript except of polyfill and ability to extend DCE, which otherwise has to be native.
+streaming parser, streaming transformation, multithreading. native assumes the C/Rust compiled code. 
+There is no place for JavaScript except of polyfill and ability to extend DCE, which otherwise has to be native.
 
 The composition assumes the fully functional template and ability to call the template with parameters( custom tag + attributes) .
 
-As the next to HTML abstraction layer - composition, it needs and provide:
+As the next to HTML abstraction layer - **composition**, it provides:
 * ability to use dependencies as from withing the page as from external file/lib via src attribute and # in URL
 * ability to treat external content via content-type like html, SVG, images, video with own template rendering
 * provide styles and embedded DCE declarations in own and named(lib) scope, sharing the scoped registry.
 
-As the next to composition layer of **functional component** it provides
+After composition the layer of **functional component** provides
 * data layer with access to attributes/payload(+slots), dataset, data bound slice
 * means in template to use the data selector for condition/enumeration/text injection into attributes and DOM
 * Set of native primitives to support browser APIs declaratively: location,storage, http request which bonded to slice and as result to reactive UI.
@@ -58,12 +59,35 @@ npm i -P @epa-wg/custom-element
 yarn add @epa-wg/custom-element
 ```
 
-## [enable IDE support](ide/IDE.md)
+## Enable IDE support
+[IDE.md](ide/IDE.md)
 
 
 
 ## [Live demo 🔗][demo-url]
+
+### Interactivity via data `slice` triggered by events
 ```html
+<custom-element>
+      <input slice="typed"> //slice/typed : {//slice/typed}
+</custom-element>
+
+<custom-element>
+    <template>
+        <button slice="clickcount"
+                slice-event="click"
+                slice-value="//clickcount + 1" > + </button>
+        <input slice="clickcount" type="number" value="{//clickcount ?? 0}">
+        Click count: { //clickcount }
+    </template>
+</custom-element>
+```
+More on `slice` concept in [slice and events demo page][slice-demo-url]
+
+### Templating power
+comes from XSLT and XPath. Which is natively implemented in all current browsers, globally tested and well documented.
+```html
+
 <custom-element tag="pokemon-tile" hidden>
     <h3>{title}</h3> <!-- title is an attribute in instance
                                                  mapped into /*/attributes/title -->
@@ -315,6 +339,7 @@ within template
 [git-test-url]:   https://github.com/EPA-WG/custom-element-test
 [demo-url]:       https://unpkg.com/@epa-wg/custom-element@0.0/index.html
 [css-demo-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/scoped-css.html
+[slice-demo-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/data-slices.html
 [hex-grid-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/hex-grid.html
 [hex-grid-image]: demo/hex-grid-transform.png
 [local-storage-demo]: https://unpkg.com/@epa-wg/custom-element@0.0/demo/local-storage.html
@@ -323,9 +348,9 @@ within template
 [github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
 [npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
-[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.18/coverage/coverage.svg
-[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.18/coverage/lcov-report/index.html
-[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.18/storybook-static/index.html?path=/story/welcome--introduction
+[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.19/coverage/coverage.svg
+[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.19/coverage/lcov-report/index.html
+[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.19/storybook-static/index.html?path=/story/welcome--introduction
 [sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
 [webcomponents-url]: https://www.webcomponents.org/element/@epa-wg/custom-element
 [webcomponents-img]: https://img.shields.io/badge/webcomponents.org-published-blue.svg

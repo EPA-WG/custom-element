@@ -18,7 +18,8 @@ export class HttpRequestElement extends HTMLElement
     }
     get requestProps()
     {   const ret = {};
-        [...this.attributes].filter(a=>!a.name.startsWith('header-')).map( a => ret[a.name] = a.value );
+        [...this.attributes].filter(a=>!a.name.startsWith('header-'))
+                            .filter(a=>!a.name.startsWith('slice')).map( a => ret[a.name] = a.value );
         return ret
     }
 

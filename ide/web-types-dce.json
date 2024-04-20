@@ -1,7 +1,7 @@
 {
   "$schema": "http://json.schemastore.org/web-types",
   "name": "@epa-wg/custom-element",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "js-types-syntax": "typescript",
   "description-markup": "markdown",
   "contributions": {
@@ -9,13 +9,18 @@
       "attributes": [
         {
           "name": "slice",
-          "description": "Defines the name of data slice in DCE where the data from `value` will be propagated on `change` or by `slice-update` event\n\nOn: any component with `value` and associated change event",
+          "description": "Defines the name of data slice in DCE where the data from `value` will be propagated on `change` or by `slice-event` event\n\nOn: any component with `value` and associated change event",
           "doc-url": "https://unpkg.com/@epa-wg/custom-element/demo/dom-merge.html"
         },
         {
-          "name": "slice-update",
+          "name": "slice-event",
           "description": "Defines the event name on which `value` would be synchronized with DCE slice\n\nOn: any component with `value` and associated change event",
           "doc-url": "https://unpkg.com/@epa-wg/custom-element/demo/dom-merge.html"
+        },
+        {
+          "name": "slice-value",
+          "description": "XPath expression to populate into the slice",
+          "doc-url": "https://unpkg.com/@epa-wg/custom-element/demo/data-slices.html"
         }
       ],
       "elements": [
@@ -90,6 +95,14 @@
                 "type": "string"
               }
             }
+          ]
+        },
+        {
+          "name": "slice",
+          "description": "Synthetic element for defining the slice-attributed when more then one slice/event/value associated with parent element",
+          "doc-url": "https://github.com/EPA-WG/custom-element/tree/develop?tab=readme-ov-file#interactivity-via-data-slice-triggered-by-events",
+          "attributes": [
+
           ]
         }
       ]
