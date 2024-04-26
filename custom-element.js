@@ -11,7 +11,8 @@ const attr = (el, attr)=> el.getAttribute?.(attr)
 ,   isNode = e => e && typeof e.nodeType === 'number'
 ,   create = ( tag, t = '', d=document ) => ( e => ((t && e.append(createText(d.ownerDocument||d, t))),e) )((d.ownerDocument || d ).createElement( tag ))
 ,   createText = ( d, t) => (d.ownerDocument || d ).createTextNode( t )
-,   emptyNode = n => { while(n.firstChild) n.firstChild.remove(); n.getAttributeNames().map( a => n.removeAttribute(a) ); return n; }
+,   removeChildren = n => { while(n.firstChild) n.firstChild.remove(); return n; }
+,   emptyNode = n => {  n.getAttributeNames().map( a => n.removeAttribute(a) ); return removeChildren(n); }
 ,   createNS = ( ns, tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElementNS( ns, tag ))
 ,   xslNs = x => ( x?.setAttribute('xmlns:xsl', XSL_NS_URL ), x )
 ,   xslHtmlNs = x => ( x?.setAttribute('xmlns:xhtml', HTML_NS_URL ), xslNs(x) )
@@ -95,10 +96,12 @@ Json2Xml( o, tag )
 
     export function
 obj2node( o, tag, doc )
-{
-    if( typeof o === 'function'){debugger}
-    if( typeof o === 'string' )
+{   const t = typeof o;
+    if( t === 'function'){debugger}
+    if( t === 'string' )
         return create(tag,o,doc);
+    if( t === 'number' )
+        return create(tag,''+o,doc);
 
     if( o instanceof Array )
     {   const ret = create('array');
@@ -364,17 +367,23 @@ event2slice( x, sliceNames, ev, dce )
         ev.type==='init' && cleanSliceValue();
         s.append( obj2node( ev, 'event', d ) );
         if( sel.hasAttribute('slice-value') )
-        {   s.setAttribute('value', el.value );
+        {   if( el.value === undefined)
+                s.removeAttribute('value')
+            else
+                s.setAttribute('value', el.value );
             const v = xPath( attr( sel, 'slice-value'),s );
             cleanSliceValue();
             s.append( createText( d, v ) );
         }else
-        {   const v = el.value || attr( sel, 'value' ) ;
+        {   const v = el.value ?? attr( sel, 'value' ) ;
             cleanSliceValue();
-            if( isString(v) )
-                s.append( createText( d, v) );
+            if( v === null || v === undefined )
+                [...s.childNodes].filter(n=>n.localName!=='event').map(n=>n.remove());
             else
-                s.append( obj2node(v,'value',s.ownerDocument) )
+                if( isString(v) )
+                    s.append( createText( d, v) );
+                else
+                    s.append( obj2node(v,'value',s.ownerDocument) )
         }
     })
 }
@@ -445,6 +454,8 @@ export function assureUnique(n, id=0)
 }
 export function merge( parent, fromArr )
 {
+    if(!fromArr.length)
+        return removeChildren(parent);
     const id2old = {};
     for( let c of parent.childNodes)
     {   ASSERT( !id2old[c.dceId] );
@@ -455,8 +466,8 @@ export function merge( parent, fromArr )
             id2old[attr(c, 'data-dce-id') || 0] = c;
     }
     for( let e of [...fromArr] )
-    {
-        const o = id2old[ attr(e, 'data-dce-id') || e.dceId ];
+    {   const k = attr(e, 'data-dce-id') || e.dceId;
+        const o = id2old[ k ];
         if( o )
         {   if( isText(e) )
             {   if( o.nodeValue !== e.nodeValue )
@@ -466,9 +477,12 @@ export function merge( parent, fromArr )
                 if( o.childNodes.length || e.childNodes.length )
                     merge(o, e.childNodes)
             }
+            delete id2old[ k ]
         }else
             parent.append( e )
     }
+    for( let v of Object.values(id2old) )
+        v.remove();
 }
 export function assureUID(n,attr)
 {   if( !n.hasAttribute(attr) )

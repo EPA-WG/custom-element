@@ -16,14 +16,119 @@
         td,th{text-align: right; }
         caption{ padding: 1rem; font-weight: bolder; font-family: sans-serif; }
     </style>
+
+    <script>
+        window.JsonSample = {a:1,b:'B'};
+    </script>
 </head>
 <body>
 
 <nav>
     <a href="../index.html"><h3><code>custom-element</code> demo</h3></a>
 </nav>
+<main>
+    <code>local-storage</code> allows to read and write its value to the key in <code>localStorage</code>.
+    The <code>type</code> attribute allows to place the validation constrains to the value: when the value does not
+    match the expected type, it would not be assigned, keeping empty <code>value</code> instead.
+</main>
+<html-demo-element legend="0. read localStorage text value"
+                   description="click should set text-key slice via localStorage change.">
+    <template>
+        <custom-element>
+            <template>
+                <local-storage key="textKey" slice="text-key" type="text" live="live"></local-storage>
+                <button onclick="localStorage.setItem('textKey','text value')">text value</button>
+                <button onclick="localStorage.setItem('textKey','another value')">another value</button>
+                //text-key: <code>{//text-key}</code>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
 
-<html-demo-element legend="1. localStorage simplest"
+<html-demo-element legend="1. always override "
+                   description="value in localStorage[] should be always reset to ABC. click should set text-key slice via localStorage change.">
+    <template>
+        <custom-element>
+            <template>
+                <!-- always reset -->
+                <local-storage key="overrideKey" slice="override-key" type="text" value="ABC"></local-storage>
+                <button onclick="localStorage.setItem('overrideKey','text value')">text value</button>
+                <button onclick="localStorage.removeItem('attrKey')">clear key</button>
+                //override-key: <code>{//override-key}</code>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="2. from storage with default "
+                   description="default overridden by button, refresh should preserve updated value">
+    <template>
+        <custom-element>
+            <template>
+                <!-- initially set value to DEF and update by button. On reload the value picked from localStorage -->
+                <local-storage key="attr2Key" slice="attr2-key" type="text" live="live" slice-value="@value ?? 'DEF'"></local-storage>
+                <button onclick="localStorage.clear()">clear localStorage</button>
+                <button onclick="localStorage.removeItem('attr2Key')">clear key</button>
+                <button onclick="localStorage.setItem('attr2Key','text value')">updated value</button>
+                //attr2-key: <code>{//attr2-key}</code>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="3. localStorage type"
+                   description="type validation happy path. Invalid for type value in storage would be treated as null">
+    <template>
+        <custom-element>
+            <template>
+                <local-storage key="dateKey"            slice="date-key"        type="date"             live="live"></local-storage>
+                <local-storage key="timeKey"            slice="time-key"        type="time"             live="live"></local-storage>
+                <local-storage key="localDateTimeKey"   slice="local-date-time" type="datetime-local"   live="live"></local-storage>
+                <local-storage key="numberKey"          slice="number-key"      type="number"           live="live"></local-storage>
+                <local-storage key="jsonKey"            slice="json-key"        type="json"             live="live"></local-storage>
+                <input id="typesinput" placeholder="set value" /><button onclick="
+                        'dateKey,timeKey,localDateTimeKey,numberKey,jsonKey'.split(',')
+                            .map( k=> localStorage.setItem(k, typesinput.value) )
+                    "> set to all</button><br/>
+                <hr/>
+                date-key:
+                    <button onclick="localStorage.setItem('dateKey', '2024-04-20T03:58:42.131Z')"           >2024-04-21T03:58:42.131Z           </button>
+                    <button onclick="localStorage.setItem('dateKey', new Date(Date.now()).toISOString())"   >now                                </button>
+                    <button onclick="localStorage.setItem('dateKey', 'ABC'  )"                              >date ABC - invalid                 </button>
+                    <code>{//date-key       }</code><br/>
+                time-key:
+                    <button onclick="localStorage.setItem('timeKey', '13:30')"                              >13:30                              </button>
+                    <code>{//time-key       }</code><br/>
+                local-date-time:
+                    <button onclick="localStorage.setItem('localDateTimeKey', '1977-04-01T14:00:30')"       >21977-04-01T14:00:30 - local       </button>
+                    <code>{//local-date-time}</code><br/>
+                number-key:
+                    <button onclick="localStorage.setItem('numberKey', '2024'       )"                      >2024 - number                      </button>
+                    <button onclick="localStorage.setItem('numberKey', '24'         )"                      >24   - number                      </button>
+                    <button onclick="localStorage.setItem('numberKey', '1.23456e+5' )"                      >1.23456e+5                         </button>
+                    <button onclick="localStorage.setItem('numberKey', '0001'       )"                      >0001                               </button>
+                    <button onclick="localStorage.setItem('numberKey', '000'        )"                      >000                                </button>
+                    <button onclick="localStorage.setItem('numberKey', '0'          )"                      >0                                  </button>
+                    <button onclick="localStorage.setItem('numberKey', 'ABC'        )"                      >ABC - invalid, NaN                 </button>
+                    <code>{//number-key     }</code> <br/>
+                <fieldset>
+                    <legend>json-key: </legend>
+
+                    <button onclick="localStorage.setItem('jsonKey', JSON.stringify('ABC'))"                >'ABC'   - string  </button>
+                    <button onclick="localStorage.setItem('jsonKey', JSON.stringify(12.345))"               >12.345  - number  </button>
+                    <button onclick="localStorage.setItem('jsonKey', JSON.stringify(window.JsonSample) )"   >a:1,b:'B'  -json  </button>
+                    <button onclick="localStorage.setItem('jsonKey', 'ABC'  )"                              >ABC - invalid     </button><br/>
+                    json-key:<code><xsl:apply-templates select="//json-key/value/@*|//json-key/text()|//json-key/value/text()" mode="json"></xsl:apply-templates></code>
+                </fieldset>
+                <xsl:template mode="json" match="*|@*">
+                    <div>{name()} : {.}</div>
+            </xsl:template>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="3. localStorage simplest"
                    description="local-storage read only during initial and only render, does not track the changes.">
     <p>Has to produce 12🍒</p>
     <template>

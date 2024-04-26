@@ -31,6 +31,33 @@
     <a href="../index.html"><h3><code>custom-element</code> demo</h3></a>
 </nav>
 
+
+<html-demo-element legend="0. url from text to http-request "
+                   description="read data from arbitrary URL">
+    <template>
+        <custom-element>
+            <template>
+
+                <button slice="url-string" slice-value="'https://pokeapi.co/api/v2/pokemon?limit=6'" slice-event="click">⬇️https://pokeapi.co/api/v2/pokemon?limit=6</button>
+                <input slice="url-string" value="{ //url-string ?? '' }" style="width:100%"/>
+                <button slice="fetch-url" slice-event="click" slice-value="//url-string"> GET </button>
+                <http-request
+                    url="{//fetch-url}"
+                    slice="request_slice"
+                    type="text"
+                    mode="cors"
+                    ></http-request>
+                <code>//fetch-url</code> from <code>{//fetch-url}</code><br/>
+                <for-each select="//results">
+                    <var>
+                        *{@name}
+                    </var>
+                </for-each>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
 <html-demo-element legend="1. http-request simplest"
                    description="load the list of pokemons">
     <p>Should display 6 image buttons with pokemon name </p>
