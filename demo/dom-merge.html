@@ -94,9 +94,9 @@
             <form>
                 <label>
                     <input type="text"
-                           value="Type time update"
+                           value="{//txt ?? 'Type time update'}"
                            slice="txt"
-                           slice-event="keyup"/>
+                           slice-event="init input"/>
 
                     <span> Character count:
                         <b> {string-length(//slice/txt)} </b>
