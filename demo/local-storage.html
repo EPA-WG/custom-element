@@ -51,10 +51,10 @@
         <custom-element>
             <template>
                 <!-- always reset -->
-                <local-storage key="overrideKey" slice="override-key" type="text" value="ABC"></local-storage>
-                <button onclick="localStorage.setItem('overrideKey','text value')">text value</button>
-                <button onclick="localStorage.removeItem('attrKey')">clear key</button>
-                //override-key: <code>{//override-key}</code>
+                <local-storage slice="override-key"  key="overrideKey" type="text" value="ABC"></local-storage>
+                <button onclick="localStorage.setItem(   'overrideKey','text value')">text value</button>
+                <button onclick="localStorage.removeItem('overrideKey'             )">clear key</button>
+                //override-key: <code>{                 //override-key      }</code>
             </template>
         </custom-element>
     </template>
