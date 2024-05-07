@@ -66,13 +66,9 @@ export class LocationElement extends HTMLElement
         }
         this._destroy = ()=>
         {
-            if( !state.listener )
-                return;
-            if(state.listener)
-            {   window.removeEventListener('popstate'    , listener);
-                window.removeEventListener('hashchange'  , listener);
-                window.removeEventListener('dce-location', listener);
-            }
+            window.removeEventListener('popstate'    , listener);
+            window.removeEventListener('hashchange'  , listener);
+            window.removeEventListener('dce-location', listener);
             delete state.listener;
         };
 
