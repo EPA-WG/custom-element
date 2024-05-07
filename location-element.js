@@ -21,11 +21,11 @@ function ensureTrackLocationChange()
 export class LocationElement extends HTMLElement
 {
     static observedAttributes=
-            [   'value' // populated from history, if defined initially, sets the value in storage
+            [   'value' // populated from url
             ,   'slice'
-            ,   'key'
+            ,   'href'  // url to be parsed. When omitted window.location is used.
             ,   'type' // `text|json`, defaults to text, other types are compatible with INPUT field
-            ,   'live' // monitors history change
+            ,   'live' // monitors history change, applicable only when href is omitted.
             ];
 
     constructor()
@@ -34,10 +34,10 @@ export class LocationElement extends HTMLElement
         const      state = {}
         ,       listener = e => setTimeout( propagateSlice,1 )
         , propagateSlice = ()=>
-        {   const urlStr = attr(this,'src')
+        {   const urlStr = attr(this,'href')
             if(!urlStr)
                 ensureTrackLocationChange();
-            const url = urlStr? new URL(urlStr) : window.location;
+            const url = urlStr? new URL(urlStr, window.location) : window.location;
 
             const params= {}
             const search = new URLSearchParams(url.search);
@@ -77,6 +77,14 @@ export class LocationElement extends HTMLElement
         };
 
     }
+    attributeChangedCallback(name, oldValue, newValue)
+    {
+        if('href'!== name)
+            return;
+        this.sliceInit && this.sliceInit();
+        // setTimeout(()=>this.sliceInit(),10)
+    }
+
     connectedCallback(){ this.sliceInit() }
     disconnectedCallback(){ this._destroy() }
 }
