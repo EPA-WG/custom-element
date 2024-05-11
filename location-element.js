@@ -78,7 +78,6 @@ export class LocationElement extends HTMLElement
         if('href'!== name)
             return;
         this.sliceInit && this.sliceInit();
-        // setTimeout(()=>this.sliceInit(),10)
     }
 
     connectedCallback(){ this.sliceInit() }
