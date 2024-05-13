@@ -1,4 +1,5 @@
 export function log(x: any): void;
+export function deepEqual(a: any, b:any): boolean|0;
 
 /**
  * @summary Declarative Custom Element as W3C proposal PoC with native(XSLT) based templating

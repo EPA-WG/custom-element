@@ -1,6 +1,5 @@
 const attr = ( el, attr )=> el.getAttribute( attr );
 
-
 let originalHistory;
 
 function ensureTrackLocationChange()
@@ -32,7 +31,7 @@ export class LocationElement extends HTMLElement
     {
         super();
         const      state = {}
-        ,       listener = e => setTimeout( propagateSlice,1 )
+        ,       listener = () => setTimeout( propagateSlice,1 )
         , propagateSlice = ()=>
         {   const urlStr = attr(this,'href')
             if(!urlStr)
