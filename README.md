@@ -348,9 +348,9 @@ within template
 [github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
 [npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
-[coverage-image]: https://unpkg.com/@epa-wg/custom-element-dist@0.0.1/coverage/src/custom-element/coverage.svg
-[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-dist@0.0.1/coverage/src/custom-element/index.html
-[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-dist@0.0.1/storybook-static/index.html?path=/story/welcome--introduction
+[coverage-image]: https://unpkg.com/@epa-wg/custom-element-dist@0.0.21/coverage/src/custom-element/coverage.svg
+[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-dist@0.0.21/coverage/src/custom-element/index.html
+[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-dist@0.0.21/storybook-static/index.html?path=/story/welcome--introduction
 [sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
 [webcomponents-url]: https://www.webcomponents.org/element/@epa-wg/custom-element
 [webcomponents-img]: https://img.shields.io/badge/webcomponents.org-published-blue.svg
