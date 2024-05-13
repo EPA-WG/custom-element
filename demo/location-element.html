@@ -30,9 +30,9 @@
             <input name="p2" value="def"/>
             <input type="submit" value="params"/>
         </form>
-        <button onclick="history.pushState( {},'', 'location.html?pushstate')"
+        <button onclick="history.pushState( {},'', 'location-element.html?pushstate')"
                 >history.pushState</button>
-        <button onclick="history.replaceState( {},'', 'location.html?replaceState#dce1')"
+        <button onclick="history.replaceState( {},'', 'location-element.html?replaceState#dce1')"
                 >history.replaceState</button>
 
     </template>
@@ -113,7 +113,7 @@
 </html-demo-element>
 
 
-<html-demo-element legend="3. External URL as SRC attribute"
+<html-demo-element legend="3. External URL as HREF attribute"
                    description="url parsed and populated into slice."
                    id="dce3">
     <p>Has to produce URL properties</p>
@@ -121,12 +121,12 @@
         <custom-element tag="dce-3" hidden>
             <template>
 
-                <location-element slice="src-url" src="https://my.example?a=1&b=2#3"></location-element>
+                <location-element slice="href-url" href="https://my.example?a=1&b=2#3"></location-element>
 
                 <xhtml:table>
                     <xhtml:tbody>
                         <xhtml:tr><xhtml:th><h3>URL properties</h3></xhtml:th></xhtml:tr>
-                        <for-each select="//slice/src-url/value/@*">
+                        <for-each select="//slice/href-url/value/@*">
                             <xhtml:tr>
                                 <xhtml:th>{name()}</xhtml:th>
                                 <xhtml:td>{.}</xhtml:td>
@@ -135,7 +135,7 @@
                     </xhtml:tbody>
                     <xhtml:tbody>
                         <xhtml:tr><xhtml:th><h3>URL parameters</h3></xhtml:th></xhtml:tr>
-                        <for-each select="//slice/src-url/value/params/*">
+                        <for-each select="//slice/href-url/value/params/*">
                             <xhtml:tr>
                                 <xhtml:th>{name()}</xhtml:th>
                                 <xhtml:td>{.}</xhtml:td>

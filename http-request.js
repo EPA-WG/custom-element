@@ -33,7 +33,7 @@ export class HttpRequestElement extends HTMLElement
 
     async fetch()
     {
-        if( !this.closest('custom-element') )
+        if( !this.closest('body') )
             return;
         const url = attr(this, 'url') || '';
         if( !url )
@@ -46,7 +46,7 @@ export class HttpRequestElement extends HTMLElement
 
         this.#inProgressUrl = url;
         const controller = new AbortController();
-        this.#destroy = ()=> controller.abort(this.localName+' disconnected');
+        this.#destroy = ()=> { controller.abort(this.localName+' disconnected'); this.#inProgressUrl = ''; }
 
         const request = { ...this.requestProps, headers: this.requestHeaders }
         ,       slice = { request }
@@ -61,16 +61,24 @@ export class HttpRequestElement extends HTMLElement
 
         slice.response = r;
         update();
-        slice.data = await response.json();
-        update();
+        if( r.headers['content-type']?.includes('json'))
+            try
+            {   slice.data = await response.json();
+                update();
+            }catch(_e){}
     }
 
     attributeChangedCallback(name, oldValue, newValue)
     {   if( name === 'url' )
-        {   if( newValue && oldValue !== newValue)
+        {   if( oldValue !== newValue)
             {
                 oldValue && this.#destroy?.();
-                setTimeout(()=>this.fetch(),0)
+                if( newValue )
+                    setTimeout(()=>this.fetch(),10)
+                else
+                {   this.value = {}
+                    setTimeout(()=>this.dispatchEvent( new Event('change') ),10)
+                }
             }
         }
     }

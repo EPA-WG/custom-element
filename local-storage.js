@@ -62,7 +62,7 @@ export class LocalStorageElement extends HTMLElement
     async connectedCallback()
     {
         const    attr = attr => this.getAttribute(attr)
-            , fromStorage = ()=>
+        , fromStorage = ()=>
         {   this.#value = string2value( attr('type'), localStorage.getItem( attr( 'key' ) ) );
             this.dispatchEvent( new Event('change') )
         }

@@ -1,9 +1,9 @@
 # custom-element
-`Declarative Custom Element` (DCE) is a part of pure `Declarative Web Application` stack. A proof of concept as a part of 
+`Declarative Custom Element` (DCE) is a part of pure `Declarative Web Application` stack. A proof of concept as a part of
 [WCCG in Declarative custom elements](https://github.com/w3c/webcomponents-cg/issues/32#issuecomment-1321037301) and [Declarative Web Application](https://github.com/EPA-WG/dwa#readme)
-discussion. **NO-JS** The functionality of DCE and its data access does not require programming using JavaScript. 
+discussion. **NO-JS** The functionality of DCE and its data access does not require programming using JavaScript.
 
-It allows to define custom HTML tag with template filled from slots, attributes and data `slice` as of now from  
+It allows to define custom HTML tag with template filled from slots, attributes and data `slice` as of now from
 [local-storage][local-storage-demo],  [http-request][http-request-demo], [location][location-demo].
 UI is re-rendered on each data slice change triggered by initialization or DOM event.
 
@@ -13,16 +13,16 @@ UI is re-rendered on each data slice change triggered by initialization or DOM e
 | [tests project][git-test-url]
 | [Chrome devtools pugin][plugin-url]
 
-[![NPM version][npm-image]][npm-url] 
-[![coverage][coverage-image]][coverage-url] 
+[![NPM version][npm-image]][npm-url]
+[![coverage][coverage-image]][coverage-url]
 [![Published on webcomponents.org][webcomponents-img]][webcomponents-url]
 
 
 
 <details>
 <summary> What is DCE? </summary>
-DCE provides the next level of abstraction in HTML - native composition. With native implementation which is 
-streaming parser, streaming transformation, multithreading. native assumes the C/Rust compiled code. 
+DCE provides the next level of abstraction in HTML - native composition. With native implementation which is
+streaming parser, streaming transformation, multithreading. native assumes the C/Rust compiled code.
 There is no place for JavaScript except of polyfill and ability to extend DCE, which otherwise has to be native.
 
 The composition assumes the fully functional template and ability to call the template with parameters( custom tag + attributes) .
@@ -113,11 +113,11 @@ comes from XSLT and XPath. Which is natively implemented in all current browsers
         the seed grows in size as the Pokémon  does.</p>
 </pokemon-tile>
 
-<pokemon-tile title="ninetales" pokemon-id="38" ></pokemon-tile>        
+<pokemon-tile title="ninetales" pokemon-id="38" ></pokemon-tile>
 ```
 generates HTML
 ```html
-<pokemon-tile title="bulbasaur" data-smile="👼" 
+<pokemon-tile title="bulbasaur" data-smile="👼"
               image-src="https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/1.svg"
     >
     <h3>bulbasaur</h3>
@@ -126,7 +126,7 @@ generates HTML
     <p>Bulbasaur is a cute Pokémon born with a large seed firmly affixed to its back;
                 the seed grows in size as the Pokémon  does.</p>
 </pokemon-tile>
-<pokemon-tile title="ninetales" 
+<pokemon-tile title="ninetales"
               image-src="https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/38.svg"
     >
     <h3>ninetales</h3>
@@ -146,16 +146,16 @@ generates HTML
 * creates a class for custom element extending HTMLElement
 * registers element by `tag` attribute
 
-NOTE: attempt to register custom element with already registered tag name would fail due to w3c standard limitations. 
+NOTE: attempt to register custom element with already registered tag name would fail due to w3c standard limitations.
 The scoped custom element registry is still a proposal.
 
 ### omitting `tag` leads to template instantiation
-Whether template is inline or given by `src` attribute, the `custom-element` would be instantiated inline if no `tag` 
+Whether template is inline or given by `src` attribute, the `custom-element` would be instantiated inline if no `tag`
 attribute is given.
 
 ### custom element instance
-constructor creates XML with 
-* root matching the tag 
+constructor creates XML with
+* root matching the tag
 * payload
   * dom nodes with `slot` attribute stay inside
 * attributes
@@ -180,7 +180,7 @@ See [demo](https://unpkg.com/@epa-wg/custom-element@0.0/demo/external-template.h
 ## types of template
 * HTML with DCE syntax ( slots, data slices, xslt operators, etc. )
 * SVG image, MathML, etc.
-* XSLT template. The `datadom` is the XML payload for transformation. In order to be embedded into external document, 
+* XSLT template. The `datadom` is the XML payload for transformation. In order to be embedded into external document,
 this document has to have XML syntax like XHTML. Attempt of including XSLT within HTML file would break the template
 integrity by parser.
 
@@ -198,7 +198,7 @@ allows to refer the template withing external document
 # template syntax
 [Scoped CSS][css-demo-url] live demo
 ## styles encapsulation
-DCE can have the own styles which would be scoped to the instances. 
+DCE can have the own styles which would be scoped to the instances.
 In order to prevent the style leaking, it has to be defined withing `template` tag:
 ```html
 <custom-element>
@@ -250,15 +250,15 @@ The curly braces `{}` in attributes implemented as [attribute value template](ht
 
 The names in curly braces are matching the instance attributes. I.e. in XML node `/my-component/attributes/`.
 
-To access payload XPath could start with `/*/payload/`. I.e. `{/*/payload//label}` refers to all `label` tags in payload. 
+To access payload XPath could start with `/*/payload/`. I.e. `{/*/payload//label}` refers to all `label` tags in payload.
 
 ## Slots
-`<slot name="xxx">` is replaced by payload top elements with `slot` attribute matching the name, 
+`<slot name="xxx">` is replaced by payload top elements with `slot` attribute matching the name,
 i.e.  slot `xxx` is matching `<i slot="xxx">...</i>` in payload.
 ```html
 <custom-element tag="with-description" >
     <slot name="description">description is not available</slot>
-    <!-- same as 
+    <!-- same as
         <value-of select='/*/payload/*[@slot="description"]'/>
     -->
 </custom-element>
@@ -270,7 +270,7 @@ i.e.  slot `xxx` is matching `<i slot="xxx">...</i>` in payload.
 ## loops, variables
 Loop implemented via [for-each](https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/for-each)
 
-[Variables in XSLT](https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/variable) 
+[Variables in XSLT](https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/variable)
 
 ## [XPath](https://developer.mozilla.org/en-US/docs/Web/XSLT/Transforming_XML_with_XSLT/The_Netscape_XSLT_XPath_Reference)
 is available in `{}` in attributes, in `for-each`, `if`, `value-of`, and other XSL tags.
@@ -278,13 +278,13 @@ is available in `{}` in attributes, in `for-each`, `if`, `value-of`, and other X
 XPath is a selector language to navigate over custom element instance data, attributes, and payload.
 
 ## XSLT 1.0
-The in-browser native implementation as of now supports [XSLT 1.0](https://www.w3.org/TR/xslt-10/). 
-File the [change request](https://github.com/EPA-WG/custom-element/issues) for support of another XSLT version or 
+The in-browser native implementation as of now supports [XSLT 1.0](https://www.w3.org/TR/xslt-10/).
+File the [change request](https://github.com/EPA-WG/custom-element/issues) for support of another XSLT version or
 template engine.
 
 # troubleshooting
 ## HTML parser is not compatible with templates
-On many tags like `table`, or link `a` the attempt to use XSLT operations could lead to DOM order mismatch to given 
+On many tags like `table`, or link `a` the attempt to use XSLT operations could lead to DOM order mismatch to given
 in template. In such cases the `xhtml:` prefix in front of troubled tag would solve the parsing.
 
 ```html
@@ -324,19 +324,19 @@ See [demo source](demo/local-storage.html) for detailed sample.
 ## template debugging
 `xml` and `xslt` can be saved to file via for "_copy string contents_" into clipboard.
 
-The XSLT debugger from your favorite IDE can set the breakpoints withing those files and 
+The XSLT debugger from your favorite IDE can set the breakpoints withing those files and
 run transformation under debugger.
 
 
 ## `{}` does not give a value
-* try to add as attribute you could observe and put the value of node name or text to identify the current location in data 
+* try to add as attribute you could observe and put the value of node name or text to identify the current location in data
 within template
 ```xml
 <b title="{name(*)} : {text()}">xml tag name: <value-of select='name()'/></b>
 ```
 
 [git-url]:        https://github.com/EPA-WG/custom-element
-[git-test-url]:   https://github.com/EPA-WG/custom-element-test
+[git-test-url]:   https://github.com/EPA-WG/custom-element-dist
 [demo-url]:       https://unpkg.com/@epa-wg/custom-element@0.0/index.html
 [css-demo-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/scoped-css.html
 [slice-demo-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/data-slices.html
@@ -348,9 +348,9 @@ within template
 [github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
 [npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
-[coverage-image]: https://unpkg.com/@epa-wg/custom-element-test@0.0.20/coverage/coverage.svg
-[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-test@0.0.20/coverage/lcov-report/index.html
-[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-test@0.0.20/storybook-static/index.html?path=/story/welcome--introduction
+[coverage-image]: https://unpkg.com/@epa-wg/custom-element-dist@0.0.21/coverage/src/custom-element/coverage.svg
+[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-dist@0.0.21/coverage/src/custom-element/index.html
+[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-dist@0.0.21/storybook-static/index.html?path=/story/welcome--introduction
 [sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
 [webcomponents-url]: https://www.webcomponents.org/element/@epa-wg/custom-element
 [webcomponents-img]: https://img.shields.io/badge/webcomponents.org-published-blue.svg

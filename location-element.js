@@ -1,23 +1,42 @@
-const     attr = (el, attr)=> el.getAttribute(attr);
+const attr = ( el, attr )=> el.getAttribute( attr );
+
+let originalHistory;
+
+function ensureTrackLocationChange()
+{   if( originalHistory )
+        return;
+    originalHistory = {};
+    'back,forward,go,pushState,replaceState'.split(',').forEach( k =>
+    {
+        originalHistory[ k ] = history[ k ];
+        history[ k ] = function(...rest )
+        {
+            originalHistory[k].apply( history, rest );
+            window.dispatchEvent( new CustomEvent('dce-location',{detail:{ k }}) );
+        }
+    });
+}
 
 export class LocationElement extends HTMLElement
 {
     static observedAttributes=
-            [   'value' // populated from localStorage, if defined initially, sets the value in storage
+            [   'value' // populated from url
             ,   'slice'
-            ,   'key'
+            ,   'href'  // url to be parsed. When omitted window.location is used.
             ,   'type' // `text|json`, defaults to text, other types are compatible with INPUT field
-            ,   'live' // monitors localStorage change
+            ,   'live' // monitors history change, applicable only when href is omitted.
             ];
 
     constructor()
     {
         super();
         const      state = {}
-        ,       listener = e=> propagateSlice(e)
+        ,       listener = () => setTimeout( propagateSlice,1 )
         , propagateSlice = ()=>
-        {   const urlStr = attr(this,'src')
-            const url = urlStr? new URL(urlStr) : window.location
+        {   const urlStr = attr(this,'href')
+            if(!urlStr)
+                ensureTrackLocationChange();
+            const url = urlStr? new URL(urlStr, window.location) : window.location;
 
             const params= {}
             const search = new URLSearchParams(url.search);
@@ -36,24 +55,30 @@ export class LocationElement extends HTMLElement
         {
             if( !state.listener && this.hasAttribute('live') )
             {   state.listener = 1;
-                window.addEventListener( 'popstate'  , listener );
-                window.addEventListener( 'hashchange', listener );
+                window.navigation?.addEventListener("navigate", listener );
+                window.addEventListener( 'popstate'      , listener );
+                window.addEventListener( 'hashchange'    , listener );
+                window.addEventListener( 'dce-location'  , listener );
             }
             propagateSlice();
             return s || {}
         }
         this._destroy = ()=>
         {
-            if( !state.listener )
-                return;
-            if(state.listener)
-            {   window.removeEventListener('popstate'  , listener);
-                window.removeEventListener('hashchange', listener);
-            }
+            window.removeEventListener('popstate'    , listener);
+            window.removeEventListener('hashchange'  , listener);
+            window.removeEventListener('dce-location', listener);
             delete state.listener;
         };
 
     }
+    attributeChangedCallback(name, oldValue, newValue)
+    {
+        if('href'!== name)
+            return;
+        this.sliceInit && this.sliceInit();
+    }
+
     connectedCallback(){ this.sliceInit() }
     disconnectedCallback(){ this._destroy() }
 }

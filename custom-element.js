@@ -64,37 +64,6 @@ assureSlot( e )
 }
 
     export function
-Json2Xml( o, tag )
-{
-    if( typeof o === 'string' )
-        return o;
-
-    const noTag = "string" != typeof tag;
-
-    if( o instanceof Array )
-    {   noTag &&  (tag = 'array');
-        return "<"+tag+">"+o.map(function(el){ return Json2Xml(el,tag); }).join()+"</"+tag+">";
-    }
-    noTag &&  (tag = 'r');
-    tag=tag.replace( /[^a-z0-9\-]/gi,'_' );
-    var oo  = {}
-        ,   ret = [ "<"+tag+" "];
-    for( let k in o )
-        if( typeof o[k] == "object" )
-            oo[k] = o[k];
-        else
-            ret.push( k.replace( /[^a-z0-9\-]/gi,'_' ) + '="'+o[k].toString().replace(/&/gi,'&#38;')+'"');
-    if( oo )
-    {   ret.push(">");
-        for( let k in oo )
-            ret.push( Json2Xml( oo[k], k ) );
-        ret.push("</"+tag+">");
-    }else
-        ret.push("/>");
-    return ret.join('\n');
-}
-
-    export function
 obj2node( o, tag, doc )
 {   const t = typeof o;
     if( t === 'function'){debugger}
@@ -166,8 +135,8 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         <xsl:template match="*[name()='template']"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
         <xsl:template match="*"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
         <xsl:template match="*[name()='svg']|*[name()='math']"><xsl:apply-templates mode="sanitize" select="."/></xsl:template>
-        <xsl:template mode="sanitize" match="*[count(text())=1 and count(*)=0]"><xsl:copy><xsl:apply-templates mode="sanitize" select="@*"/><xsl:value-of select="text()"/></xsl:copy></xsl:template>
-        <xsl:template mode="sanitize" match="xhtml:*[count(text())=1 and count(*)=0]"><xsl:element name="{local-name()}"><xsl:apply-templates mode="sanitize" select="@*"/><xsl:value-of select="text()"/></xsl:element></xsl:template>
+        <xsl:template mode="sanitize" match="*[count(text())=1 and count(*)=0]"><xsl:copy><xsl:apply-templates mode="sanitize" select="@*"/><xsl:value-of select="text()"></xsl:value-of></xsl:copy></xsl:template>
+        <xsl:template mode="sanitize" match="xhtml:*[count(text())=1 and count(*)=0]"><xsl:element name="{local-name()}"><xsl:apply-templates mode="sanitize" select="@*"/><xsl:value-of select="text()"></xsl:value-of></xsl:element></xsl:template>
         <xsl:template mode="sanitize" match="*|@*"><xsl:copy><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:copy></xsl:template>
         <xsl:template mode="sanitize" match="text()[normalize-space(.) = '']"/>
         <xsl:template mode="sanitize" match="text()"><dce-text><xsl:copy/></dce-text></xsl:template>
@@ -206,8 +175,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         <xsl:choose>
             <xsl:when test="//attr">{//attr}</xsl:when>
             <xsl:otherwise>{def}</xsl:otherwise>
-        </xsl:choose>
-        <xsl:value-of select="."/></xsl:template>
+        </xsl:choose><xsl:value-of select="."></xsl:value-of></xsl:template>
     <xsl:template mode="payload"  match="attributes"></xsl:template>
     <xsl:template match="/">
         <xsl:apply-templates mode="payload" select="/datadom/attributes"/>
@@ -693,12 +661,17 @@ CustomElement extends HTMLElement
 
             get dce(){ return dce }
         }
+        const registerTag = tag =>
+        {
+            if( window.customElements.get(tag) !== DceElement )
+                window.customElements.define( tag, DceElement);
+        };
         if(tag)
-            window.customElements.define( tag, DceElement);
+            registerTag(tag);
         else
         {   const t = tagName;
             this.setAttribute('tag', t );
-            window.customElements.define( t, DceElement);
+            registerTag(t);
             const el = document.createElement(t);
             this.getAttributeNames().forEach(a=>el.setAttribute(a,this.getAttribute(a)));
             el.append(...[...this.childNodes].filter( e => e.localName!=='style') );

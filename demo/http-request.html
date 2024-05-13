@@ -38,7 +38,9 @@
         <custom-element>
             <template>
 
+                <button slice="url-string" slice-value="''" slice-event="click">⬇️set blank</button>
                 <button slice="url-string" slice-value="'https://pokeapi.co/api/v2/pokemon?limit=6'" slice-event="click">⬇️https://pokeapi.co/api/v2/pokemon?limit=6</button>
+                <button slice="url-string" slice-value="'https://pokeapi.co/api/v2/pokemon?limit=3'" slice-event="click">⬇️https://pokeapi.co/api/v2/pokemon?limit=3</button>
                 <input slice="url-string" value="{ //url-string ?? '' }" style="width:100%"/>
                 <button slice="fetch-url" slice-event="click" slice-value="//url-string"> GET </button>
                 <http-request
@@ -48,11 +50,9 @@
                     mode="cors"
                     ></http-request>
                 <code>//fetch-url</code> from <code>{//fetch-url}</code><br/>
-                <for-each select="//results">
-                    <var>
-                        *{@name}
-                    </var>
-                </for-each>
+                <ul><for-each select="//results">
+                    <li>{@name}</li>
+                </for-each></ul>
             </template>
         </custom-element>
     </template>
