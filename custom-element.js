@@ -77,6 +77,12 @@ obj2node( o, tag, doc )
         o.map( ae => ret.append( obj2node(ae,tag,doc)) );
         return ret
     }
+    if( o instanceof FormData )
+    {   const ret = create('form-data');
+        for( const p of o )
+            ret.append( obj2node(p[1],p[0],doc) );
+        return ret
+    }
     const ret = create(tag,'',doc);
     for( let k in o )
         if( isNode(o[k]) || typeof o[k] ==='function' || o[k] instanceof Window )
@@ -329,7 +335,7 @@ event2slice( x, sliceNames, ev, dce )
         const d = x.ownerDocument
         ,    el = ev.sliceEventSource
         ,   sel = ev.sliceElement
-        ,   cleanSliceValue = ()=>[...s.childNodes].filter(n=>n.nodeType===3 || n.localName==='value').map(n=>n.remove());
+        ,   cleanSliceValue = ()=>[...s.childNodes].filter(n=>n.nodeType===3 || n.localName==='value' || n.localName==='form-data').map(n=>n.remove());
         el.getAttributeNames().map( a => s.setAttribute( a, attr(el,a) ) );
         [...s.childNodes].filter(n=>n.localName==='event').map(n=>n.remove());
         ev.type==='init' && cleanSliceValue();
@@ -343,7 +349,11 @@ event2slice( x, sliceNames, ev, dce )
             cleanSliceValue();
             s.append( createText( d, v ) );
         }else
-        {   const v = el.value ?? attr( sel, 'value' ) ;
+        {   if( 'elements' in el )
+            {   cleanSliceValue();
+                return s.append( obj2node(new FormData(el),'value', s.ownerDocument) )
+            }
+            const v = el.value ?? attr( sel, 'value' ) ;
             cleanSliceValue();
             if( v === null || v === undefined )
                 [...s.childNodes].filter(n=>n.localName!=='event').map(n=>n.remove());
@@ -360,7 +370,6 @@ function forEach$( el, css, cb){
     if( el.querySelectorAll )
         [...el.querySelectorAll(css)].forEach(cb)
 }
-const getByHashId = ( n, id )=> ( p => n===p? null: (p && ( p.querySelector(id) || getByHashId(p,id) ) ))( n.getRootNode() )
 const loadTemplateRoots = async ( src, dce )=>
 {
     if( !src || !src.trim() )
