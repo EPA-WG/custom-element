@@ -73,12 +73,12 @@ obj2node( o, tag, doc )
         return create(tag,''+o,doc);
 
     if( o instanceof Array )
-    {   const ret = create('array');
+    {   const ret = create('array','',doc);
         o.map( ae => ret.append( obj2node(ae,tag,doc)) );
         return ret
     }
     if( o instanceof FormData )
-    {   const ret = create('form-data');
+    {   const ret = create('form-data','',doc);
         for( const p of o )
             ret.append( obj2node(p[1],p[0],doc) );
         return ret

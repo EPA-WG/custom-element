@@ -11,32 +11,91 @@
         @import "./demo.css";
         label{ display: flex;  }
         label:has(input[type="text"],input[type="password"],input:not([type]) ){flex-direction: column;}
+        nav{ max-width: 32em; }
     </style>
+    <!-- https://github.com/mdn/learning-area/blob/main/html/forms/form-validation/custom-error-message.html
+         todo: apply setCustomValidity( warningStr )
+    -->
+
 </head>
 <body>
 
 <nav>
     <a href="../index.html"><h3><code>custom-element</code> demo</h3></a>
     <h3>Forms handling.</h3>
+    <ul>
+        <li> The form triggers re-render on <code>change</code> event before submit</li>
+        <li> <code>disabled</code> form attribute is added when validation is not passed </li>
+        <li> Form action triggered on submit changing the hash in URL </li>
+        <li> URL hash hides the <var>signin</var> form from DOM and shown <var>signout</var> form </li>
+        <li> signout action reverse visibility of signin and signout </li>
+        <li> "remember" checkbox triggers <code>local-storage</code> with value set from <var>form-data/remember</var> slice </li>
+        <li> "username" initial value taken from <code>local-storage</code> <var>usernane</var> slice </li>
+        <li> <a href="https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation">Form Validation - MDN</a> </li>
+    </ul>
 </nav>
 
-<html-demo-element legend="A. slice initialization, change on event"
-                   description="initial value should be 0; + and - should change the number in input field">
+<html-demo-element legend="Synthetic validation"
+                   description="Not advised as native form-data should be the source of truth. ">
+    <ol>
+        <li> Click Next, observe the warning </li>
+        <li> Fill input with 10+ characters </li>
+        <li> Click Next, the password and Sign In button should appear </li>
+    </ol>
     <template>
         <custom-element>
             <template>
                 <form slice="signin-form">
+                    <label> Email
+                        <input name="username" autocomplete="username"
+                            placeholder="Email, phone, or username"
+                            required
+                        />
+                    </label>
+                    <variable name="showpassword"
+                              select="//confirm = 'password' and string-length(/datadom/slice/signin-form/form-data/username) &gt; 10 "
+                    ></variable>
+                    <if test="not($showpassword)">
+                        <button slice="confirm" slice-event="click" slice-value="'password'" >Next</button>
+                    </if>
+                    <if test="$showpassword">
+                        <label>Enter password: <input type="password"/> </label>
+                        <button >Sign In</button>
+                    </if>
+                </form>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="Form life cycle demo"
+                   description="form-data in the form slice is the source of truth" >
+
+    <template>
+        <custom-element>
+            <template>
+                <form slice="signin-form">
+                    <variable name="warn"><if test="string-length(/datadom/slice/signin-form/form-data/username) &lt; 10 ">
+                        user name or email should be longer of 10 symbols
+                    </if></variable>
                     <label> Enter your email, phone, or user name
                         <input name="username" autocomplete="username"
                             placeholder="Email, phone, or username"
+                            required
                         />
                     </label>
+                    <var>
+                        {$warn}
+                        <if test="//form-data/confirm-by = 'sms'">
+                            <p>Message and Data Rates may apply</p>
+                        </if>
+                    </var>
                     <fieldset>
                         <legend>Confirm by</legend>
                         <label><input type="radio" name="confirm-by" value="email"      /> email         </label>
                         <label><input type="radio" name="confirm-by" value="sms"        /> text to phone </label>
                         <label><input type="radio" name="confirm-by" value="password"   /> password      </label>
-                        <if test="//confirm-by = 'password'">
+                        <if test="/datadom/slice/signin-form/form-data/confirm-by = 'password'">
                             <label>Enter password: <input type="password"/> </label>
                         </if>
                     </fieldset>
