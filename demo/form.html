@@ -2,10 +2,10 @@
 <html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Data slices - Declarative Custom Element implementation demo</title>
+    <title>Forms - Declarative Custom Element implementation demo</title>
     <link rel="icon" href="./wc-square.svg"/>
 
-    <script type="module" src="../http-request.js"></script>
+    <script type="module" src="../local-storage.js"></script>
     <script type="module" src="../custom-element.js"></script>
     <style>
         @import "./demo.css";
@@ -35,78 +35,152 @@
     </ul>
 </nav>
 
-<html-demo-element legend="Synthetic validation"
-                   description="Not advised as native form-data should be the source of truth. ">
+<html-demo-element legend="1. Simple validation"
+                   description="custom-validity boolean value prevents submission, username length switches Next to 'Sign In' button  ">
     <ol>
         <li> Click Next, observe the warning </li>
         <li> Fill input with 10+ characters </li>
-        <li> Click Next, the password and Sign In button should appear </li>
+        <li> Click Next, the password and "Sign In" button should appear </li>
     </ol>
     <template>
         <custom-element>
             <template>
-                <form slice="signin-form">
+                <form   slice="signin-form"
+                        custom-validity="
+                            string-length(/datadom/slice/signin-form/form-data/username) &gt; 10
+                            and string-length(//form-data/password) &gt; 3 "
+                    >
                     <label> Email
-                        <input name="username" autocomplete="username"
-                            placeholder="Email, phone, or username"
-                            required
-                        />
+                        <input name="username" autocomplete="username" placeholder="Email, phone, or username" required="">
                     </label>
-                    <variable name="showpassword"
-                              select="//confirm = 'password' and string-length(/datadom/slice/signin-form/form-data/username) &gt; 10 "
-                    ></variable>
+                    <variable name="showpassword" select="string-length(//form-data/username) &gt; 10 "></variable>
                     <if test="not($showpassword)">
-                        <button slice="confirm" slice-event="click" slice-value="'password'" >Next</button>
+                        <button slice="confirm" slice-event="click" slice-value="'password'">Next</button>
                     </if>
                     <if test="$showpassword">
-                        <label>Enter password: <input type="password"/> </label>
-                        <button >Sign In</button>
+                        <label>Enter password: <input name="password" type="password" required> </label>
+                        <button>Sign In</button>
                     </if>
+                    username {//username}
                 </form>
             </template>
         </custom-element>
     </template>
 </html-demo-element>
 
-<html-demo-element legend="Form life cycle demo"
+<html-demo-element legend="2. Form life cycle demo"
                    description="form-data in the form slice is the source of truth" >
 
     <template>
         <custom-element>
             <template>
-                <form slice="signin-form">
-                    <variable name="warn"><if test="string-length(/datadom/slice/signin-form/form-data/username) &lt; 10 ">
-                        user name or email should be longer of 10 symbols
-                    </if></variable>
+                <form   slice="signin-form"
+                        custom-validity="
+                            string-length(/datadom/slice/signin-form/form-data/username) &gt; 9
+                            and (   ( //confirm-by = 'sms' )
+                                    or ( //confirm-by = 'email' )
+                                    or ( //confirm-by = 'password' and string-length(//form-data/password) &gt; 3 )
+                                )
+                        "
+                    >
+                    <!-- form validity should be based on form-data -->
+                    <variable name="warn">
+                        <if test="string-length(//username-slice) &lt; 9 ">
+                            Should be 10 or more symbols. &nbsp;
+                            <!-- updated by slice on input event -->
+                        </if>
+                        <if test="//form-data/confirm-by = 'sms'">
+                            Message and Data Rates may apply.
+                            <!-- updated by form change by radio select -->
+                        </if>
+                    </variable>
                     <label> Enter your email, phone, or user name
                         <input name="username" autocomplete="username"
                             placeholder="Email, phone, or username"
+                            custom-validity="( string-length(//username-slice) &gt; 9 ) ?? 'should be 10+ symbols'"
+                            slice-event="input"
+                            slice="username-slice"
                             required
                         />
                     </label>
-                    <var>
-                        {$warn}
-                        <if test="//form-data/confirm-by = 'sms'">
-                            <p>Message and Data Rates may apply</p>
-                        </if>
-                    </var>
+                    <var> {$warn} </var>
                     <fieldset>
                         <legend>Confirm by</legend>
                         <label><input type="radio" name="confirm-by" value="email"      /> email         </label>
                         <label><input type="radio" name="confirm-by" value="sms"        /> text to phone </label>
                         <label><input type="radio" name="confirm-by" value="password"   /> password      </label>
                         <if test="/datadom/slice/signin-form/form-data/confirm-by = 'password'">
-                            <label>Enter password: <input type="password"/> </label>
+                            <label>Enter password: <input type="password" NAME="password"
+                                   custom-validity="( string-length(//form-data/password) &gt; 3 ) ?? 'password is too short'"
+                            /></label>
+                        </if>
+                        <if test="not(//confirm-by)">
+                            Please select the auth method
                         </if>
                     </fieldset>
                     <section>
-                        <button>Back</button>
                         <button>Sign In</button>
-                        <button>Sign Up</button>
                     </section>
-                    <section>
-                        <label><input type="checkbox" name="remember"/> remember on this device </label>
-                    </section>
+                </form>
+                //username-slice {//username-slice}<br/>
+                //username {//username}<br/>
+                //confirm-by {//confirm-by}<br/>
+                //password {//password}
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="3. read system validity message"
+                   description="validationMessage propagated into slice as 'validation-message' attribute ">
+    <ol>
+        <li> type in input field</li>
+        <li> delete input field content</li>
+        <li> observe the warning in string bellow input</li>
+        <li> Click Next observe the system warning in  dropdown and in string bellow input</li>
+    </ol>
+    <template>
+        <custom-element>
+            <template>
+                <form slice="email-form">
+                    <label> Email
+                        <input slice="username" slice-event="input" placeholder="non-empty" required>
+                    </label>
+                    <if test="//username/@validation-message">
+                        <var>{//username/@validation-message}</var>
+                    </if>
+                    <button>Next</button>
+                    <p>{//email-form/@validation-message}</p>
+                </form>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="4. form validity message"
+                   description="@validation-message propagated into form slice and  ">
+    <ol>
+        <li> type up to 3 chars in input field          </li>
+        <li> observe the slice value change             </li>
+        <li> click next                                 </li>
+        <li> observe the warning bellow the button      </li>
+    </ol>
+    <template>
+        <custom-element>
+            <template>
+                <form slice="email-form"
+                    custom-validity=" string-length(//slice/username) &gt; 3 ??
+                        concat('should be more than 3 characters, now is ',string-length(//slice/username) ) "
+                    >
+                    <label> Email
+                        <input name="email" slice="username" slice-event="input" placeholder="non-empty" required />
+                    </label>
+                    <if test="//username/@validation-message">
+                        <var>{//username/@validation-message}</var>
+                    </if>
+                    <button>Next</button>
+                    <p>//email-form/@validation-message:    {//email-form/@validation-message}  </p>
+                    <p>//slice/username:                    {//slice/username}                  </p>
                 </form>
             </template>
         </custom-element>

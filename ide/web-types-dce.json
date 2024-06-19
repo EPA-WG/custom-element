@@ -18,6 +18,11 @@
           "doc-url": "https://unpkg.com/@epa-wg/custom-element/demo/dom-merge.html"
         },
         {
+          "name": "custom-validity",
+          "description": "XPath expression to return either boolean or error string to be shown by browser native UI on form validation event. Unless value is true, prevents the form submission.",
+          "doc-url": "https://unpkg.com/@epa-wg/custom-element/demo/form.html"
+        },
+        {
           "name": "slice-value",
           "description": "XPath expression to populate into the slice",
           "doc-url": "https://unpkg.com/@epa-wg/custom-element/demo/data-slices.html"
