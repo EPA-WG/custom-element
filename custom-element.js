@@ -13,7 +13,6 @@ const attr = (el, attr)=> el.getAttribute?.(attr)
 ,   createText = ( d, t) => (d.ownerDocument || d ).createTextNode( t )
 ,   removeChildren = n => { while(n.firstChild) n.firstChild.remove(); return n; }
 ,   emptyNode = n => {  n.getAttributeNames().map( a => n.removeAttribute(a) ); return removeChildren(n); }
-,   createNS = ( ns, tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElementNS( ns, tag ))
 ,   xslNs = x => ( x?.setAttribute('xmlns:xsl', XSL_NS_URL ), x )
 ,   xslHtmlNs = x => ( x?.setAttribute('xmlns:xhtml', HTML_NS_URL ), xslNs(x) )
 ,   cloneAs = (p,tag) =>
@@ -23,8 +22,7 @@ const attr = (el, attr)=> el.getAttribute?.(attr)
     while( p.firstChild )
         px.append(p.firstChild);
     return px;
-}
-,   ensureSSV = (s,v) => s ? ( s.includes(v) ? s : s + ' ' + v ) : v ;
+};
 
     function
 ASSERT(x)
@@ -67,7 +65,6 @@ assureSlot( e )
     export function
 obj2node( o, tag, doc )
 {   const t = typeof o;
-    if( t === 'function'){debugger}
     if( t === 'string' )
         return create(tag,o,doc);
     if( t === 'number' )
@@ -645,10 +642,9 @@ CustomElement extends HTMLElement
                         {   el.dceInitialized = 1;
                             let evs = attr(el,'slice-event');
                             if( attr(el,'custom-validity') )
-                            {   evs = ensureSSV( evs, 'change' );
-                                evs = ensureSSV( evs, 'submit' );
-                            }
-                            (evs || 'change') .split(' ')
+                                evs += ' change submit';
+
+                            [...new Set((evs || 'change') .split(' '))]
                                 .forEach( t=> (el.localName==='slice'? el.parentElement : el)
                                     .addEventListener( t, ev=>
                                     {   ev.sliceElement = el;
@@ -668,7 +664,6 @@ CustomElement extends HTMLElement
                                         const x = attr(el,'custom-validity')
                                         ,     v = x && xPath( x, attrsRoot )
                                         ,   msg = v === true? '' : v;
-
                                         if( x )
                                         {   el.setCustomValidity ? el.setCustomValidity( msg ) : ( el.validationMessage = msg );
                                             slices.map( s => s.setAttribute('validation-message', msg ) );
