@@ -1,7 +1,7 @@
 {
   "$schema": "http://json.schemastore.org/web-types",
   "name": "@epa-wg/custom-element",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "js-types-syntax": "typescript",
   "description-markup": "markdown",
   "contributions": {
@@ -16,6 +16,11 @@
           "name": "slice-event",
           "description": "Defines the event name on which `value` would be synchronized with DCE slice\n\nOn: any component with `value` and associated change event",
           "doc-url": "https://unpkg.com/@epa-wg/custom-element/demo/dom-merge.html"
+        },
+        {
+          "name": "custom-validity",
+          "description": "XPath expression to return either boolean or error string to be shown by browser native UI on form validation event. Unless value is true, prevents the form submission.",
+          "doc-url": "https://unpkg.com/@epa-wg/custom-element/demo/form.html"
         },
         {
           "name": "slice-value",

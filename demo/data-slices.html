@@ -178,6 +178,38 @@
     </template>
 </html-demo-element>
 
+
+<html-demo-element legend="10. multiple slices by same field"
+                   description="same element value sets s1 and s2 slice">
+    <template>
+        <custom-element>
+        <template>
+            <input  slice="s1|s2"
+                    slice-event="input"
+                    data-testid="f1"
+                    /><br/>
+            Type to update s1 and s2 slices <br/>
+            slice <code>s1: {//slice/s1}</code><br/>
+            slice <code>s2: {//slice/s2}</code><br/>
+        </template>
+    </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="11. slices and attribute"
+                   description="initial attribute value should be smile as emoji and :) on blur from input it should be updated from value">
+    <template>
+        <custom-element>
+            <template>
+                <attribute name="emotion">😃</attribute>
+                <input slice="/datadom/attributes/emotion | s1"/>
+                Type and unfocus to update emotion attribute: {emotion}
+                and slice: {//slice/s1}
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
 <script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
 
 </body>

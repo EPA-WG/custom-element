@@ -13,7 +13,6 @@ const attr = (el, attr)=> el.getAttribute?.(attr)
 ,   createText = ( d, t) => (d.ownerDocument || d ).createTextNode( t )
 ,   removeChildren = n => { while(n.firstChild) n.firstChild.remove(); return n; }
 ,   emptyNode = n => {  n.getAttributeNames().map( a => n.removeAttribute(a) ); return removeChildren(n); }
-,   createNS = ( ns, tag, t = '' ) => ( e => ((e.innerText = t||''),e) )(document.createElementNS( ns, tag ))
 ,   xslNs = x => ( x?.setAttribute('xmlns:xsl', XSL_NS_URL ), x )
 ,   xslHtmlNs = x => ( x?.setAttribute('xmlns:xhtml', HTML_NS_URL ), xslNs(x) )
 ,   cloneAs = (p,tag) =>
@@ -23,7 +22,7 @@ const attr = (el, attr)=> el.getAttribute?.(attr)
     while( p.firstChild )
         px.append(p.firstChild);
     return px;
-}
+};
 
     function
 ASSERT(x)
@@ -66,15 +65,20 @@ assureSlot( e )
     export function
 obj2node( o, tag, doc )
 {   const t = typeof o;
-    if( t === 'function'){debugger}
     if( t === 'string' )
         return create(tag,o,doc);
     if( t === 'number' )
         return create(tag,''+o,doc);
 
     if( o instanceof Array )
-    {   const ret = create('array');
+    {   const ret = create('array','',doc);
         o.map( ae => ret.append( obj2node(ae,tag,doc)) );
+        return ret
+    }
+    if( o instanceof FormData )
+    {   const ret = create('form-data','',doc);
+        for( const p of o )
+            ret.append( obj2node(p[1],p[0],doc) );
         return ret
     }
     const ret = create(tag,'',doc);
@@ -91,13 +95,14 @@ obj2node( o, tag, doc )
     export function
 tagUid( node )
 {   // {} to xsl:value-of
-    forEach$(node,'*',d => [...d.childNodes].filter( e=>e.nodeType === 3 ).forEach( e=>
-    {   if( e.parentNode.localName === 'style' )
-            return;
-        const m = e.data.matchAll( /{([^}]*)}/g );
+    forEach$(node,'*',d => [...d.childNodes]
+        .filter( e => e.nodeType === 3 && e.parentNode.localName !== 'style' && e.data )
+        .forEach( e=>
+    {   const s = e.data,
+              m = s.matchAll( /{([^}]*)}/g );
         if(m)
         {   let l = 0
-            , txt = t => createText(e,t||'')
+            , txt = t => createText(e,t)
             ,  tt = [];
             [...m].forEach(t=>
             {   if( t.index > l )
@@ -107,8 +112,8 @@ tagUid( node )
                 tt.push(v);
                 l = t.index+t[0].length;
             })
-            if( l < e.data.length)
-                tt.push( txt( e.data.substring(l,e.data.length) ));
+            if( l < s.length)
+                tt.push( txt( s.substring(l,s.length) ));
             if( tt.length )
             {   for( let t of tt )
                     d.insertBefore(t,e);
@@ -250,7 +255,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     const   slotCall = $(xslDom,'call-template[name="slot"]')
     ,       slot2xsl = s =>
     {   const v = slotCall.cloneNode(true)
-        ,  name = attr(s,'name') || '';
+        ,  name = attr(s,'name');
         name && v.firstElementChild.setAttribute('select',`'${ name }'`)
         for( let c of s.childNodes)
             v.lastElementChild.append(c)
@@ -297,16 +302,20 @@ deepEqual(a, b, O=false)
             return O
     return true;
 }
+const splitSliceNames = v => v.split('|').map( s=>s.trim() ).filter(s=>s);
+
     export const
 assureSlices = ( root, names) =>
-    names.split('|').map(n=>n.trim()).map( xp =>
-    {   if(xp.includes('/'))
-        {   const ret = [], r = root.ownerDocument.evaluate( xp, root );
+    splitSliceNames(names).map( xp =>
+    {   let d = root.ownerDocument
+        , append = n=> (root.append(n),n);
+        if(xp.includes('/'))
+        {   const ret = [], r = d.evaluate( xp, root );
             for( let n; n = r.iterateNext(); )
                 ret.push( n )
             return ret
         }
-        return [...root.childNodes].find(n=>n.localName === xp) || create(xp);
+        return [...root.childNodes].find(n=>n.localName === xp) || append( create(xp,'',d) );
     }).flat();
 
 /**
@@ -319,19 +328,24 @@ assureSlices = ( root, names) =>
     export function
 event2slice( x, sliceNames, ev, dce )
 {
+    if( ev.sliceProcessed )
+        return
+    ev.sliceProcessed = 1;
     // evaluate slices[]
     // inject @attributes
     // inject event
     // evaluate slice-value
     // slice[i] = slice-value
-    assureSlices(x,sliceNames).map( s =>
+    return assureSlices( x, sliceNames ?? '' ).map( s =>
     {
         const d = x.ownerDocument
         ,    el = ev.sliceEventSource
         ,   sel = ev.sliceElement
-        ,   cleanSliceValue = ()=>[...s.childNodes].filter(n=>n.nodeType===3 || n.localName==='value').map(n=>n.remove());
+        ,   cleanSliceValue = ()=>[...s.childNodes].filter(n=>n.nodeType===3 || n.localName==='value' || n.localName==='form-data').map(n=>n.remove());
         el.getAttributeNames().map( a => s.setAttribute( a, attr(el,a) ) );
         [...s.childNodes].filter(n=>n.localName==='event').map(n=>n.remove());
+        if( 'validationMessage' in el )
+            s.setAttribute('validation-message', el.validationMessage);
         ev.type==='init' && cleanSliceValue();
         s.append( obj2node( ev, 'event', d ) );
         if( sel.hasAttribute('slice-value') )
@@ -343,7 +357,12 @@ event2slice( x, sliceNames, ev, dce )
             cleanSliceValue();
             s.append( createText( d, v ) );
         }else
-        {   const v = el.value ?? attr( sel, 'value' ) ;
+        {   if( 'elements' in el )
+            {   cleanSliceValue();
+                s.append( obj2node(new FormData(el),'value', s.ownerDocument) )
+                return s
+            }
+            const v = el.value ?? attr( sel, 'value' ) ;
             cleanSliceValue();
             if( v === null || v === undefined )
                 [...s.childNodes].filter(n=>n.localName!=='event').map(n=>n.remove());
@@ -353,6 +372,7 @@ event2slice( x, sliceNames, ev, dce )
                 else
                     s.append( obj2node(v,'value',s.ownerDocument) )
         }
+        return s
     })
 }
 
@@ -360,7 +380,6 @@ function forEach$( el, css, cb){
     if( el.querySelectorAll )
         [...el.querySelectorAll(css)].forEach(cb)
 }
-const getByHashId = ( n, id )=> ( p => n===p? null: (p && ( p.querySelector(id) || getByHashId(p,id) ) ))( n.getRootNode() )
 const loadTemplateRoots = async ( src, dce )=>
 {
     if( !src || !src.trim() )
@@ -388,12 +407,7 @@ const loadTemplateRoots = async ( src, dce )=>
     }catch (error){ return [dce]}
 }
 export function mergeAttr( from, to )
-{   if( isText(from) )
-    {
-        if( !isText(to) ){ debugger }
-        return
-    }
-    for( let a of from.attributes)
+{   for( let a of from.attributes)
     {   a.namespaceURI? to.setAttributeNS( a.namespaceURI, a.name, a.value ) : to.setAttribute( a.name, a.value )
         if( a.name === 'value')
             to.value = a.value
@@ -472,12 +486,18 @@ export const xPathDefaults = x=>
     // return xx.length ? `${a}|(${xPathDefaults(xx.join('??'))})[not(${a})]`: a
 }
 export const xPath = (x,root)=>
-{   x = xPathDefaults(x);
+{
+    const xx = x.split('??');
+    if( xx.length > 1 )
+        return xPath(xx[0], root) || xPath(xx[1], root);
+
+    x = xPathDefaults(x);
 
     const it = root.ownerDocument.evaluate(x, root);
     switch( it.resultType )
     {   case XPathResult.NUMBER_TYPE: return it.numberValue;
         case XPathResult.STRING_TYPE: return it.stringValue;
+        case XPathResult.BOOLEAN_TYPE: return it.booleanValue;
     }
 
     let ret = '';
@@ -529,7 +549,10 @@ CustomElement extends HTMLElement
 
         const dce = this
         , sliceNodes = [...this.templateNode.querySelectorAll('[slice]')]
-        , sliceNames = sliceNodes.map(e=>attr(e,'slice')).filter(n=>!n.includes('/')).filter((v, i, a)=>a.indexOf(v) === i)
+        , sliceNames = sliceNodes.map(e=>attr(e,'slice'))
+                                .filter(n=>!n.includes('/'))
+                                .filter((v, i, a)=>a.indexOf(v) === i)
+                                .map(splitSliceNames).flat()
         , declaredAttributes = templateDocs.reduce( (ret,t) => { if( t.params ) ret.push( ...t.params ); return ret; }, [] );
 
         class DceElement extends HTMLElement
@@ -540,6 +563,8 @@ CustomElement extends HTMLElement
             {   let payload = this.childNodes;
                 if( this.firstElementChild?.tagName === 'TEMPLATE' )
                 {
+                    if( this.firstElementChild !== this.lastElementChild )
+                        { console.error('payload should have TEMPLATE as only child', this.outerHTML ) }
                     const t = this.firstElementChild;
                     t.remove();
                     payload = t.content.childNodes;
@@ -563,7 +588,7 @@ CustomElement extends HTMLElement
                 })(x.ownerDocument.createElement( tag ))
                 injectData( x, 'payload'    , payload , assureSlot );
                 this.innerHTML='';
-                injectData( x, 'attributes' , this.attributes, e => createXmlNode( e.nodeName, e.value ) );
+                const attrsRoot = injectData( x, 'attributes' , this.attributes, e => createXmlNode( e.nodeName, e.value ) );
                 injectData( x, 'dataset', Object.keys( this.dataset ), k => createXmlNode( k, this.dataset[ k ] ) );
                 const sliceRoot = injectData( x, 'slice', sliceNames, k => createXmlNode( k, '' ) )
                 ,     sliceXPath = x => xPath(x, sliceRoot);
@@ -585,14 +610,12 @@ CustomElement extends HTMLElement
                 let timeoutID;
 
                 this.onSlice = ev=>
-                {   ev.stopPropagation?.();
-                    ev.sliceEventSource = ev.currentTarget || ev.target;
-                    sliceEvents.push(ev);
+                {   sliceEvents.push(ev);
                     if( !timeoutID )
                         timeoutID = setTimeout(()=>
                         {   applySlices();
                             timeoutID =0;
-                        },10);
+                        },1);
                 };
                 const transform = this.transform = ()=>
                 {   if(this.#inTransform){ debugger }
@@ -619,20 +642,58 @@ CustomElement extends HTMLElement
                         }
                     })
 
-                    forEach$( this,'[slice]', el =>
+                    forEach$( this,'[slice],[slice-event]', el =>
                     {   if( !el.dceInitialized )
                         {   el.dceInitialized = 1;
-                            const evs = attr(el,'slice-event');
-                            (evs || 'change')
-                                .split(' ')
+                            let evs = attr(el,'slice-event');
+                            if( attr(el,'custom-validity') )
+                                evs += ' change submit';
+
+                            [...new Set((evs || 'change') .split(' '))]
                                 .forEach( t=> (el.localName==='slice'? el.parentElement : el)
-                                                .addEventListener( t, ev=>
-                                                {   ev.sliceElement = el;
-                                                    this.onSlice(ev)
-                                                } ));
+                                    .addEventListener( t, ev=>
+                                    {   ev.sliceElement = el;
+                                        ev.sliceEventSource = ev.currentTarget || ev.target;
+                                        const slices = event2slice( sliceRoot, attr( ev.sliceElement, 'slice'), ev, this );
+
+                                        forEach$(this,'[custom-validity]',el =>
+                                        {   if( !el.setCustomValidity )
+                                                return;
+                                            const x = attr( el, 'custom-validity' );
+                                            try
+                                            {   const v = x && xPath( x, attrsRoot );
+                                                el.setCustomValidity( v === true? '': v === false ? 'invalid' : v );
+                                            }catch(err)
+                                                { console.error(err, 'xPath', x) }
+                                        })
+                                        const x = attr(el,'custom-validity')
+                                        ,     v = x && xPath( x, attrsRoot )
+                                        ,   msg = v === true? '' : v;
+
+                                        if( x )
+                                        {   el.setCustomValidity ? el.setCustomValidity( msg ) : ( el.validationMessage = msg );
+                                            slices.map( s => s.setAttribute('validation-message', msg ) );
+                                            if( ev.type === 'submit' )
+                                            {   if( v === true )
+                                                    return;
+                                                setTimeout(transform,1)
+                                                if( !!v === v )
+                                                {   v || ev.preventDefault();
+                                                    return v;
+                                                }
+                                                if( v )
+                                                {   ev.preventDefault();
+                                                    return !1
+                                                }
+                                                return ;
+                                            }else
+                                                setTimeout(transform,1)
+                                        }
+                                        this.onSlice(ev);
+                                    } ));
                             if( !evs || evs.includes('init') )
                             {   if( el.hasAttribute('slice-value') || el.hasAttribute('value') || el.value )
-                                    this.onSlice({type:'init', target: el, sliceElement:el })
+                                    this.onSlice({type:'init', target: el, sliceElement:el, sliceEventSource:el })
                                 else
                                     el.value = sliceXPath( attr(el,'slice') )
                             }
