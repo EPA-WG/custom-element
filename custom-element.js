@@ -95,13 +95,14 @@ obj2node( o, tag, doc )
     export function
 tagUid( node )
 {   // {} to xsl:value-of
-    forEach$(node,'*',d => [...d.childNodes].filter( e=>e.nodeType === 3 ).forEach( e=>
-    {   if( e.parentNode.localName === 'style' )
-            return;
-        const m = e.data.matchAll( /{([^}]*)}/g );
+    forEach$(node,'*',d => [...d.childNodes]
+        .filter( e => e.nodeType === 3 && e.parentNode.localName !== 'style' && e.data )
+        .forEach( e=>
+    {   const s = e.data,
+              m = s.matchAll( /{([^}]*)}/g );
         if(m)
         {   let l = 0
-            , txt = t => createText(e,t||'')
+            , txt = t => createText(e,t)
             ,  tt = [];
             [...m].forEach(t=>
             {   if( t.index > l )
@@ -111,8 +112,8 @@ tagUid( node )
                 tt.push(v);
                 l = t.index+t[0].length;
             })
-            if( l < e.data.length)
-                tt.push( txt( e.data.substring(l,e.data.length) ));
+            if( l < s.length)
+                tt.push( txt( s.substring(l,s.length) ));
             if( tt.length )
             {   for( let t of tt )
                     d.insertBefore(t,e);
@@ -254,7 +255,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     const   slotCall = $(xslDom,'call-template[name="slot"]')
     ,       slot2xsl = s =>
     {   const v = slotCall.cloneNode(true)
-        ,  name = attr(s,'name') || '';
+        ,  name = attr(s,'name');
         name && v.firstElementChild.setAttribute('select',`'${ name }'`)
         for( let c of s.childNodes)
             v.lastElementChild.append(c)
@@ -301,16 +302,20 @@ deepEqual(a, b, O=false)
             return O
     return true;
 }
+const splitSliceNames = v => v.split('|').map( s=>s.trim() ).filter(s=>s);
+
     export const
 assureSlices = ( root, names) =>
-    names.split('|').filter(s=>s).map(n=>n.trim()).map( xp =>
-    {   if(xp.includes('/'))
-        {   const ret = [], r = root.ownerDocument.evaluate( xp, root );
+    splitSliceNames(names).map( xp =>
+    {   let d = root.ownerDocument
+        , append = n=> (root.append(n),n);
+        if(xp.includes('/'))
+        {   const ret = [], r = d.evaluate( xp, root );
             for( let n; n = r.iterateNext(); )
                 ret.push( n )
             return ret
         }
-        return [...root.childNodes].find(n=>n.localName === xp) || create(xp);
+        return [...root.childNodes].find(n=>n.localName === xp) || append( create(xp,'',d) );
     }).flat();
 
 /**
@@ -331,7 +336,7 @@ event2slice( x, sliceNames, ev, dce )
     // inject event
     // evaluate slice-value
     // slice[i] = slice-value
-    return assureSlices( x, sliceNames ?? [] ).map( s =>
+    return assureSlices( x, sliceNames ?? '' ).map( s =>
     {
         const d = x.ownerDocument
         ,    el = ev.sliceEventSource
@@ -402,12 +407,7 @@ const loadTemplateRoots = async ( src, dce )=>
     }catch (error){ return [dce]}
 }
 export function mergeAttr( from, to )
-{   if( isText(from) )
-    {
-        if( !isText(to) ){ debugger }
-        return
-    }
-    for( let a of from.attributes)
+{   for( let a of from.attributes)
     {   a.namespaceURI? to.setAttributeNS( a.namespaceURI, a.name, a.value ) : to.setAttribute( a.name, a.value )
         if( a.name === 'value')
             to.value = a.value
@@ -549,7 +549,10 @@ CustomElement extends HTMLElement
 
         const dce = this
         , sliceNodes = [...this.templateNode.querySelectorAll('[slice]')]
-        , sliceNames = sliceNodes.map(e=>attr(e,'slice')).filter(n=>!n.includes('/')).filter((v, i, a)=>a.indexOf(v) === i)
+        , sliceNames = sliceNodes.map(e=>attr(e,'slice'))
+                                .filter(n=>!n.includes('/'))
+                                .filter((v, i, a)=>a.indexOf(v) === i)
+                                .map(splitSliceNames).flat()
         , declaredAttributes = templateDocs.reduce( (ret,t) => { if( t.params ) ret.push( ...t.params ); return ret; }, [] );
 
         class DceElement extends HTMLElement
@@ -560,6 +563,8 @@ CustomElement extends HTMLElement
             {   let payload = this.childNodes;
                 if( this.firstElementChild?.tagName === 'TEMPLATE' )
                 {
+                    if( this.firstElementChild !== this.lastElementChild )
+                        { console.error('payload should have TEMPLATE as only child', this.outerHTML ) }
                     const t = this.firstElementChild;
                     t.remove();
                     payload = t.content.childNodes;
@@ -649,7 +654,7 @@ CustomElement extends HTMLElement
                                     .addEventListener( t, ev=>
                                     {   ev.sliceElement = el;
                                         ev.sliceEventSource = ev.currentTarget || ev.target;
-                                        const slices = event2slice( sliceRoot, attr( ev.sliceElement, 'slice')||'', ev, this );
+                                        const slices = event2slice( sliceRoot, attr( ev.sliceElement, 'slice'), ev, this );
 
                                         forEach$(this,'[custom-validity]',el =>
                                         {   if( !el.setCustomValidity )
@@ -664,6 +669,7 @@ CustomElement extends HTMLElement
                                         const x = attr(el,'custom-validity')
                                         ,     v = x && xPath( x, attrsRoot )
                                         ,   msg = v === true? '' : v;
+
                                         if( x )
                                         {   el.setCustomValidity ? el.setCustomValidity( msg ) : ( el.validationMessage = msg );
                                             slices.map( s => s.setAttribute('validation-message', msg ) );
