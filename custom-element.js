@@ -434,6 +434,14 @@ export function assureUnique(n, id=0)
         e.childNodes.length && assureUnique(e)
     }
 }
+export function appendByDceId(parent,e,k)
+{
+    k = 1*k;
+    for( let n of parent.childNodes )
+        if( (n.dceId ?? n.getAttribute('data-dce-id')*1) > k )
+            return parent.insertBefore(e,n);
+    parent.append(e)
+}
 export function merge( parent, fromArr )
 {
     if(!fromArr.length)
@@ -461,7 +469,7 @@ export function merge( parent, fromArr )
             }
             delete id2old[ k ]
         }else
-            parent.append( e )
+            appendByDceId(parent,e,k)
     }
     for( let v of Object.values(id2old) )
         v.remove();
