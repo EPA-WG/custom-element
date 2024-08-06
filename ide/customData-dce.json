@@ -120,6 +120,62 @@
           "url": "https://github.com/EPA-WG/custom-element/tree/develop?tab=readme-ov-file#interactivity-via-data-slice-triggered-by-events"
         }
       ]
+    },
+    {
+      "name": "location-element",
+      "description": "get/set window URL parts or from SRC URL",
+      "attributes": [
+        {
+          "name": "href",
+          "description": "url to be parsed. When omitted window.location is used.",
+          "type": "string",
+          "references": [
+            {
+              "name": "MDN docs",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Location/href"
+            }
+          ]
+        },
+        {
+          "name": "live",
+          "description": "monitors history change, applicable only when href is omitted.",
+          "type": "string",
+          "references": [
+            {
+              "name": "docs",
+              "url": "https://unpkg.com/@epa-wg/custom-element@0/demo/location-element.html"
+            }
+          ]
+        },
+        {
+          "name": "src",
+          "description": "sets the window URL",
+          "type": "string",
+          "references": [
+            {
+              "name": "docs",
+              "url": "https://unpkg.com/@epa-wg/custom-element@0/demo/set-url.html"
+            }
+          ]
+        },
+        {
+          "name": "method",
+          "description": "when defined, changes URL by one of predefined methods.",
+          "type": "string",
+          "references": [
+            {
+              "name": "docs",
+              "url": "https://unpkg.com/@epa-wg/custom-element@0/demo/set-url.html"
+            }
+          ]
+        }
+      ],
+      "references": [
+        {
+          "name": "docs",
+          "url": "https://github.com/EPA-WG/custom-element"
+        }
+      ]
     }
   ]
 }

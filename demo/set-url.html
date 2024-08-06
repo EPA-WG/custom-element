@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+      xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>custom-element Declarative Custom Element implementation demo</title>
+    <link rel="icon" href="./wc-square.svg"/>
+    <script type="module" src="../location-element.js"></script>
+    <script type="module" src="../custom-element.js"></script>
+    <style>
+        @import "./demo.css";
+        input[type="text"]{ min-width: 30rem; }
+
+        .infolink {
+            &:before {
+                content: '❔';
+                display: inline-block;
+                border-radius: 1.2em;
+            }
+
+            &:hover:before {
+                background: blue;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="../index.html"><h3><code>custom-element</code> demo</h3></a>
+</nav>
+<main>
+    <h3>How to set the page URL by location-element?</h3>
+    Answer: by defining following attributes:
+    <ol>
+        <li><code>method</code> to one of values provided bellow</li>
+        <li><code>src</code> with URL </li>
+    </ol>
+    <p> &lt;location-element&gt; is safe to be used unconditionally as long as `src` is missing or same as page URL.
+        Otherwise it can be injected by event driven condition as in sample <a href="#dce3">#3</a> </p>
+</main>
+<html-demo-element legend="1. Set the page URL by location.hash"
+                   description="click on 'set' button and observe hash value change in url"
+                   id="dce1">
+    <template>
+        <custom-element>
+            <template>
+                <button value="#dce1" slice="set-button" slice-event="click">#dce1</button>
+                <button value="#dce2" slice="set-button" slice-event="click">#dce2</button>
+                <location-element method="location.href" src="{//set-button/@value}"></location-element>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="2. Set the page URL by method"
+                   description="click on 'set' button and observe hash value change in url"
+                   id="dce2">
+    <template>
+        <custom-element>
+            <template>
+                <style>
+                    button{ display: block; width: 100%; }
+                </style>
+                <button value="location.href"           slice="set-button" slice-event="click"> location.href        </button>
+                <button value="location.hash"           slice="set-button" slice-event="click"> location.hash        </button>
+                <button value="location.assign"         slice="set-button" slice-event="click"> location.assign      </button>
+                <button value="location.replace"        slice="set-button" slice-event="click"> location.replace     </button>
+                <button value="history.pushState"       slice="set-button" slice-event="click"> history.pushState    </button>
+                <button value="history.replaceState"    slice="set-button" slice-event="click"> history.replaceState </button>
+                <location-element method="{//set-button/@value}" src="#dce2"></location-element>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="3. Set the page URL by location.href in conditionally injected location-element"
+                   description="click on 'set' button and observe in url #dce3"
+                   id="dce3">
+    <p>Has to produce URL properties</p>
+    <template>
+        <custom-element>
+            <template>
+                <button value="#dce3" slice="set-button" slice-event="click">set</button>
+                <if test="//set-button/@slice-event">
+                    <location-element method="location.href" src="#dce3"></location-element>
+                    look for <b>#dce3</b> in URL which is set by <code>location-element</code>
+                </if>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="4. Set page URL methods"
+                   description="To define the URL, fill input field or click the radio button, then 'set' button. "
+                   id="dce4">
+    <template>
+        <custom-element>
+            <template>
+                <xsl:variable name="methods">
+                    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Location/href"
+                       title="./set-url.html?a=A">location.href</a>
+                    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Location/hash"
+                       title="#dec4">location.hash</a>
+                    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Location/assign"
+                       title="./set-url.html?assign=1">location.assign</a>
+                    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Location/replace"
+                       title="./set-url.html?replace=location">location.replace</a>
+                    <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/pushState"
+                       title="./set-url.html?history=pushState">history.pushState</a>
+                    <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState"
+                       title="./set-url.html?history=replaceState">history.replaceState</a>
+                </xsl:variable>
+                <form slice="url-form" custom-validity="'invalid'" method="post">
+                    <fieldset>
+                        <legend><b>set-by</b></legend>
+                        <for-each select="exsl:node-set($methods)/*">
+                            <p><label><input type="radio" name="method" value="{.}"/> {.} </label>
+                                <a class="infolink" href="{@href}">mdn</a>
+                            </p>
+                        </for-each>
+                    </fieldset>
+                    <variable name="selected-method" select="//form-data/method/text()"></variable>
+                    <variable name="selected-url"
+                              select="exsl:node-set($methods)/*[text() = $selected-method ]/@title"></variable>
+
+                    <label><input name="url" value="{//url ?? $selected-url }" type="text"/></label>
+                    <button name="submit-btn" value="by-submit" type="submit">set</button>
+                    <if test="//form-data/url">
+                        <location-element method="{$selected-method}" src="{//form-data/url}"></location-element>
+                        {$selected-method} = {//form-data/url}
+                    </if>
+                </form>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
+
+</body>
+</html>

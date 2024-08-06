@@ -22,7 +22,19 @@
 <nav>
     <a href="../index.html"><h3><code>custom-element</code> demo</h3></a>
 </nav>
-<html-demo-element legend="Change window URL">
+<main>
+    <h3>How to get the page URL by location-element?</h3>
+    Answer: by defining following attributes:
+    <ol>
+        <li><code>slice</code> to one of values provided bellow</li>
+        <li><code>src</code> optionally with URL, If omitted, it would match the <code>window.location.href</code> </li>
+    </ol>
+    URL properties would be a part of slice data.
+    <p><a href="./set-url.html">Set page URL demo</a> </p>
+</main>
+<html-demo-element legend="Change window URL"
+                    description="use browser URL bar or those controls to change the page URL"
+                   >
     <template>
         <a href="#dce2">#dce2</a>
         <form method="get">
@@ -40,7 +52,8 @@
 
 
 <html-demo-element legend="1. window.location live update"
-                   description="In the page beginning change the window URL via link or by history change"
+                   description="Change the window URL via link or history change by controls in #1.
+                    Observe the changes detected by location-element slice."
                    id="dce2"
     >
     <p>Has to produce URL properties</p>
@@ -48,7 +61,7 @@
         <custom-element tag="dce-2" hidden>
             <template>
 
-                <location-element slice="window-url" live></location-element>
+                <location-element slice="window-url" live method="" src=""></location-element>
 
                 <xhtml:table>
                     <xhtml:tbody>
@@ -121,7 +134,7 @@
         <custom-element tag="dce-3" hidden>
             <template>
 
-                <location-element slice="href-url" href="https://my.example?a=1&b=2#3"></location-element>
+                <location-element slice="href-url" href="https://my.example?a=1&b=2#3" ></location-element>
 
                 <xhtml:table>
                     <xhtml:tbody>
