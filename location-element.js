@@ -16,6 +16,15 @@ function ensureTrackLocationChange()
         }
     });
 }
+const methods =
+{   'location.href'         : src => window.location.href = src
+,   'location.hash'         : src => window.location.hash = src
+,   'location.assign'       : src => window.location.assign( src )
+,   'location.replace'      : src => window.location.replace( src )
+,   'history.pushState'     : src => window.history.pushState( {}, "", src )
+,   'history.replaceState'  : src => window.history.replaceState( {}, "", src )
+};
+
 
 export class LocationElement extends HTMLElement
 {
@@ -25,6 +34,8 @@ export class LocationElement extends HTMLElement
             ,   'href'  // url to be parsed. When omitted window.location is used.
             ,   'type' // `text|json`, defaults to text, other types are compatible with INPUT field
             ,   'live' // monitors history change, applicable only when href is omitted.
+            ,   'src' // sets the URL
+            ,   'method' // when defined, changes URL by one of predefined methods.
             ];
 
     constructor()
@@ -53,6 +64,17 @@ export class LocationElement extends HTMLElement
         };
         this.sliceInit = s =>
         {
+            if( this.hasAttribute('method') )
+            {
+                const method = this.getAttribute('method');
+                const src = this.getAttribute('src');
+                if( method && src )
+                    if( method === 'location.hash' )
+                    {   if( src !== window.location.hash )
+                            methods[ method ]?.( src );
+                    }else if( window.location.href !== new URL(src, window.location).href )
+                        methods[method]?.(src);
+            }
             if( !state.listener && this.hasAttribute('live') )
             {   state.listener = 1;
                 window.navigation?.addEventListener("navigate", listener );
@@ -74,8 +96,9 @@ export class LocationElement extends HTMLElement
     }
     attributeChangedCallback(name, oldValue, newValue)
     {
-        if('href'!== name)
-            return;
+        if('href'!== name && 'method' !== name && 'src' )
+            if( !['method','src','href'].includes(name) )
+                return;
         this.sliceInit && this.sliceInit();
     }
 

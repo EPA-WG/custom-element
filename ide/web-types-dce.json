@@ -1,116 +1,159 @@
 {
-  "$schema": "http://json.schemastore.org/web-types",
-  "name": "@epa-wg/custom-element",
-  "version": "0.0.24",
-  "js-types-syntax": "typescript",
-  "description-markup": "markdown",
-  "contributions": {
-    "html": {
-      "attributes": [
-        {
-          "name": "slice",
-          "description": "Defines the name of data slice in DCE where the data from `value` will be propagated on `change` or by `slice-event` event\n\nOn: any component with `value` and associated change event",
-          "doc-url": "https://unpkg.com/@epa-wg/custom-element/demo/dom-merge.html"
-        },
-        {
-          "name": "slice-event",
-          "description": "Defines the event name on which `value` would be synchronized with DCE slice\n\nOn: any component with `value` and associated change event",
-          "doc-url": "https://unpkg.com/@epa-wg/custom-element/demo/dom-merge.html"
-        },
-        {
-          "name": "custom-validity",
-          "description": "XPath expression to return either boolean or error string to be shown by browser native UI on form validation event. Unless value is true, prevents the form submission.",
-          "doc-url": "https://unpkg.com/@epa-wg/custom-element/demo/form.html"
-        },
-        {
-          "name": "slice-value",
-          "description": "XPath expression to populate into the slice",
-          "doc-url": "https://unpkg.com/@epa-wg/custom-element/demo/data-slices.html"
-        }
-      ],
-      "elements": [
-        {
-          "name": "custom-element",
-          "description": "Declarative Custom Element as W3C proposal PoC with native(XSLT) based templating",
-          "doc-url": "https://github.com/EPA-WG/custom-element?tab=readme-ov-file#custom-element",
-          "attributes": [
-            {
-              "name": "hidden",
-              "description": "hides DCE definition to prevent visual appearance of content. Wrap the payload into template tag to prevent applying the inline CSS in global scope.",
-              "required": false,
-              "doc-url": "https://developer.mozilla.org/en-US/docs/web/html/global_attributes/hidden",
-              "value": {
-                "type": "boolean"
-              }
-            },
-            {
-              "name": "tag",
-              "description": "HTML tag for Custom Element. Used for window.customElements.define(). If not set, would be generated and DCE instance rendered inline. ",
-              "default": "",
-              "required": false,
-              "doc-url": "https://github.com/EPA-WG/custom-element?tab=readme-ov-file#tag-attribute",
-              "value": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "src",
-              "description": "full, relative, or hash URL to DCE template.",
-              "default": "",
-              "required": false,
-              "doc-url": "https://github.com/EPA-WG/custom-element?tab=readme-ov-file#src-attribute",
-              "value": {
-                "type": "URL"
-              }
-            }
-          ],
-          "slots": [],
-          "js": {
-            "events": [
-              {
-                "name": "value:changed",
-                "description": "Emitted when data changes. Can be used for state serialization in hydration flow"
-              }
+    "$schema": "http://json.schemastore.org/web-types",
+    "name": "@epa-wg/custom-element",
+    "version": "0.0.24",
+    "js-types-syntax": "typescript",
+    "description-markup": "markdown",
+    "contributions": {
+        "html": {
+            "attributes": [
+                {
+                    "name": "slice",
+                    "description": "Defines the name of data slice in DCE where the data from `value` will be propagated on `change` or by `slice-event` event\n\nOn: any component with `value` and associated change event",
+                    "doc-url": "https://unpkg.com/@epa-wg/custom-element/demo/dom-merge.html"
+                },
+                {
+                    "name": "slice-event",
+                    "description": "Defines the event name on which `value` would be synchronized with DCE slice\n\nOn: any component with `value` and associated change event",
+                    "doc-url": "https://unpkg.com/@epa-wg/custom-element/demo/dom-merge.html"
+                },
+                {
+                    "name": "custom-validity",
+                    "description": "XPath expression to return either boolean or error string to be shown by browser native UI on form validation event. Unless value is true, prevents the form submission.",
+                    "doc-url": "https://unpkg.com/@epa-wg/custom-element/demo/form.html"
+                },
+                {
+                    "name": "slice-value",
+                    "description": "XPath expression to populate into the slice",
+                    "doc-url": "https://unpkg.com/@epa-wg/custom-element/demo/data-slices.html"
+                }
             ],
-            "properties": [
-              {
-                "name": "value",
-                "type": "string",
-                "default": "",
-                "description": "DCE state. Can be used for state serialization in hydration flow. Format TBD, most likely encoded XML string"
-              }
-            ]
-          },
-          "css": {
-            "properties": [
-            ]
-          }
-        },
-        {
-          "name": "for-each",
-          "description": "The <xsl:for-each> element selects a set of nodes and processes each of them in the same way. It is often used to iterate through a set of nodes or to change the current node. If one or more <xsl:sort> elements appear as the children of this element, sorting occurs before processing. Otherwise, nodes are processed in document order.",
-          "doc-url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/for-each",
-          "attributes": [
-            {
-              "name": "select",
-              "description": "Uses an XPath expression to select nodes to be processed.",
-              "required": true,
-              "doc-url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/for-each#select",
-              "value": {
-                "type": "string"
-              }
-            }
-          ]
-        },
-        {
-          "name": "slice",
-          "description": "Synthetic element for defining the slice-attributed when more then one slice/event/value associated with parent element",
-          "doc-url": "https://github.com/EPA-WG/custom-element/tree/develop?tab=readme-ov-file#interactivity-via-data-slice-triggered-by-events",
-          "attributes": [
+            "elements": [
+                {
+                    "name": "custom-element",
+                    "description": "Declarative Custom Element as W3C proposal PoC with native(XSLT) based templating",
+                    "doc-url": "https://github.com/EPA-WG/custom-element?tab=readme-ov-file#custom-element",
+                    "attributes": [
+                        {
+                            "name": "hidden",
+                            "description": "hides DCE definition to prevent visual appearance of content. Wrap the payload into template tag to prevent applying the inline CSS in global scope.",
+                            "required": false,
+                            "doc-url": "https://developer.mozilla.org/en-US/docs/web/html/global_attributes/hidden",
+                            "value": {
+                                "type": "boolean"
+                            }
+                        },
+                        {
+                            "name": "tag",
+                            "description": "HTML tag for Custom Element. Used for window.customElements.define(). If not set, would be generated and DCE instance rendered inline. ",
+                            "default": "",
+                            "required": false,
+                            "doc-url": "https://github.com/EPA-WG/custom-element?tab=readme-ov-file#tag-attribute",
+                            "value": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "src",
+                            "description": "full, relative, or hash URL to DCE template.",
+                            "default": "",
+                            "required": false,
+                            "doc-url": "https://github.com/EPA-WG/custom-element?tab=readme-ov-file#src-attribute",
+                            "value": {
+                                "type": "URL"
+                            }
+                        }
+                    ],
+                    "slots": [ ],
+                    "js": {
+                        "events": [
+                            {
+                                "name": "value:changed",
+                                "description": "Emitted when data changes. Can be used for state serialization in hydration flow"
+                            }
+                        ],
+                        "properties": [
+                            {
+                                "name": "value",
+                                "type": "string",
+                                "default": "",
+                                "description": "DCE state. Can be used for state serialization in hydration flow. Format TBD, most likely encoded XML string"
+                            }
+                        ]
+                    },
+                    "css": {
+                        "properties": [
+                        ]
+                    }
+                },
+                {
+                    "name": "for-each",
+                    "description": "The <xsl:for-each> element selects a set of nodes and processes each of them in the same way. It is often used to iterate through a set of nodes or to change the current node. If one or more <xsl:sort> elements appear as the children of this element, sorting occurs before processing. Otherwise, nodes are processed in document order.",
+                    "doc-url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/for-each",
+                    "attributes": [
+                        {
+                            "name": "select",
+                            "description": "Uses an XPath expression to select nodes to be processed.",
+                            "required": true,
+                            "doc-url": "https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/for-each#select",
+                            "value": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "location-element",
+                    "description": "get/set window URL parts or from SRC URL",
+                    "doc-url": "https://github.com/EPA-WG/custom-element",
+                    "attributes": [
+                        {
+                            "name": "href",
+                            "description": "url to be parsed. When omitted window.location is used.",
+                            "required": false,
+                            "doc-url": "https://developer.mozilla.org/en-US/docs/Web/API/Location/href",
+                            "value": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "live",
+                            "description": "monitors history change, applicable only when href is omitted.",
+                            "required": false,
+                            "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/location-element.html",
+                            "value": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "src",
+                            "description": "sets the window URL",
+                            "required": false,
+                            "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/set-url.html",
+                            "value": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "method",
+                            "description": "when defined, changes URL by one of predefined methods.",
+                            "required": false,
+                            "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/set-url.html",
+                            "value": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "slice",
+                    "description": "Synthetic element for defining the slice-attributed when more then one slice/event/value associated with parent element",
+                    "doc-url": "https://github.com/EPA-WG/custom-element/tree/develop?tab=readme-ov-file#interactivity-via-data-slice-triggered-by-events",
+                    "attributes": [
 
-          ]
+                    ]
+                }
+            ]
         }
-      ]
     }
-  }
 }
