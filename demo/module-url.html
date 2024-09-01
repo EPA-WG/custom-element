@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+      xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>importmap custom-element Declarative Custom Element implementation demo</title>
+    <link rel="icon" href="./wc-square.svg"/>
+    <script type="importmap">
+        {
+          "imports": {
+            "lib-root/": "./lib-dir/",
+            "embed-lib": "./lib-dir/embed-lib.html"
+          }
+        }
+    </script>
+    <script type="module" src="../location-element.js"></script>
+    <script type="module" src="../module-url.js"></script>
+    <script type="module" src="../custom-element.js"></script>
+
+    <style>
+        @import "./demo.css";
+
+        dce-root {
+            box-shadow: 0 0 0.5rem lime;
+            padding: 1rem;
+            display: inline-block;
+        }
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            &>section{
+                flex:1 20rem;
+            }
+        }
+    </style>
+
+</head>
+<body>
+
+<nav>
+    <h3><a href="../index.html"><code>custom-element</code> demo</a>, <code>importmap</code></h3>
+</nav>
+<main>
+    <section>
+        <h3>How to get the module URL for <code>custom-element</code>?</h3>
+        Answer: by defining following attributes in <code>module-url</code>:
+        <ol>
+            <li><code>src</code> with path to module resource, If omitted, it would match the
+                <code>window.location.href</code></li>
+            <li><code>slice</code> to read the URL</li>
+        </ol>
+        URL properties would be a part of slice data, the value would be a full URL.
+    </section><section>
+        <h3>Where to use <code>module-url</code>?</h3>
+        Answer: to inject the library resources URL into generated HTML.
+        <p><a
+                href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules#importing_modules_using_import_maps"
+        >Import maps </a> are used for defining the dependencies location on the web page level.
+            This way dependencies could reside on different CDN path or even domains while in the code would be
+            referenced
+            by symbolic package name.
+            See the CDN example bellow.</p>
+        <br/>
+        <p>The resolving of import maps is done by
+            <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import.meta/resolve">import.meta.resolve(path)</a>
+        </p>
+    </section><section>
+        <h3>Where NOT to use <code>module-url</code>?</h3>
+        Answer:
+        <ol>
+            <li> in <code>scr</code> attribute of &lt;custom-element &gt;<br/>
+                - It uses the same module resolving mechanism
+            </li>
+            <li> for getting/setting the page URL,<br/>
+                - see <a href="./set-url.html">How to set page URL in <code>custom-element</code>?</a>
+
+            </li>
+        </ol>
+
+        <h3>See also</h3>
+        <p><a href="./external-template.html">How to use external templates?</a></p>
+    </section>
+    <section>
+        <html-demo-element legend="this page import maps"
+        >
+            <template>
+                {
+                "imports": {
+                "lib-root": "./lib-dir/",
+                "embed-lib": "./lib-dir/embed-lib.html"
+                }
+                }
+            </template>
+        </html-demo-element>
+    </section>
+</main>
+
+
+<html-demo-element legend="1. relative to page path"
+                   description="Should render Vulcan Salute 🖖 with link to embed-1.html, link should open the page"
+>
+    <template>
+        <custom-element>
+            <a href="./embed-1.html">
+                <custom-element src="./embed-1.html"></custom-element>
+            </a>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="2. module by symbolic name"
+                   description="should render '👋 from embed-lib-component' as link to 'demo-lib/embed-lib.html', link should open the page "
+>
+    <p><code>embed-lib</code> resolved to <code>./lib-dir/embed-lib.html</code> by page <i>importmap</i></p>
+    <template>
+        <custom-element>
+            <template>
+                <module-url slice="lib-url" src="embed-lib"></module-url>
+                <if test="//lib-url/@error">
+                    <p>error: <b>{//lib-url/@error}</b></p>
+                </if>
+                check the link:
+                <a href="{//lib-url}">
+                    <custom-element src="embed-lib#embed-lib-component">
+                        failed to load
+                    </custom-element>
+                </a>
+            </template>
+        </custom-element>
+
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="3. module by symbolic name with missing importmap entry"
+                   description="should render error message and `failed to load` broken link "
+>
+    <p>As <code>fakedemo-lib</code> is not in importmaps, the symbolic name is not resolved and renders the error</p>
+
+    <template>
+        <custom-element>
+            <template>
+                <module-url slice="lib-url" src="fakedemo-lib/embed-lib.html"></module-url>
+                <if test="//lib-url/@error">
+                    <p>error: <b>{//lib-url/@error}</b></p>
+                </if>
+                the link is broken:
+                <a href="{//lib-url}">
+                    <custom-element src="fakedemo-lib/embed-lib.html#embed-lib-component">
+                        failed to load
+                    </custom-element>
+                </a>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+
+<html-demo-element legend="4. module path by symbolic name"
+                   description="should render two smiley images and links should open matching page"
+>
+    <p><code>lib-root</code> resolved to <code>lib-dir</code> by page <i>importmap</i></p>
+    <template>
+        <custom-element>
+            <template>
+                <module-url slice="lib-url" src="lib-root/embed-lib.html#embed-relative-hash"></module-url>
+                <module-url slice="img-url" src="lib-root/Smiley.svg"></module-url>
+                <if test="//lib-url/@error">
+                    <p>error: <b>{//lib-url/@error}</b></p>
+                </if>
+                check the link:
+                <a href="{//lib-url}"> lib-root/embed-lib.html#embed-relative-hash <img src="{//img-url}" alt=""/></a>
+                <custom-element src="lib-root/embed-lib.html#embed-relative-hash">
+                    failed to load
+                </custom-element>
+
+            </template>
+        </custom-element>
+
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="5. module path by symbolic name to internal link within lib"
+                   description="should render '👍 from embed-relative-file' and Vulcan Salute 🖖. Links should open matching page "
+>
+    <template>
+        <custom-element>
+            <template>
+                <module-url slice="lib-url" src="lib-root/embed-lib.html#embed-relative-file"></module-url>
+                <if test="//lib-url/@error">
+                    <p>error: <b>{//lib-url/@error}</b></p>
+                </if>
+                check the link:
+                <a href="{//lib-url}"> lib-root/embed-lib.html#embed-relative-file </a>
+                <custom-element src="lib-root/embed-lib.html#embed-relative-file">
+                    failed to load
+                </custom-element>
+
+            </template>
+        </custom-element>
+
+    </template>
+</html-demo-element>
+
+
+<html-demo-element src="./lib-dir/embed-lib.html"
+        legend="./lib-dir/embed-lib.html"
+       description="resides within ./lib-dir and serves a sample of module with multiple templates"
+>
+
+</html-demo-element>
+
+<script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
+
+</body>
+</html>

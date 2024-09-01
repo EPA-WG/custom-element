@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>DOM merge - Declarative Custom Element implementation demo</title>
+    <link rel="icon" href="./wc-square.svg"/>
+
+    <script type="module" src="../http-request.js"></script>
+    <script type="module" src="../custom-element.js"></script>
+    <style>
+        @import "./demo.css";
+        dt{ font-weight: bold}
+        dd{ padding: 0;}
+        h1,h3{ margin: 0;}
+        nav{ gap:0; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="../index.html"><h3><code>custom-element</code> demo</h3></a>
+    <h1><code>npm-version</code> Declarative Custom Element</h1>
+
+    <dl>
+        <dt>Attributes</dt>
+        <dd><code>package-name</code> NPM package name</dd>
+        <dd><code>current-version</code> version to be initially selected </dd>
+        <dd><code>value</code> user selection </dd>
+
+        <dt>Events</dt>
+        <dd><code>change</code> triggered when <code>value</code> attribute changed</dd>
+
+        <dt>Slots</dt>
+        <dd><code>label</code> defaults to <code>{$package-name} version:</code> </dd>
+    </dl>
+
+</nav>
+
+
+<html-demo-element legend="1. NPM package version picker"
+                   description="defaults, last version should be preselected">
+    <template>
+        <custom-element tag="npm-version" src="./npm-versions.html#npm-version"></custom-element>
+        <npm-version package-name="@epa-wg/custom-element-dist"></npm-version>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="2. preselected NPM package version picker"
+                   description="version 22 should be selected">
+    <template>
+        <custom-element tag="custom-element-version" src="./npm-versions.html#npm-version"></custom-element>
+        <custom-element-version current-version="0.0.22" package-name="@epa-wg/custom-element"></custom-element-version>
+    </template>
+</html-demo-element>
+
+
+<html-demo-element legend="3. value attribute changed and propagated to slice"
+                   description="upon selection change the version should be shown as 'selected-version' slice value">
+    <template>
+        <custom-element tag="npm-version" src="./npm-versions.html#npm-version"></custom-element>
+
+        <custom-element >
+            <template>
+                <npm-version slice="selected-version" package-name="@epa-wg/custom-element"></npm-version>
+                <p><code>selected-version</code> slice: {//selected-version/@value}</p>
+            </template>
+        </custom-element>
+
+    </template>
+</html-demo-element>
+
+
+<html-demo-element legend="4. label slot override"
+                   description="upon selection change the version should be shown as 'selected-version' slice value">
+    <template>
+        <custom-element tag="npm-version-1" src="./npm-versions.html#npm-version"></custom-element>
+
+        <custom-element >
+            <template>
+                <npm-version-1 slice="selected" package-name="@epa-wg/custom-element">
+                    <i slot="label">select:</i>
+                </npm-version-1>
+                <p><code>selected-version</code> slice: {//selected}</p>
+            </template>
+        </custom-element>
+
+    </template>
+</html-demo-element>
+
+
+<html-demo-element legend="5. control version in URL"
+                   description="">
+    1. <button onclick="window.location.hash = `#@epa-wg/custom-element-dist@0.0.25/storybook-static/index.html`">set in page URL</button>
+        (can be skipped when run from unpkg.com)<br/>
+    2. switch the package version in select and observe the URL change.
+    <template>
+        <custom-element src="./npm-versions.html#npm-version-to-url" package-name="custom-element-dist" current-version="0.0.25"></custom-element>
+    </template>
+</html-demo-element>
+
+
+<script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js" hidden></script>
+
+</body>
+</html>
