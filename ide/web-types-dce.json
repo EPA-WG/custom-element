@@ -146,6 +146,31 @@
                     ]
                 },
                 {
+                    "name": "module-url",
+                    "description": "get module URL into slice from SRC according to web page importmap",
+                    "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/module-url.html",
+                    "attributes": [
+                        {
+                            "name": "src",
+                            "description": "path to module resource, If omitted, it would match the window.location.href",
+                            "required": false,
+                            "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/module-url.html",
+                            "value": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "slice",
+                            "description": "slice name where resolved URL would be propagated",
+                            "required": false,
+                            "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/data-slices.html",
+                            "value": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
                     "name": "slice",
                     "description": "Synthetic element for defining the slice-attributed when more then one slice/event/value associated with parent element",
                     "doc-url": "https://github.com/EPA-WG/custom-element/tree/develop?tab=readme-ov-file#interactivity-via-data-slice-triggered-by-events",
