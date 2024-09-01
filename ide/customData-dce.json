@@ -176,6 +176,40 @@
           "url": "https://github.com/EPA-WG/custom-element"
         }
       ]
+    },
+    {
+      "name": "module-url",
+      "description": "get module URL into slice from SRC according to web page importmap",
+      "attributes": [
+        {
+          "name": "src",
+          "description": "path to module resource, If omitted, it would match the window.location.href",
+          "type": "string",
+          "references": [
+            {
+              "name": "docs",
+              "url": "https://unpkg.com/@epa-wg/custom-element@0/demo/module-url.html"
+            }
+          ]
+        },
+        {
+          "name": "slice",
+          "description": "slice name where resolved URL would be propagated",
+          "type": "string",
+          "references": [
+            {
+              "name": "docs",
+              "url": "https://unpkg.com/@epa-wg/custom-element@0/demo/data-slices.html"
+            }
+          ]
+        }
+      ],
+      "references": [
+        {
+          "name": "docs",
+          "url": "https://unpkg.com/@epa-wg/custom-element@0/demo/module-url.html"
+        }
+      ]
     }
   ]
 }

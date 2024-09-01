@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>templates for embedded and external DCE lib dependencies</title>
+</head>
+<body>
+<h1>templates for embedded and external DCE lib dependencies</h1>
+
+<template id="embed-lib-component">
+    👋 from embed-lib-component
+</template>
+
+<template id="embed-relative-hash">
+    👌 from embed-relative-hash invoking
+    <module-url slice="full-url" src="./embed-lib.html"></module-url>
+    <a href="{//full-url}#embed-lib-component">
+        <img src="{//full-url}/../Smiley.svg"/>
+        #embed-lib-component
+    </a>:
+    <custom-element src="#embed-lib-component"></custom-element>
+</template>
+
+<template id="embed-relative-file">
+    👍 from embed-relative-file invoking
+    <module-url slice="up-url" src="../embed-1.html"></module-url>
+    <a href="{//up-url}">../embed-1.html</a>:
+    <custom-element src="../embed-1.html">
+        loading from ../embed-1.html ...
+    </custom-element>
+</template>
+
+</body>
+</html>

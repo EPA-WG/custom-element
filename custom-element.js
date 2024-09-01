@@ -259,7 +259,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     for( const c of fr.childNodes )
         payload.append(xslDom.importNode(c,true))
 
-    const embeddedTemplates = [...payload.querySelectorAll('template')];
+    const embeddedTemplates = [...payload.getElementsByTagName('xsl:template')];
     embeddedTemplates.forEach(t=>payload.ownerDocument.documentElement.append(t));
 
     const   slotCall = $(xslDom,'call-template[name="slot"]')
@@ -288,8 +288,9 @@ xhrTemplate(src)
         // xhr.overrideMimeType("text/xml");
         xhr.onload = () =>
         {   if( xhr.readyState === xhr.DONE && xhr.status === 200 )
-                resolve( xhr.responseXML ||  create('div', xhr.responseText ) )
-            reject(xhr.statusText)
+                resolve( xhr.responseXML?.body || xhr.responseXML ||  create('div', xhr.responseText ) )
+            else
+                reject(`${xhr.statusText} - ${src}`)
         };
         xhr.addEventListener("error", ev=>reject(ev) );
 
@@ -372,7 +373,7 @@ event2slice( x, sliceNames, ev, dce )
                 s.append( obj2node(new FormData(el),'value', s.ownerDocument) )
                 return s
             }
-            const v = el.value ?? attr( sel, 'value' ) ;
+            const v = el.value ?? attr( el, 'value' ) ;
             cleanSliceValue();
             if( v === null || v === undefined )
                 [...s.childNodes].filter(n=>n.localName!=='event').map(n=>n.remove());
@@ -396,19 +397,27 @@ const loadTemplateRoots = async ( src, dce )=>
         return [dce]
     if( src.startsWith('#') )
         return ( n =>
-        {   if(!n) return []
-            const a = n.querySelectorAll(src)
-            if( a.length )
-                return [...a]
-            const r = n.getRootNode();
-            return r===n ? []: getByHashId(r)
+        {   const a = n.querySelectorAll(src)
+            return  [...( a.length ? a : n.getRootNode().querySelectorAll(src) )]
         })(dce.parentElement)
     try
-    {   // todo cache
-        const dom = await xhrTemplate(src)
-        const hash = new URL(src, location).hash
+    {   const [path, hash] = src.split('#');
+        if( '.' === src.charAt(0))
+            src = new URL(path, dce.closest('[base]')?.getAttribute('base') || location ).href;
+        else
+            try
+            {   src = import.meta.resolve( path );
+                if(hash)
+                    src +='#'+hash;
+            }
+            catch( e )
+                {   console.error(e.message) }
+        // todo cache
+        const dom = await xhrTemplate(src);
+        dce.setAttributeNS('xml', 'base', src );
+
         if( hash )
-        {   const ret = dom.querySelectorAll(hash);
+        {   const ret = dom.querySelectorAll('#'+hash);
             if( ret.length )
                 return [...ret]
             return [dce]
@@ -454,8 +463,11 @@ export function appendByDceId(parent,e,k)
 }
 export function merge( parent, fromArr )
 {
-    if(!fromArr.length)
-        return removeChildren(parent);
+    if( 'dce-root' === parent.firstElementChild?.localName && 'dce-root' !== fromArr[0].localName)
+        return;
+    if( !fromArr.length )
+        return 'dce-root' !== parent.firstElementChild?.localName && removeChildren(parent);
+
     const id2old = {};
     for( let c of parent.childNodes)
     {   ASSERT( !id2old[c.dceId] );
@@ -482,7 +494,8 @@ export function merge( parent, fromArr )
             appendByDceId(parent,e,k)
     }
     for( let v of Object.values(id2old) )
-        v.remove();
+        if( v.localName !== 'dce-root')
+           v.remove();
 }
 export function assureUID(n,attr)
 {   if( !n.hasAttribute(attr) )
@@ -523,7 +536,7 @@ export const xPath = (x,root)=>
         ret += n.textContent;
     return ret
 }
-export const xslTags = 'stylesheet,transform,import,include,strip-space,preserve-space,output,key,decimal-format,namespace-alias,template,value-of,copy-of,number,apply-templates,apply-imports,for-each,sort,if,choose,when,otherwise,attribute-set,call-template,with-param,variable,param,text,processing-instruction,element,attribute,comment,copy,message,fallback'.split(',');
+export const xslTags = 'stylesheet,transform,import,include,strip-space,preserve-space,output,key,decimal-format,namespace-alias,value-of,copy-of,number,apply-templates,apply-imports,for-each,sort,if,choose,when,otherwise,attribute-set,call-template,with-param,variable,param,text,processing-instruction,element,attribute,comment,copy,message,fallback'.split(',');
 export const toXsl = (el, defParent) => {
     const x = create('xsl:'+el.localName);
     for( let a of el.attributes )
@@ -725,13 +738,17 @@ CustomElement extends HTMLElement
                 applySlices();
             }
             #applyAttribute(name, newValue)
-            {   let a = this.xml.querySelector(`attributes>${name}`);
+            {   if( 'value' === name )
+                    this.value = newValue;
+                let a = this.xml.querySelector(`attributes>${name}`);
                 if( a )
                     emptyNode(a).append( createText(a,newValue) );
                 else
                 {   a = create( name, newValue, this.xml );
                     this.xml.querySelector('attributes').append( a );
                 }
+
+                this.dispatchEvent(new CustomEvent('change', { bubbles: true,detail: { [name]: newValue }}))
             }
             attributeChangedCallback(name, oldValue, newValue)
             {   if( !this.xml || this.#inTransform )

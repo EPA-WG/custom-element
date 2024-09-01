@@ -11,9 +11,13 @@ custom-element:not([tag]),
 dce-link,dce-1-slot,dce-2-slot,dce-3-slot,dce-4-slot,dce-2-slots,greet-element,pokemon-tile,
 dce-1,dce-2,dce-3,dce-4,dce-internal,dce-hash
 { box-shadow: 0 0 0.5rem lime; padding: 1rem; display: inline-block; flex:1; }
+script{ display:none !important; }
 dd{ padding: 1rem;}
 p{ margin: 0;}
-
+code{ font-weight: bold; color: green; text-wrap: nowrap; }
+*{
+    gap: 1rem;
+}
 
 html-demo-element h3
 {   text-shadow: 0 0 0.25em white;

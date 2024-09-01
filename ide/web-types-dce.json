@@ -1,7 +1,7 @@
 {
     "$schema": "http://json.schemastore.org/web-types",
     "name": "@epa-wg/custom-element",
-    "version": "0.0.24",
+    "version": "0.0.26",
     "js-types-syntax": "typescript",
     "description-markup": "markdown",
     "contributions": {
@@ -139,6 +139,31 @@
                             "description": "when defined, changes URL by one of predefined methods.",
                             "required": false,
                             "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/set-url.html",
+                            "value": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "module-url",
+                    "description": "get module URL into slice from SRC according to web page importmap",
+                    "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/module-url.html",
+                    "attributes": [
+                        {
+                            "name": "src",
+                            "description": "path to module resource, If omitted, it would match the window.location.href",
+                            "required": false,
+                            "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/module-url.html",
+                            "value": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "slice",
+                            "description": "slice name where resolved URL would be propagated",
+                            "required": false,
+                            "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/data-slices.html",
                             "value": {
                                 "type": "string"
                             }
