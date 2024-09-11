@@ -4,7 +4,17 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>custom-element Declarative Custom Element implementation demo</title>
     <link rel="icon" href="demo/wc-square.svg" />
-    <script type="module" src="custom-element.js"></script>
+    <script type="importmap">
+        {
+          "imports": {
+            "@epa-wg/custom-element/": "./",
+            "@epa-wg/custom-element-dist/": "./"
+          }
+        }
+    </script>
+    <script type="module" src="./http-request.js"></script>
+    <script type="module" src="./location-element.js"></script>
+    <script type="module" src="./custom-element.js"></script>
     <style>
         @import "demo/demo.css";
     </style>
@@ -18,6 +28,12 @@
         | <a href="https://stackblitz.com/github/EPA-WG/custom-element?file=index.html">Sandbox</a>
         | <a href="https://chrome.google.com/webstore/detail/epa-wgcustom-element/hiofgpmmkdembdogjpagmbbbmefefhbl"
             >Chrome devtools plugin</a>
+        |   <custom-element src="@epa-wg/custom-element/demo/npm-versions.html#npm-version-to-url"
+                            slice="selected" package-name="@epa-wg/custom-element">
+                <i slot="label">version:</i>
+            </custom-element>
+
+
     </div>
     <p>
         This <em>Declarative Custom Element</em> allows to define<br/>
@@ -38,7 +54,8 @@
         <a href="./demo/parameters.html"        >attributes         </a> |
         <a href="./demo/data-slices.html"       >data slices/events </a> |
         <a href="./demo/form.html"              >Form validation    </a> |
-        <a href="./demo/dom-merge.html"         >DOM merge on dynamic update </a>
+        <a href="./demo/dom-merge.html"         >DOM merge on dynamic update </a><br/>
+        <a href="./demo/npm-versions-demo.html">npm version         </a>
     </section>
 </nav>
 <html-demo-element legend="1. simple payload"

@@ -4,13 +4,12 @@ html
 }
 body,nav{ display: flex; flex-wrap: wrap; align-content: stretch; gap: 1rem; }
 body>*{flex: auto;}
-nav{ flex-direction: column;}
-custom-element+*,
-custom-element+*+*,
-custom-element:not([tag]),
-dce-link,dce-1-slot,dce-2-slot,dce-3-slot,dce-4-slot,dce-2-slots,greet-element,pokemon-tile,
-dce-1,dce-2,dce-3,dce-4,dce-internal,dce-hash
-{ box-shadow: 0 0 0.5rem lime; padding: 1rem; display: inline-block; flex:1; }
+nav
+{   flex-direction: column;
+    dce-root{ box-shadow:none; padding: 0;}
+}
+
+dce-root{ box-shadow: 0 0 0.5rem lime; padding: 1rem;  flex:1; }
 script{ display:none !important; }
 dd{ padding: 1rem;}
 p{ margin: 0;}

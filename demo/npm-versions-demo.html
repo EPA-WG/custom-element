@@ -4,8 +4,16 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>DOM merge - Declarative Custom Element implementation demo</title>
     <link rel="icon" href="./wc-square.svg"/>
-
+    <script type="importmap">
+        {
+          "imports": {
+            "@epa-wg/custom-element/": "../",
+            "@epa-wg/custom-element-dist/": "../"
+          }
+        }
+    </script>
     <script type="module" src="../http-request.js"></script>
+    <script type="module" src="../location-element.js"></script>
     <script type="module" src="../custom-element.js"></script>
     <style>
         @import "./demo.css";
@@ -40,16 +48,20 @@
 <html-demo-element legend="1. NPM package version picker"
                    description="defaults, last version should be preselected">
     <template>
-        <custom-element tag="npm-version" src="./npm-versions.html#npm-version"></custom-element>
-        <npm-version package-name="@epa-wg/custom-element-dist"></npm-version>
+        <custom-element src="./npm-versions.html#npm-version"
+                        package-name="@epa-wg/custom-element-dist"></custom-element>
     </template>
 </html-demo-element>
 
 <html-demo-element legend="2. preselected NPM package version picker"
-                   description="version 22 should be selected">
+                   description="version 22 should be selected and date shown">
     <template>
         <custom-element tag="custom-element-version" src="./npm-versions.html#npm-version"></custom-element>
-        <custom-element-version current-version="0.0.22" package-name="@epa-wg/custom-element"></custom-element-version>
+        <custom-element-version
+                package-name="@epa-wg/custom-element"
+                current-version="0.0.22"
+                show-date="true"
+        ></custom-element-version>
     </template>
 </html-demo-element>
 
@@ -90,11 +102,12 @@
 
 <html-demo-element legend="5. control version in URL"
                    description="">
-    1. <button onclick="window.location.hash = `#@epa-wg/custom-element-dist@0.0.26/storybook-static/index.html`">set in page URL</button>
-        (can be skipped when run from unpkg.com)<br/>
+    1. <button onclick="window.location.hash = `#@epa-wg/custom-element-dist@0.0.25/storybook-static/index.html`">set in page URL to version 0.0.25</button><br/>
     2. switch the package version in select and observe the URL change.
     <template>
-        <custom-element src="./npm-versions.html#npm-version-to-url" package-name="custom-element-dist" current-version="0.0.26"></custom-element>
+        <custom-element src="@epa-wg/custom-element-dist/demo/npm-versions.html#npm-version-to-url"
+                package-name="@epa-wg/custom-element-dist"
+                ></custom-element>
     </template>
 </html-demo-element>
 
