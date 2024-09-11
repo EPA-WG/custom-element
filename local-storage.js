@@ -21,29 +21,34 @@ const     string2value = (type, v) =>
 
 let originalSetItem,originalRemoveItem,originalClear;
 
+export function localStorage_setItem( key, value )
+{   originalSetItem.call(localStorage, key, value);
+    window.dispatchEvent( new CustomEvent('local-storage',{detail:{key,value}}) );
+}
+export function localStorage_removeItem( key )
+{   originalRemoveItem.call(localStorage, key);
+    window.dispatchEvent( new CustomEvent('local-storage',{detail:{key}}) );
+}
+
+export function localStorage_clear()
+{   originalClear.call(localStorage);
+    window.dispatchEvent( new CustomEvent('local-storage',{detail:{}}) );
+}
+
 function ensureTrackLocalStorage()
 {   if( originalSetItem )
         return;
     originalSetItem = localStorage.setItem;
-    localStorage.setItem = function( key, value, ...rest )
-        {   originalSetItem.apply(this, [ key, value, ...rest ]);
-            window.dispatchEvent( new CustomEvent('local-storage',{detail:{key,value}}) );
-        };
+    localStorage.setItem = localStorage_setItem;
     originalRemoveItem = localStorage.removeItem;
-    localStorage.removeItem = function( key, ...rest )
-        {   originalRemoveItem.apply(this, [ key, ...rest ]);
-            window.dispatchEvent( new CustomEvent('local-storage',{detail:{key}}) );
-        };
+    localStorage.removeItem = localStorage_removeItem;
     originalClear = localStorage.clear;
-    localStorage.clear = function( ...rest )
-        {   originalClear.apply(this, [ ...rest ]);
-            window.dispatchEvent( new CustomEvent('local-storage',{detail:{}}) );
-        };
+    localStorage.clear = localStorage_clear;
 }
+ensureTrackLocalStorage();
 
 export function localStorageSetItem(key, value)
-{   localStorage.setItem(key, value);
-    window.dispatchEvent( new CustomEvent('local-storage',{detail:{key,value}}) );
+{   localStorage_setItem(key, value);
 }
 export class LocalStorageElement extends HTMLElement
 {

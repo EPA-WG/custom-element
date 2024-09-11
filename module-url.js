@@ -10,9 +10,10 @@ export class ModuleUrl extends HTMLElement
 
     sliceInit()
     {   let path = attr(this,'src');
+
         try
         {   const url =  '.' === path.charAt(0)
-                ? new URL(path, this.closest('[base]')?.getAttribute('base') ).href
+                ? new URL(path, this.closest('[base]')?.getAttribute('base') || location.href).href
                 : import.meta.resolve(path);
             this.setAttribute('value',this.value = url );
         }catch( er )

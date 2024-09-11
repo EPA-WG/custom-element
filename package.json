@@ -1,6 +1,6 @@
 {
     "name": "@epa-wg/custom-element",
-    "version": "0.0.26",
+    "version": "0.0.27",
     "description": "Declarative Custom Element as W3C proposal PoC with native(XSLT) based templating",
     "browser": "custom-element.js",
     "module": "custom-element.js",

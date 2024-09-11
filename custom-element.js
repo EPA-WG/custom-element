@@ -47,6 +47,7 @@ xml2dom( xmlString )
 }
     export function
 xmlString(doc){ return new XMLSerializer().serializeToString( doc ) }
+function x(doc) { return xmlString(doc) }
 
     function
 injectData( root, sectionName, arr, cb )
@@ -145,22 +146,63 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     if( templateNode.tagName === S || templateNode.documentElement?.tagName === S )
         return tagUid(templateNode)
     const sanitizeXsl = xml2dom(`<xsl:stylesheet version="1.0" xmlns:xsl="${ XSL_NS_URL }" xmlns:xhtml="${ HTML_NS_URL }" xmlns:exsl="${EXSL_NS_URL}" exclude-result-prefixes="exsl" >
-        <xsl:output method="xml" />
-        <xsl:template match="/"><dce-root xmlns="${ HTML_NS_URL }"><xsl:apply-templates select="*"/></dce-root></xsl:template>
-        <xsl:template match="*[name()='template']"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
-        <xsl:template match="*"><xsl:apply-templates mode="sanitize" select="*|text()"/></xsl:template>
-        <xsl:template match="*[name()='svg']|*[name()='math']"><xsl:apply-templates mode="sanitize" select="."/></xsl:template>
-        <xsl:template mode="sanitize" match="*[count(text())=1 and count(*)=0]"><xsl:copy><xsl:apply-templates mode="sanitize" select="@*"/><xsl:value-of select="text()"></xsl:value-of></xsl:copy></xsl:template>
-        <xsl:template mode="sanitize" match="xhtml:*[count(text())=1 and count(*)=0]"><xsl:element name="{local-name()}"><xsl:apply-templates mode="sanitize" select="@*"/><xsl:value-of select="text()"></xsl:value-of></xsl:element></xsl:template>
-        <xsl:template mode="sanitize" match="*|@*"><xsl:copy><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:copy></xsl:template>
-        <xsl:template mode="sanitize" match="text()[normalize-space(.) = '']"/>
-        <xsl:template mode="sanitize" match="text()"><dce-text><xsl:copy/></dce-text></xsl:template>
-        <xsl:template mode="sanitize" match="xsl:value-of|*[name()='slot']"><dce-text><xsl:copy><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:copy></dce-text></xsl:template>
-        <xsl:template mode="sanitize" match="xhtml:*"><xsl:element name="{local-name()}"><xsl:apply-templates mode="sanitize" select="*|@*|text()"/></xsl:element></xsl:template>
-    </xsl:stylesheet>`)
+    <xsl:output method="xml"/>
+        <xsl:template match="/"><dce-root xmlns="${ HTML_NS_URL }"><xsl:apply-templates select="*" /></dce-root></xsl:template>
+    <xsl:template match="*[name()='template']">
+        <xsl:apply-templates mode="sanitize" select="*|text()"/>
+    </xsl:template>
+    <xsl:template match="*">
+        <xsl:apply-templates mode="sanitize" select="*|text()"/>
+    </xsl:template>
+    <xsl:template match="*[name()='svg']|*[name()='math']">
+        <xsl:apply-templates mode="sanitize" select="."/>
+    </xsl:template>
+    <xsl:template mode="sanitize" match="*[count(text())=1 and count(*)=0]">
+        <xsl:copy>
+            <xsl:apply-templates mode="sanitize" select="@*"/>
+            <xsl:value-of select="text()"></xsl:value-of>
+        </xsl:copy>
+    </xsl:template>
+    <xsl:template mode="sanitize" match="xhtml:*[count(text())=1 and count(*)=0]">
+        <xsl:element name="{local-name()}">
+            <xsl:apply-templates mode="sanitize" select="@*"/>
+            <xsl:value-of select="text()"></xsl:value-of>
+        </xsl:element>
+    </xsl:template>
+    <xsl:template mode="sanitize" match="*|@*">
+        <xsl:copy>
+            <xsl:apply-templates mode="sanitize" select="*|@*|text()"/>
+        </xsl:copy>
+    </xsl:template>
+    <xsl:template mode="sanitize" match="text()[normalize-space(.) = '']"/>
+    <xsl:template mode="sanitize" match="text()">
+        <dce-text>
+            <xsl:copy/>
+        </dce-text>
+    </xsl:template>
+    <xsl:template mode="sanitize" match="xsl:value-of|*[name()='slot']">
+        <dce-text>
+            <xsl:copy>
+                <xsl:apply-templates mode="sanitize" select="*|@*|text()"/>
+            </xsl:copy>
+        </dce-text>
+    </xsl:template>
+    <xsl:template mode="sanitize" match="xhtml:*">
+        <xsl:element name="{local-name()}">
+            <xsl:apply-templates mode="sanitize" select="*|@*|text()"/>
+        </xsl:element>
+    </xsl:template>
+</xsl:stylesheet>`)
     const sanitizeProcessor = new XSLTProcessor()
     ,   tc = (n =>
         {
+            forEach$(n,'custom-element', ce=>{
+                if( 'template' === ce.firstElementChild.localName )
+                {
+                    [...ce.firstElementChild.content.childNodes].forEach(n=>ce.append(n));
+                    ce.firstElementChild.remove();
+                }
+            })
             forEach$(n,'script', s=> s.remove() );
             const xslRoot = n.content ?? n.firstElementChild?.content ?? n.body ?? n;
             xslTags.forEach( tag => forEach$( xslRoot, tag, el=>toXsl(el,xslRoot) ) );
@@ -223,6 +265,11 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     ,   payload = $( xslDom, 'template[mode="payload"]');
     if( !fr )
         return console.error("transformation error",{ xml:tc.outerHTML, xsl: xmlString( sanitizeXsl ) });
+    if( 'dce-root'!==fr.firstElementChild.localName )
+    {   const r = fr.ownerDocument.createElement('dce-root');
+        [...fr.childNodes].forEach(n=>r.append(n));
+        fr.append(r)
+    }
     const params = [];
     [...fr.querySelectorAll('dce-root>attribute')].forEach( a=>
     {
@@ -574,7 +621,13 @@ CustomElement extends HTMLElement
                 this.append(s);
             })
         const templateDocs = templateRoots.map( n => createXsltFromDom( n ) )
-        , xp = templateDocs.map( (td, p) =>{ p = new XSLTProcessor(); p.importStylesheet( td ); return p })
+        , xp = templateDocs.map( (td, p) =>
+        {   p = new XSLTProcessor();
+            try{ p.importStylesheet( td ) }
+            catch( e )
+                {   console.error(e, xmlString(td)) }
+            return p
+        })
 
         Object.defineProperty( this, "xsltString", { get: ()=>templateDocs.map( td => xmlString(td) ).join('\n') });
 
