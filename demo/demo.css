@@ -9,7 +9,7 @@ nav
     dce-root{ box-shadow:none; padding: 0;}
 }
 
-dce-root{ box-shadow: 0 0 0.5rem lime; padding: 1rem;  flex:1; }
+html-demo-element *:has(>dce-root){ box-shadow: 0 0 0.5rem lime; padding: 1rem;  flex:1; display: block; }
 script{ display:none !important; }
 dd{ padding: 1rem;}
 p{ margin: 0;}
