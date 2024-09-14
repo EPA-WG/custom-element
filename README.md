@@ -341,7 +341,7 @@ within template
 [css-demo-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/scoped-css.html
 [slice-demo-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/data-slices.html
 [hex-grid-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/hex-grid.html
-[hex-grid-image]: demo/hex-grid-transform.png
+[hex-grid-image]: https://unpkg.com/@epa-wg/custom-element@0.0.27/demo/hex-grid-transform.png
 [local-storage-demo]: https://unpkg.com/@epa-wg/custom-element@0.0/demo/local-storage.html
 [http-request-demo]:  https://unpkg.com/@epa-wg/custom-element@0.0/demo/http-request.html
 [location-demo]:  https://unpkg.com/@epa-wg/custom-element@0.0/demo/location.html
