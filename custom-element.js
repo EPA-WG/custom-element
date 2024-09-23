@@ -181,11 +181,9 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         </dce-text>
     </xsl:template>
     <xsl:template mode="sanitize" match="xsl:value-of|*[name()='slot']">
-        <dce-text>
-            <xsl:copy>
-                <xsl:apply-templates mode="sanitize" select="*|@*|text()"/>
-            </xsl:copy>
-        </dce-text>
+        <xsl:copy>
+            <xsl:apply-templates mode="sanitize" select="*|@*|text()"/>
+        </xsl:copy>
     </xsl:template>
     <xsl:template mode="sanitize" match="xhtml:*">
         <xsl:element name="{local-name()}">
@@ -609,6 +607,8 @@ CustomElement extends HTMLElement
     static observedAttributes = ['src','tag','hidden'];
     async connectedCallback()
     {
+        if(this.firstElementChild && this.firstElementChild.localName !== 'template')
+            console.warn('custom-element used without template wrapping content\n', this.outerHTML);
         const templateRoots = await loadTemplateRoots( attr( this, 'src' ), this )
         ,               tag = attr( this, 'tag' )
         ,           tagName = tag ? tag : 'dce-'+crypto.randomUUID();
