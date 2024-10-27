@@ -72,6 +72,9 @@ assureSlot( e )
     }
     return e;
 }
+    function
+keepAttributes(e, aNames)
+    {   e.getAttributeNames().forEach( n=> aNames.includes(n) || e.removeAttribute(n) ); }
 
     export function
 obj2node( o, tag, doc )
@@ -190,6 +193,17 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
             <xsl:apply-templates mode="sanitize" select="*|@*|text()"/>
         </xsl:element>
     </xsl:template>
+    <xsl:template mode="sanitize" match="xhtml:input">
+        <xsl:element name="{local-name()}">
+            <xsl:apply-templates mode="sanitize" select="*|@*|text()"/>
+        </xsl:element>
+        <xsl:for-each select="*">
+            <xsl:copy>
+                <xsl:attribute name="for" >^</xsl:attribute>
+                <xsl:apply-templates mode="sanitize" select="*|@*|text()"/>
+            </xsl:copy>
+        </xsl:for-each>
+    </xsl:template>
 </xsl:stylesheet>`)
     const sanitizeProcessor = new XSLTProcessor()
     ,   tc = (n =>
@@ -271,9 +285,11 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
     const params = [];
     [...fr.querySelectorAll('dce-root>attribute')].forEach( a=>
     {
+        keepAttributes(a,'namespace,name,select');
         const p = cloneAs(a,'xsl:param')
         ,  name = attr(a,'name');
         payload.append(p);
+        keepAttributes(p,'select,name');
         let select = attr(p,'select')?.split('??')
         if( !select)
         {   select = ['//'+name, `'${p.textContent}'`];
@@ -281,8 +297,8 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
             p.setAttribute('name',name);
         }
         let val;
-        if( select?.length>1 ){
-            p.removeAttribute('select');
+        if( select?.length>1 )
+        {   p.removeAttribute('select');
             const c = $( xslDom, 'template[match="ignore"]>choose').cloneNode(true);
             emptyNode(c.firstElementChild).append( createText(c,'{'+select[0]+'}'));
             emptyNode(c.lastElementChild ).append( createText(c,'{'+select[1]+'}'));
@@ -315,7 +331,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         for( let c of s.childNodes)
             v.lastElementChild.append(c)
         return v
-    }
+    };
 
     forEach$( payload,'slot', s => s.parentNode.replaceChild( slot2xsl(s), s ) )
 
@@ -464,7 +480,8 @@ const loadTemplateRoots = async ( src, dce )=>
         if( hash )
         {   const ret = dom.querySelectorAll('#'+hash);
             if( ret.length )
-                return [...ret]
+                return [...ret];
+            console.error('template not found',src+'#'+hash);
             return [dce]
         }
         return [dom]
@@ -644,7 +661,7 @@ CustomElement extends HTMLElement
             static get observedAttributes(){ return declaredAttributes.map( a=>attr(a,'name')); }
             #inTransform = 0;
             connectedCallback()
-            {   let payload = this.childNodes;
+            {   let payload = [...this.childNodes];
                 if( this.firstElementChild?.tagName === 'TEMPLATE' )
                 {
                     if( this.firstElementChild !== this.lastElementChild )
@@ -728,18 +745,39 @@ CustomElement extends HTMLElement
                         }
                     })
 
+                    function getSliceTarget(el)
+                    {   let r = el;
+                        if( el.localName === 'slice')
+                        {   const ref= attr(el,'for');
+                            if( !ref )
+                                r = el.parentElement;
+                            if( '^' === ref )
+                            {   do r = r.previousElementSibling;
+                                while( r.localName === 'slice' )
+                            } else
+                                r = this.querySelector(ref)
+
+                            if( !r )
+                                return console.warn(`can not find selector in "slice for=${ref}" `, el.outerHTML);
+                            attr(el,'slice') || el.setAttribute('slice', attr(el,'name'))
+                        }
+                        return r;
+                    }
                     forEach$( this,'[slice],[slice-event]', el =>
-                    {   if( !el.dceInitialized )
+                    {   let evs = attr(el,'slice-event');
+                        const sVal = el.hasAttribute('slice-value') || el.hasAttribute('value') || el.value;
+                        const tgt = getSliceTarget(el);
+                        if( !el.dceInitialized )
                         {   el.dceInitialized = 1;
-                            let evs = attr(el,'slice-event');
-                            if( el.hasAttribute('custom-validity') )
+                            if( tgt.hasAttribute('custom-validity') )
                                 evs += ' change submit';
 
                             [...new Set((evs || 'change') .split(' '))]
-                                .forEach( t=> (el.localName==='slice'? el.parentElement : el)
-                                    .addEventListener( t, ev=>
+                                .forEach( t=>
+                                    tgt.addEventListener( t, ev=>
                                     {   ev.sliceElement = el;
                                         ev.sliceEventSource = ev.currentTarget || ev.target;
+                                        ev.sliceProcessed = 0;
                                         const slices = event2slice( sliceRoot, attr( ev.sliceElement, 'slice'), ev, this );
 
                                         forEach$(this,'[custom-validity]',el =>
@@ -752,7 +790,7 @@ CustomElement extends HTMLElement
                                             }catch(err)
                                                 { console.error(err, 'xPath', x) }
                                         })
-                                        const x = attr(el,'custom-validity')
+                                        const x = attr(tgt,'custom-validity')
                                         ,     v = x && xPath( x, attrsRoot )
                                         ,   msg = v === true? '' : v;
 
@@ -778,8 +816,8 @@ CustomElement extends HTMLElement
                                         this.onSlice(ev);
                                     } ));
                             if( !evs || evs.includes('init') )
-                            {   if( el.hasAttribute('slice-value') || el.hasAttribute('value') || el.value )
-                                    this.onSlice({type:'init', target: el, sliceElement:el, sliceEventSource:el })
+                            {   if( sVal )
+                                    this.onSlice({type:'init', target: tgt, sliceElement:el, sliceEventSource:tgt })
                                 else
                                     el.value = sliceXPath( attr(el,'slice') )
                             }
