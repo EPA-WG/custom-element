@@ -76,6 +76,9 @@ assureSlot( e )
 keepAttributes(e, aNames)
     {   e.getAttributeNames().forEach( n=> aNames.includes(n) || e.removeAttribute(n) ); }
 
+    export const
+sanitizeBlankText = payload=> [...payload].filter(e=>!(e.nodeType===3 && e.data.trim() ==='' ));
+
     export function
 obj2node( o, tag, doc )
 {   const t = typeof o;
@@ -661,16 +664,16 @@ CustomElement extends HTMLElement
             static get observedAttributes(){ return declaredAttributes.map( a=>attr(a,'name')); }
             #inTransform = 0;
             connectedCallback()
-            {   let payload = [...this.childNodes];
+            {   let payload = sanitizeBlankText(this.childNodes);
                 if( this.firstElementChild?.tagName === 'TEMPLATE' )
                 {
                     if( this.firstElementChild !== this.lastElementChild )
                         { console.error('payload should have TEMPLATE as only child', this.outerHTML ) }
                     const t = this.firstElementChild;
                     t.remove();
-                    payload = t.content.childNodes;
+                    payload = sanitizeBlankText(t.content.childNodes);
 
-                    for( const n of [...t.content.childNodes] )
+                    for( const n of payload )
                         if( n.localName === 'style' ){
                             const id = assureUID(this,'data-dce-style')
                             n.innerHTML= `${tagName}[data-dce-style="${id}"]{${n.innerHTML}}`;
