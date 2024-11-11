@@ -116,7 +116,7 @@ writeFileSync( '.././ide/customData-xsl.json', JSON.stringify( vsCode, undefined
 const intelliJ = {
     "$schema": "http://json.schemastore.org/web-types",
     "name": "@epa-wg/custom-element",
-    "version": "0.0.30",
+    "version": "0.0.31",
     "js-types-syntax": "typescript",
     "description-markup": "markdown",
     "contributions": {

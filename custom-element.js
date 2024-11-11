@@ -423,7 +423,7 @@ event2slice( x, sliceNames, ev, dce )
             s.setAttribute('validation-message', el.validationMessage);
         ev.type==='init' && cleanSliceValue();
         s.append( obj2node( ev, 'event', d ) );
-        const notChecked = ( 'checked' in el ) && !el.checked ;
+        const notChecked = ( 'checkbox' === el.type || 'radio' === el.type ) && !el.checked ;
         if( sel.hasAttribute('slice-value') )
         {   if( el.value === undefined)
                 s.removeAttribute('value')
