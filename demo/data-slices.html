@@ -210,6 +210,43 @@
     </template>
 </html-demo-element>
 
+<html-demo-element legend="12. checkbox use"
+                   description="The value is empty when unchecked. Otherwise taken either from slice-value or value attribute.">
+    <p>Check the box to see the value in slice</p>
+    <template>
+        <custom-element>
+            <template>
+                <input type="checkbox" slice="is-checked" value="V0" checked/>
+                slice: {/datadom/slice/is-checked} <br/>
+                <xsl:variable name="v1">V1</xsl:variable> <br/>
+                $v1={$v1}<br/>
+
+                <!-- slice-variable is XPath. $v1 is available only in template, embedding trick -->
+                <input type="checkbox" slice="s2" slice-value="'{$v1}'"/>
+                slice 2: {//s2} <br/>
+
+                <!-- variable is used in template scope -->
+                <input type="checkbox" slice="s3" value="{$v1}"/>
+                slice 3: {//s3}
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="13. Radio group"
+                   description="The value is empty when unchecked. Otherwise taken either from slice-value or value attribute.">
+    <p>Check the radiobutton to see the value in slice</p>
+    <template>
+        <custom-element>
+            <template>
+                V0: <input type="radio" slice="radio-group" value="V0" name="g1"/> <br/>
+                V1: <input type="radio" slice="radio-group" value="V1" name="g1" checked/> <br/>
+                slice: {//radio-group} <br/>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
 <script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
 
 </body>

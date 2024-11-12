@@ -423,12 +423,13 @@ event2slice( x, sliceNames, ev, dce )
             s.setAttribute('validation-message', el.validationMessage);
         ev.type==='init' && cleanSliceValue();
         s.append( obj2node( ev, 'event', d ) );
+        const notChecked = ( 'checkbox' === el.type || 'radio' === el.type ) && !el.checked ;
         if( sel.hasAttribute('slice-value') )
         {   if( el.value === undefined)
                 s.removeAttribute('value')
             else
                 s.setAttribute('value', el.value );
-            const v = xPath( attr( sel, 'slice-value'),s );
+            const v = notChecked? '' : xPath( attr( sel, 'slice-value'),s );
             cleanSliceValue();
             s.append( createText( d, v ) );
         }else
@@ -437,7 +438,8 @@ event2slice( x, sliceNames, ev, dce )
                 s.append( obj2node(new FormData(el),'value', s.ownerDocument) )
                 return s
             }
-            const v = el.value ?? attr( el, 'value' ) ;
+
+            const v = notChecked? '' : el.value ?? attr( el, 'value' );
             cleanSliceValue();
             if( v === null || v === undefined )
                 [...s.childNodes].filter(n=>n.localName!=='event').map(n=>n.remove());
