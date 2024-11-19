@@ -494,10 +494,12 @@ const loadTemplateRoots = async ( src, dce )=>
 }
 export function mergeAttr( from, to )
 {   for( let a of from.attributes)
-    {   a.namespaceURI? to.setAttributeNS( a.namespaceURI, a.name, a.value ) : to.setAttribute( a.name, a.value )
-        if( a.name === 'value')
-            to.value = a.value
-    }
+        try
+        {   a.namespaceURI? to.setAttributeNS( a.namespaceURI, a.name, a.value ) : to.setAttribute( a.name, a.value )
+            if( a.name === 'value')
+                to.value = a.value
+        }catch(e)
+            { console.warn('attribute assignment error',e?.message || e); }
 }
 export function assureUnique(n, id=0)
 {
