@@ -64,14 +64,22 @@ when slice value points to attribute, it would be populated on slice change
 
 <details>
     <summary>Attributes processing</summary>
-    <code>custom-element</code> attributes are defined by <code>attribute</code> markup as shown above.
+    To be available in template, <code>custom-element</code> attributes should be
+    defined by <code>attribute</code> markup as shown above.
     The value is taken from attribute text content or from <code>select</code> XPath expression<br/>
-    Declared in such way attributes are stored as <code><a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes"
+
+    Declared in such way, attributes are exposed via <code><a
+        href="https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes"
         >observedAttributes</a></code>. <br/>
     The template exposes those attributes as <code>xsl:param</code> which makes the attribute value available as
     xsl variable (as attribute name prefixed with $). <br/>
     After transformation the attributes values are read from CE root and copied into DCE component. <br/>
     The DCE attribute change from outside invokes <code>attributeChangedCallback</code> which triggers DCE re-render.
+    <p>
+        The <code>value</code> attribute is usual case to be propagated from within of <code>custom-element</code>.
+        See the <a href="./form.html#sample-5">using custom-element as form input</a> example.
+    </p>
+    &bull; <a href="https://github.com/EPA-WG/custom-element/blob/main/docs/attributes.md">Design docs</a>
 </details>
 
 
