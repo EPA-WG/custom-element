@@ -233,6 +233,48 @@
     </template>
 </html-demo-element>
 
+<html-demo-element legend="5. using custom-element as form input"
+                   description="bypass value to container form "
+                   id="sample-5"
+    >
+    <ol>
+        <li> select radio in top group</li>
+        <li> observe the fruit selected on the left</li>
+        <li> observe the warning message bellow button</li>
+        <li> next button does not submit the form</li>
+        <li> select radio in bottom group</li>
+        <li> observe the fruit selected on the right</li>
+        <li> same fruit selection would eliminate the warning and
+            allow the form submission</li>
+        <li> after submit, observe the URL parameters 'inp-1=🍏&inp-2=🍏'  </li>
+    </ol>
+    <template>
+        <custom-element tag="sample-input">
+            <template>
+                <attribute name="name" ></attribute>
+                <attribute name="value" select="//val"></attribute>
+                {$name}
+                <label><input type="radio" name="{$name}" slice="val" value="🍏">Apple</label>
+                <label><input type="radio" name="{$name}" slice="val" value="🍌">Banana</label>
+            </template>
+        </custom-element>
+        <custom-element>
+            <template>
+                <form slice="cart-form" action="#sample-5"
+                    custom-validity="(//inp1 = //inp2) ?? 'pick same fruit'"
+                    >
+                    <sample-input slice="inp1" name="inp-1"></sample-input>
+                    <sample-input slice="inp2" name="inp-2"></sample-input>
+                    <button>Next</button>
+                    Picked :{//inp1} and {//inp2}
+
+                    <p>{//cart-form/@validation-message}</p>
+                </form>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
 <script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
 
 </body>
