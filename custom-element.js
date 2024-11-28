@@ -518,6 +518,9 @@ export function mergeAttr( from, to )
                 to.value = a.value
         }catch(e)
             { console.warn('attribute assignment error',e?.message || e); }
+    for( let a of to.getAttributeNames() )
+        if( !from.hasAttribute(a))
+            to.removeAttribute(a)
 }
 export function assureUnique(n, id=0)
 {
