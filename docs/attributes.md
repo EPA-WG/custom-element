@@ -53,10 +53,13 @@ As a "state" object, any change to it would be reflected in
 <xsl:param name="p2" select="/datadom/attributes/p2"></xsl:param>
 <xsl:param name="p3" select="//from-input"></xsl:param>
 ```
-The `select` is directly copied from `attribute` (p3), otherwise when `select` is missing (p2,p3), the values are taken from model.
+The `select` is directly copied from `attribute` (p3), otherwise when `select` is missing (p2,p3), 
+the values are taken from model.
+
+`declaredAttributes` is used as a value for `observedAttributes`.
 
 ## Instance initialization
-* keys from declaredAttributes saved into `/datadom/attributes`
+* keys from `declaredAttributes` saved into `/datadom/attributes`
 * value from `hardcodedAttributes` saved into model
 * all attributes with value from instance populated into model
 

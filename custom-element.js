@@ -15,6 +15,7 @@ const attr = (el, attr)=> el.getAttribute?.(attr)
 ,   xslNs = x => ( x?.setAttribute('xmlns:xsl', XSL_NS_URL ), x )
 ,   xslHtmlNs = x => ( x?.setAttribute('xmlns:xhtml', HTML_NS_URL ), xslNs(x) )
 ,   isValidTagName = tag=> ( /^[_a-zA-Z][-_:a-zA-Z0-9]*$/ .test(tag) )
+,   mix = (o,kv) => { Object.keys(kv).map(k=> o[k] = kv[k] ) ; return o}
 ,   create = ( tag, t = '', d=document ) =>
 {
     const create = tag => ( e => ((t && e.append(createText(d.ownerDocument||d, t))),e) )((d.ownerDocument || d ).createElement( tag ))
@@ -29,10 +30,12 @@ const attr = (el, attr)=> el.getAttribute?.(attr)
 {   const px = p.ownerDocument.createElementNS(p.namespaceURI,tag);
     for( let a of p.attributes)
         px.setAttribute(a.name, a.value);
-    while( p.firstChild )
-        px.append(p.firstChild);
+    for( let c of p.childNodes )
+        px.append(c.cloneNode(true));
     return px;
 };
+
+export {cloneAs,mix};
 
     function
 ASSERT(x)
@@ -149,8 +152,13 @@ tagUid( node )
     export function
 createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
 {
+    const declaredAttributes = []
+    , hardcodedAttributes = {}
+    , exposedAttributes={};
+
     if( templateNode.tagName === S || templateNode.documentElement?.tagName === S )
-        return tagUid(templateNode)
+        return tagUid(mix( templateNode, { declaredAttributes, hardcodedAttributes, exposedAttributes } ));
+
     const sanitizeXsl = xml2dom(`<xsl:stylesheet version="1.0" xmlns:xsl="${ XSL_NS_URL }" xmlns:xhtml="${ HTML_NS_URL }" xmlns:exsl="${EXSL_NS_URL}" exclude-result-prefixes="exsl" >
     <xsl:output method="xml"/>
         <xsl:template match="/"><dce-root xmlns="${ HTML_NS_URL }"><xsl:apply-templates select="*" /></dce-root></xsl:template>
@@ -285,35 +293,45 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         [...fr.childNodes].forEach(n=>r.append(n));
         fr.append(r)
     }
-    const params = [];
+
     [...fr.querySelectorAll('dce-root>attribute')].forEach( a=>
     {
         keepAttributes(a,'namespace,name,select');
         const p = cloneAs(a,'xsl:param')
         ,  name = attr(a,'name');
+
+        declaredAttributes.push(name);
+        if( a.childNodes.length)
+            hardcodedAttributes[name] = a.textContent;
+
         payload.append(p);
-        keepAttributes(p,'select,name');
-        let select = attr(p,'select')?.split('??')
-        if( !select)
-        {   select = ['//'+name, `'${p.textContent}'`];
-            emptyNode(p);
-            p.setAttribute('name',name);
-        }
-        let val;
-        if( select?.length>1 )
-        {   p.removeAttribute('select');
-            const c = $( xslDom, 'template[match="ignore"]>choose').cloneNode(true);
-            emptyNode(c.firstElementChild).append( createText(c,'{'+select[0]+'}'));
-            emptyNode(c.lastElementChild ).append( createText(c,'{'+select[1]+'}'));
-            c.firstElementChild.setAttribute('test',select[0]);
-            p.append(c);
-            val = c.cloneNode(true);
+
+        if( a.hasAttribute('select') )
+        {
+            exposedAttributes[ name ] = attr( a, 'select' );
+            keepAttributes( p, 'select,name' );
+
+            let select = attr(a,'select').split('??');
+
+            let val;
+            if( select?.length>1 )
+            {   p.removeAttribute('select');
+                const c = $( xslDom, 'template[match="ignore"]>choose').cloneNode(true);
+                // todo multiple ?? operators
+                emptyNode(c.firstElementChild).append( createText(c,'{'+select[0]+'}'));
+                emptyNode(c.lastElementChild ).append( createText(c,'{'+select[1]+'}'));
+                c.firstElementChild.setAttribute('test','string-length('+select[0]+')');
+                p.append(c);
+                val = c.cloneNode(true);
+            }else
+                val = cloneAs(a,'xsl:value-of');
+            val.removeAttribute('name');
+            a.append(val);
+            a.removeAttribute('select');
         }else
-            val=cloneAs(a,'xsl:value-of');
-        val.removeAttribute('name');
-        a.append(val);
-        a.removeAttribute('select');
-        params.push(p)
+        {   keepAttributes( p, 'name' );
+            p.setAttribute('select','/datadom/attributes/'+name)
+        }
     });
     [...fr.querySelectorAll('[value]')].filter(el=>el.getAttribute('value').match( /\{(.*)\?\?(.*)\}/g )).forEach(el=>
     {   const v = attr(el,'value');
@@ -338,8 +356,8 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
 
     forEach$( payload,'slot', s => s.parentNode.replaceChild( slot2xsl(s), s ) )
 
-    const ret = tagUid(xslDom)
-    ret.params = params;
+    const ret = tagUid(xslDom);
+    mix( ret, { declaredAttributes, hardcodedAttributes, exposedAttributes } );
     return ret;
 }
     export async function
@@ -660,12 +678,13 @@ CustomElement extends HTMLElement
         , sliceNames = sliceNodes.map(e=>attr(e,'slice'))
                                 .filter(n=>!n.includes('/'))
                                 .filter((v, i, a)=>a.indexOf(v) === i)
-                                .map(splitSliceNames).flat()
-        , declaredAttributes = templateDocs.reduce( (ret,t) => { if( t.params ) ret.push( ...t.params ); return ret; }, [] );
+                                .map(splitSliceNames).flat();
+
+        const { declaredAttributes, hardcodedAttributes, exposedAttributes } = templateDocs[0];
 
         class DceElement extends HTMLElement
         {
-            static get observedAttributes(){ return declaredAttributes.map( a=>attr(a,'name')); }
+            static get observedAttributes(){ return declaredAttributes; }
             #inTransform = 0;
             connectedCallback()
             {   let payload = sanitizeBlankText(this.childNodes);
@@ -698,7 +717,11 @@ CustomElement extends HTMLElement
                 xslNs(payloadNode);
                 xslHtmlNs(payloadNode);
                 this.innerHTML='';
-                const attrsRoot = injectData( x, 'attributes' , this.attributes, e => createXmlNode( e.nodeName, e.value ) );
+                const attrsRoot = injectData( x, 'attributes' , this.attributes, e => createXmlNode( e.nodeName, e.value ) )
+                , inAttrs = a=> this.hasAttribute(a) || [...attrsRoot.children].find(e=>e.localName === a);
+                Object.keys(hardcodedAttributes).map(a=> inAttrs(a) || attrsRoot.append(createXmlNode(a,hardcodedAttributes[a])) );
+                declaredAttributes.map(a=> inAttrs(a) || attrsRoot.append(createXmlNode(a)) );
+
                 injectData( x, 'dataset', Object.keys( this.dataset ), k => createXmlNode( k, this.dataset[ k ] ) );
                 const sliceRoot = injectData( x, 'slice', sliceNames, k => createXmlNode( k, '' ) )
                 ,     sliceXPath = x => xPath(x, sliceRoot);
@@ -744,13 +767,20 @@ CustomElement extends HTMLElement
                         merge( this, f.childNodes )
                     })
 
-                    DceElement.observedAttributes.map( a =>
+                    Object.entries(hardcodedAttributes).map(( [a,v] )=>
+                    {   if( !this.hasAttribute(a) && v !== attr(this,a) )
+                        {   this.setAttribute( a, v );
+                            this.#applyAttribute( a, v );
+                        }
+                    });
+
+                    Object.keys(exposedAttributes).map( a =>
                     {   let v = attr(this.firstElementChild,a);
                         if( v !== attr(this,a) )
                         {   this.setAttribute( a, v );
                             this.#applyAttribute( a, v );
                         }
-                    })
+                    });
 
                     function getSliceTarget(el)
                     {   let r = el;
