@@ -294,6 +294,16 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         fr.append(r)
     }
 
+    [...fr.querySelectorAll('[test]')].forEach( n=>{
+        const t = attr(n,'test')
+        ,     r = t.replace(/hasBoolAttribute\((.*?)\)/g,
+            (match, p1, p2,p3,p4)=>
+            {   const a = p1.substring(1);
+                return `(not($${a} = \'false\') and ($${a} = '' or $${a} = '${a}' or $${a} = 'true' ))`
+            });
+        t!== r && n.setAttribute('test',r);
+    });
+
     [...fr.querySelectorAll('dce-root>attribute')].forEach( a=>
     {
         keepAttributes(a,'namespace,name,select');
@@ -329,8 +339,12 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
             a.append(val);
             a.removeAttribute('select');
         }else
-        {   keepAttributes( p, 'name' );
+        {
+            keepAttributes( p, 'name' );
             p.setAttribute('select','/datadom/attributes/'+name)
+
+            if( !hardcodedAttributes[name] )
+                a.remove();
         }
     });
     [...fr.querySelectorAll('[value]')].filter(el=>el.getAttribute('value').match( /\{(.*)\?\?(.*)\}/g )).forEach(el=>
@@ -513,13 +527,23 @@ const loadTemplateRoots = async ( src, dce )=>
 export function mergeAttr( from, to )
 {   for( let a of from.attributes)
         try
-        {   a.namespaceURI? to.setAttributeNS( a.namespaceURI, a.name, a.value ) : to.setAttribute( a.name, a.value )
+        {   const name = a.name;
+            if( a.namespaceURI )
+            {   if( !to.hasAttributeNS(a.namespaceURI, name) || to.getAttributeNS(a.namespaceURI, name) !== a.value )
+                    to.setAttributeNS( a.namespaceURI, name, a.value )
+            }else
+            {   if( !to.hasAttribute(name) || to.getAttribute(name) !== a.value )
+                    to.setAttribute( a.name, a.value )
+            }
             if( a.name === 'value')
                 to.value = a.value
         }catch(e)
             { console.warn('attribute assignment error',e?.message || e); }
+    const ea = to.dceExportedAttributes
+        , aa = to.getAttribute('dce-exported-attributes')
+        , em = aa ? new Set( aa.split(' ') ) : null;
     for( let a of to.getAttributeNames() )
-        if( !from.hasAttribute(a))
+        if( !from.hasAttribute(a) && !ea?.has(a) && !em?.has(a) )
             to.removeAttribute(a)
 }
 export function assureUnique(n, id=0)
@@ -684,11 +708,13 @@ CustomElement extends HTMLElement
                                 .map(splitSliceNames).flat();
 
         const { declaredAttributes, hardcodedAttributes, exposedAttributes } = templateDocs[0];
+        const dceExportedAttributes = new Set([...Object.keys(hardcodedAttributes), ...Object.keys(exposedAttributes)]);
 
         class DceElement extends HTMLElement
         {
             static get observedAttributes(){ return declaredAttributes; }
             #inTransform = 0;
+            get dceExportedAttributes(){ return dceExportedAttributes; }
             connectedCallback()
             {   let payload = sanitizeBlankText(this.childNodes);
                 if( this.firstElementChild?.tagName === 'TEMPLATE' )
@@ -723,7 +749,7 @@ CustomElement extends HTMLElement
                 const attrsRoot = injectData( x, 'attributes' , this.attributes, e => createXmlNode( e.nodeName, e.value ) )
                 , inAttrs = a=> this.hasAttribute(a) || [...attrsRoot.children].find(e=>e.localName === a);
                 Object.keys(hardcodedAttributes).map(a=> inAttrs(a) || attrsRoot.append(createXmlNode(a,hardcodedAttributes[a])) );
-                declaredAttributes.map(a=> inAttrs(a) || attrsRoot.append(createXmlNode(a)) );
+                Object.keys(exposedAttributes).map(a=> inAttrs(a) || attrsRoot.append(createXmlNode(a)) );
 
                 injectData( x, 'dataset', Object.keys( this.dataset ), k => createXmlNode( k, this.dataset[ k ] ) );
                 const sliceRoot = injectData( x, 'slice', sliceNames, k => createXmlNode( k, '' ) )
