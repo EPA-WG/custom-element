@@ -22,14 +22,30 @@
 <nav>
     <a href="../index.html"><h3><code>custom-element</code> demo</h3></a>
 </nav>
-<html-demo-element legend="param as attributes definition" description="
-params needed to declare DCE attributes and track the attributes changes. It also be used by IDE and validation.
-">
+<main>
+    <p><code>attribute</code> is used for DCE attributes declaration and track the attributes changes. It also be used by IDE and validation.</p>
+    <p>The attribute can be changed by component itself and used as output to the container.
+        Usual case is when <code>value</code> attribute is updated from inside.</p>
+    <p>Initial value of attribute is available on the <code>attributes</code> node attribute as in <code>/datadom/attributes/@attr1</code></p>
+    <p>The current, i.e. including the changes by component itself, attribute value is a child node of <code>attributes</code> as in <code>/datadom/attributes/attr1</code>.</p>
+    <p>To define the attribute which is modified from within,  the 3 parts are usually used as in <code>//s[//s/event] ?? //attributes/@v ?? 'def' </code>
+    <ol>
+    <li><code>//s[//s/event]</code> the slice <code>s</code> with event gives the slice value which was modified by user event like input</li>
+    <li><code>//attributes/@v</code> the attribute passed by container</li>
+    <li><code>'def' </code> the default value which used when no user input or attribute set by container</li>
+</ol>
+    </p>
+</main>
+<html-demo-element legend="attributes definition" >
+    <p slot="description">
+    <code>attribute</code> is used for DCE attributes declaration and track the attributes changes. It also be used by IDE and validation.
+
+</p>
     <template>
         <custom-element tag="dce-link" hidden>
             <attribute name="p1" >default_P1                </attribute>
             <attribute name="p2" select="'always_p2'"       ></attribute>
-            <attribute name="p3" select="//p3 ?? 'def_P3' " ></attribute>
+            <attribute name="p3" select="//attributes/@p3 ?? 'def_P3' " ></attribute>
             p1:{$p1} <br/> p2: {$p2} <br/> p3: {$p3}
         </custom-element>
         <dce-link id="dce1" ></dce-link>
@@ -44,12 +60,14 @@ params needed to declare DCE attributes and track the attributes changes. It als
     </template>
 </html-demo-element>
 
-<html-demo-element legend="attribute from slice" description="
-when slice value points to attribute, it would be populated on slice change
-">
+<html-demo-element legend="attribute from slice">
+    <p slot="description">
+When slice value points to attribute, it would be populated on slice change.<br/>
     Type in the input field to see the variable $title change. <br/>
     Hover the mouse to see the title attribute text popup.<br/>
     Inspect DCE node in dev tools to see `title` attribute updated while typing.
+
+</p>
 
     <template>
         <custom-element>
@@ -59,6 +77,29 @@ when slice value points to attribute, it would be populated on slice change
                 title attribute: {$title}
             </template>
         </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="attribute defaults, from container, and from slice" description="
+    Type in the input field and observe in DevTools the V attribute changed.
+">
+    <template>
+<custom-element tag="attr-demo">
+    <template>
+        <variable name="has-input" select="count(//s/*) &gt; 0"></variable>
+        <attribute name="v" select="//s[//s/event] ?? //attributes/@v ?? 'def' "></attribute>
+        //attributes/v='{//attributes/v}'<br/>
+        //attributes/@v='{//attributes/@v}'<br/>
+        $v='{$v}'<br/>
+        //s='{//s}'<br/>
+        A='{//s[//s/event] | //attributes/v[not(//s/event)]}'<br/>
+        has-input ={ $has-input }<br/>
+        <input slice="s" slice-event="input" />
+    </template>
+</custom-element>
+
+<attr-demo></attr-demo>
+<attr-demo v="From Container"></attr-demo>
     </template>
 </html-demo-element>
 
