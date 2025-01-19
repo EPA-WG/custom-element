@@ -47,7 +47,7 @@ This project is a POC( Proof of Concept ) targeting to become a base for native 
 
 # use
 
-Use the [bootstrap project](https://github.com/EPA-WG/custom-element-bootstrap) with all pre-configured or
+[//]: # (Use the [bootstrap project]&#40;https://github.com/EPA-WG/custom-element-bootstrap&#41; with all pre-configured or)
 ## install
 use via CDN
 ```html
