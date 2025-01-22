@@ -80,6 +80,29 @@ When slice value points to attribute, it would be populated on slice change.<br/
     </template>
 </html-demo-element>
 
+
+<html-demo-element legend="V attribute matches input value" description="
+    Type in the input field and observe in DevTools the V attribute changed.
+">
+    <template>
+<custom-element tag="x-input" >
+    <template>
+        <attribute name="is-changed" select="count(//s/event) &gt; 0"></attribute>
+        <attribute name="v" select="//s[//s/event] ?? //attributes/@v ?? 'def' "></attribute>
+        /datadom/attributes/v='{/datadom/attributes/v}'<br/>
+        same as v='{v}'<br/>
+        same as $v='{$v}'<br/>
+        //attributes/@v='{//attributes/@v}'<br/>
+        //s='{//s}'<br/>
+        is-changed ={ is-changed }<br/>
+        <input slice="s" slice-event="input" value="{//attributes/v}"/>
+    </template>
+</custom-element>
+<x-input></x-input>
+<x-input v="V1"></x-input>
+    </template>
+</html-demo-element>
+
 <html-demo-element legend="attribute defaults, from container, and from slice" description="
     Type in the input field and observe in DevTools the V attribute changed.
 ">
