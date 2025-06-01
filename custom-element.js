@@ -234,6 +234,8 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
                 const d = xml2dom( '<xhtml/>' )
                 ,     n = d.importNode(r, true);
                 d.replaceChild(n,d.documentElement);
+                if( n.namespaceURI === HTML_NS_URL && !attr(n,'xmlns'))
+                    n.setAttribute('xmlns',HTML_NS_URL);
                 return xslHtmlNs(n);
             };
             if( e )
@@ -311,7 +313,7 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
         ,  name = attr(a,'name');
 
         declaredAttributes.push(name);
-        if( a.childNodes.length)
+        if( a.childNodes.length )
             hardcodedAttributes[name] = a.textContent;
 
         payload.append(p);
@@ -536,6 +538,8 @@ export function mergeAttr( from, to )
 {   for( let a of from.attributes)
         try
         {   const name = a.name;
+            if( name.startsWith('xmlns') )
+                continue;
             if( a.namespaceURI )
             {   if( !to.hasAttributeNS(a.namespaceURI, name) || to.getAttributeNS(a.namespaceURI, name) !== a.value )
                     to.setAttributeNS( a.namespaceURI, name, a.value )
@@ -685,7 +689,7 @@ CustomElement extends HTMLElement
     async connectedCallback()
     {
         if(this.firstElementChild && this.firstElementChild.localName !== 'template')
-            console.warn('custom-element used without template wrapping content\n', this.outerHTML);
+            console.log('custom-element used without template wrapping content\n', this.outerHTML);
         const templateRoots = await loadTemplateRoots( attr( this, 'src' ), this )
         ,               tag = attr( this, 'tag' )
         ,           tagName = tag ? tag : 'dce-'+crypto.randomUUID();
