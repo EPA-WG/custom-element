@@ -89,7 +89,12 @@ obj2node( o, tag, doc )
         return create(tag,o,doc);
     if( t === 'number' )
         return create(tag,''+o,doc);
-
+    if( isNode(o) )
+    {
+        const el = create(tag);
+        el.append(o);
+        return el;
+    }
     if( o instanceof Array )
     {   const ret = create('array','',doc);
         o.map( ae => ret.append( obj2node(ae,tag,doc)) );
@@ -103,13 +108,20 @@ obj2node( o, tag, doc )
     }
     const ret = create(tag,'',doc);
     for( let k in o )
-        if( isNode(o[k]) || typeof o[k] ==='function' || o[k] instanceof Window )
+    {
+        if( typeof o[ k ] === 'function' || o[ k ] instanceof Window )
             continue
-        else
-            if( typeof o[k] !== "object" && isValidTagName(k) )
-                ret.setAttribute(k, o[k] );
+        if( isNode( o[ k ] ) )
+        {   if( k === 'data' || k==='value' )
+                ;
             else
-                ret.append(obj2node(o[k], k, doc))
+                continue
+        }
+        if( typeof o[ k ] !== "object" && isValidTagName( k ) )
+            ret.setAttribute( k, o[ k ] )
+        else
+            ret.append( obj2node( o[ k ], k, doc ) )
+    }
     return ret;
 }
     export function
