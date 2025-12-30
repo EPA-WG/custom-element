@@ -681,14 +681,19 @@ export const toXsl = (el, defParent) => {
         x.setAttribute( a.name, a.value );
     while(el.firstChild)
         x.append(el.firstChild);
+    const replacement = el.localName === 'if' || el.localName === 'choose' ? (() => {
+        const span = create('span');
+        span.append(x);
+        return span;
+    })() : x;
     if( el.parentElement )
-        el.parentElement.replaceChild( x, el );
+        el.parentElement.replaceChild( replacement, el );
     else
     {  const p = (el.parentElement || defParent)
         ,  arr = [...p.childNodes];
         arr.forEach((n, i) => {
             if (n === el)
-                arr[i] = x;
+                arr[i] = replacement;
         });
         p.replaceChildren(...arr);
     }
