@@ -47,7 +47,7 @@ This project is a POC( Proof of Concept ) targeting to become a base for native 
 
 # use
 
-Use the [bootstrap project](https://github.com/EPA-WG/custom-element-bootstrap) with all pre-configured or
+[//]: # (Use the [bootstrap project]&#40;https://github.com/EPA-WG/custom-element-bootstrap&#41; with all pre-configured or)
 ## install
 use via CDN
 ```html
@@ -341,16 +341,16 @@ within template
 [css-demo-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/scoped-css.html
 [slice-demo-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/data-slices.html
 [hex-grid-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/hex-grid.html
-[hex-grid-image]: https://unpkg.com/@epa-wg/custom-element@0.0.32/demo/hex-grid-transform.png
+[hex-grid-image]: https://unpkg.com/@epa-wg/custom-element@0.0.34/demo/hex-grid-transform.png
 [local-storage-demo]: https://unpkg.com/@epa-wg/custom-element@0.0/demo/local-storage.html
 [http-request-demo]:  https://unpkg.com/@epa-wg/custom-element@0.0/demo/http-request.html
 [location-demo]:  https://unpkg.com/@epa-wg/custom-element@0.0/demo/location.html
 [github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
 [npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
-[coverage-image]: https://unpkg.com/@epa-wg/custom-element-dist@0.0.32/coverage/src/custom-element/coverage.svg
-[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-dist@0.0.32/coverage/src/custom-element/index.html
-[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-dist@0.0.32/storybook-static/index.html?path=/story/welcome--introduction
+[coverage-image]: https://unpkg.com/@epa-wg/custom-element-dist@0.0.34/coverage/src/custom-element/coverage.svg
+[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-dist@0.0.34/coverage/src/custom-element/index.html
+[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-dist@0.0.34/storybook-static/index.html?path=/story/welcome--introduction
 [sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
 [webcomponents-url]: https://www.webcomponents.org/element/@epa-wg/custom-element
 [webcomponents-img]: https://img.shields.io/badge/webcomponents.org-published-blue.svg

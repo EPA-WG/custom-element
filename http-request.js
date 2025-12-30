@@ -66,6 +66,13 @@ export class HttpRequestElement extends HTMLElement
             {   slice.data = await response.json();
                 update();
             }catch(_e){}
+        if( r.headers['content-type']?.includes('xml'))
+            try
+            {   const s = await response.text();
+                const parser = new DOMParser();
+                slice.data = parser.parseFromString(s, 'application/xml')?.documentElement;
+                update();
+            }catch(_e){}
     }
 
     attributeChangedCallback(name, oldValue, newValue)
