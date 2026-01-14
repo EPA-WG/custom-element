@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>for-each - Declarative Custom Element implementation demo</title>
+    <link rel="icon" href="./wc-square.svg"/>
+
+    <script type="module" src="../custom-element.js"></script>
+    <style>
+        @import "./demo.css";
+
+        table {
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 0.5rem;
+        }
+        th {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="../index.html"><h3><code>custom-element</code> demo</h3></a>
+    <h3>for-each loop</h3>
+    <p>The <code>&lt;for-each&gt;</code> element iterates over a node-set selected by XPath expression
+        and renders its content for each node.</p>
+    <p><b>XHTML namespace use</b><br/>
+        HTML elements like <code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code>, <code>&lt;td&gt;</code>
+        have strict content model rules - only specific child elements are permitted.
+        For example, <code>&lt;table&gt;</code> only allows <code>&lt;thead&gt;</code>,
+        <code>&lt;tbody&gt;</code>, <code>&lt;tr&gt;</code> as children; <code>&lt;tr&gt;</code>
+        only allows <code>&lt;th&gt;</code> or <code>&lt;td&gt;</code>.<br/>
+        When the browser parses HTML, it moves non-permitted elements (like <code>&lt;for-each&gt;</code>)
+        outside the table before JavaScript runs.<br/>
+        Using <code>xhtml:</code> namespace prefix (e.g., <code>&lt;xhtml:table&gt;</code>,
+        <code>&lt;xhtml:tr&gt;</code>) prevents the browser from recognizing these as standard HTML
+        elements during initial parsing, preserving the template structure for DCE to process correctly.
+        See examples 4 and 6.
+    </p>
+</nav>
+
+<html-demo-element legend="1. Simple for-each"
+                   description="Loop over inline XML data and render each item">
+    <template>
+        <custom-element>
+            <template>
+                <xsl:variable name="fruits">
+                    <item>Apple</item>
+                    <item>Banana</item>
+                    <item>Cherry</item>
+                </xsl:variable>
+                <ul>
+                    <for-each select="exsl:node-set($fruits)/*">
+                        <li>{.}</li>
+                    </for-each>
+                </ul>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="2. for-each with position()"
+                   description="Using position() to number items in the loop">
+    <template>
+        <custom-element>
+            <template>
+                <xsl:variable name="colors">
+                    <color hex="#ff0000">Red</color>
+                    <color hex="#00ff00">Green</color>
+                    <color hex="#0000ff">Blue</color>
+                </xsl:variable>
+                <for-each select="exsl:node-set($colors)/*">
+                    <div style="padding: 0.5rem; background: {@hex}; color: white;">
+                        {position()}. {.}
+                    </div>
+                </for-each>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="3. Conditional for-each"
+                   description="Initially empty, items shown when checkbox is checked">
+    <template>
+        <custom-element>
+            <template>
+                <xsl:variable name="items">
+                    <item>First</item>
+                    <item>Second</item>
+                    <item>Third</item>
+                </xsl:variable>
+                <label>
+                    <input type="checkbox" slice="show-items" value="yes"/>
+                    Show items
+                </label>
+                <variable name="show" select="//show-items = 'yes'"></variable>
+                <div>
+                    BEFORE
+                    <for-each select="exsl:node-set($items)/*[$show]">
+                        <span style="margin: 0 0.25rem; padding: 0.25rem; background: #e0e0ff;">
+                            {position()}:{.}
+                        </span>
+                    </for-each>
+                    AFTER
+                </div>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="4. Nested for-each (Table)"
+                   description="Nested loops to render table rows and cells">
+    <template>
+        <custom-element>
+            <template>
+                <xsl:variable name="table-data">
+                    <row><cell>A1</cell><cell>A2</cell><cell>A3</cell></row>
+                    <row><cell>B1</cell><cell>B2</cell><cell>B3</cell></row>
+                    <row><cell>C1</cell><cell>C2</cell><cell>C3</cell></row>
+                </xsl:variable>
+                <variable name="rows" select="exsl:node-set($table-data)/*"></variable>
+                <xhtml:table>
+                    <xhtml:thead>
+                        <xhtml:tr>
+                            <xhtml:th>Col 1</xhtml:th>
+                            <xhtml:th>Col 2</xhtml:th>
+                            <xhtml:th>Col 3</xhtml:th>
+                        </xhtml:tr>
+                    </xhtml:thead>
+                    <xhtml:tbody>
+                        <for-each select="$rows">
+                            <xhtml:tr>
+                                <for-each select="*">
+                                    <xhtml:td>{.}</xhtml:td>
+                                </for-each>
+                            </xhtml:tr>
+                        </for-each>
+                    </xhtml:tbody>
+                </xhtml:table>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="5. for-each with attributes"
+                   description="Access element attributes within the loop">
+    <template>
+        <custom-element>
+            <template>
+                <xsl:variable name="users">
+                    <user id="1" role="admin">Alice</user>
+                    <user id="2" role="editor">Bob</user>
+                    <user id="3" role="viewer">Charlie</user>
+                </xsl:variable>
+                <for-each select="exsl:node-set($users)/*">
+                    <div style="padding: 0.5rem; margin: 0.25rem 0; border-left: 3px solid #007bff;">
+                        <strong>#{@id}</strong> {.}
+                        <em>({@role})</em>
+                    </div>
+                </for-each>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<html-demo-element legend="6. Dynamic table with toggle"
+                   description="Table rows appear/disappear based on checkbox state">
+    <template>
+        <custom-element>
+            <template>
+                <xsl:variable name="products">
+                    <product price="10">Widget</product>
+                    <product price="25">Gadget</product>
+                    <product price="15">Gizmo</product>
+                </xsl:variable>
+                <variable name="items" select="exsl:node-set($products)/*"></variable>
+                <label>
+                    <input type="checkbox" slice="show-products" value="yes"/>
+                    Show products
+                </label>
+                <variable name="visible" select="//show-products = 'yes'"></variable>
+                <xhtml:table>
+                    <xhtml:thead>
+                        <xhtml:tr>
+                            <xhtml:th>#</xhtml:th>
+                            <xhtml:th>Product</xhtml:th>
+                            <xhtml:th>Price</xhtml:th>
+                        </xhtml:tr>
+                    </xhtml:thead>
+                    <xhtml:tbody>
+                        <for-each select="$items[$visible]">
+                            <xhtml:tr>
+                                <xhtml:td>{position()}</xhtml:td>
+                                <xhtml:td>{.}</xhtml:td>
+                                <xhtml:td>${@price}</xhtml:td>
+                            </xhtml:tr>
+                        </for-each>
+                    </xhtml:tbody>
+                </xhtml:table>
+            </template>
+        </custom-element>
+    </template>
+</html-demo-element>
+
+<script type="module" src="https://unpkg.com/html-demo-element@1/html-demo-element.js"></script>
+
+</body>
+</html>

@@ -268,7 +268,8 @@ i.e.  slot `xxx` is matching `<i slot="xxx">...</i>` in payload.
 ```
 
 ## loops, variables
-Loop implemented via [for-each](https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/for-each)
+Loop implemented via [for-each](https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/for-each).
+See [for-each table demo][for-each-demo] for examples including nested loops and XHTML namespace usage.
 
 [Variables in XSLT](https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/variable)
 
@@ -340,17 +341,18 @@ within template
 [demo-url]:       https://unpkg.com/@epa-wg/custom-element@0.0/index.html
 [css-demo-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/scoped-css.html
 [slice-demo-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/data-slices.html
+[for-each-demo]:  https://unpkg.com/@epa-wg/custom-element@0.0/demo/for-each.html
 [hex-grid-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/hex-grid.html
-[hex-grid-image]: https://unpkg.com/@epa-wg/custom-element@0.0.35/demo/hex-grid-transform.png
+[hex-grid-image]: https://unpkg.com/@epa-wg/custom-element@0.0.36/demo/hex-grid-transform.png
 [local-storage-demo]: https://unpkg.com/@epa-wg/custom-element@0.0/demo/local-storage.html
 [http-request-demo]:  https://unpkg.com/@epa-wg/custom-element@0.0/demo/http-request.html
 [location-demo]:  https://unpkg.com/@epa-wg/custom-element@0.0/demo/location.html
 [github-image]:   https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/mark-github.svg
 [npm-image]:      https://img.shields.io/npm/v/@epa-wg/custom-element.svg
 [npm-url]:        https://npmjs.org/package/@epa-wg/custom-element
-[coverage-image]: https://unpkg.com/@epa-wg/custom-element-dist@0.0.35/coverage/src/custom-element/coverage.svg
-[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-dist@0.0.35/coverage/src/custom-element/index.html
-[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-dist@0.0.35/storybook-static/index.html?path=/story/welcome--introduction
+[coverage-image]: https://unpkg.com/@epa-wg/custom-element-dist@0.0.36/coverage/src/custom-element/coverage.svg
+[coverage-url]:   https://unpkg.com/@epa-wg/custom-element-dist@0.0.36/coverage/src/custom-element/index.html
+[storybook-url]:  https://unpkg.com/@epa-wg/custom-element-dist@0.0.36/storybook-static/index.html?path=/story/welcome--introduction
 [sandbox-url]:    https://stackblitz.com/github/EPA-WG/custom-element?file=index.html
 [webcomponents-url]: https://www.webcomponents.org/element/@epa-wg/custom-element
 [webcomponents-img]: https://img.shields.io/badge/webcomponents.org-published-blue.svg
