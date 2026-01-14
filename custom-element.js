@@ -682,6 +682,9 @@ export const toXsl = (el, defParent) => {
     while(el.firstChild)
         x.append(el.firstChild);
     const replacement = 'if,choose,for-each'.includes(el.localName) ? (() => {
+        const parent = el.parentElement;
+        if( !parent || parent.childNodes.length ===1 )
+            return x;
         const span = create('span');
         span.append(x);
         return span;

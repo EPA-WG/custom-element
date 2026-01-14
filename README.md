@@ -268,7 +268,8 @@ i.e.  slot `xxx` is matching `<i slot="xxx">...</i>` in payload.
 ```
 
 ## loops, variables
-Loop implemented via [for-each](https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/for-each)
+Loop implemented via [for-each](https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/for-each).
+See [for-each table demo][for-each-demo] for examples including nested loops and XHTML namespace usage.
 
 [Variables in XSLT](https://developer.mozilla.org/en-US/docs/Web/XSLT/Element/variable)
 
@@ -340,6 +341,7 @@ within template
 [demo-url]:       https://unpkg.com/@epa-wg/custom-element@0.0/index.html
 [css-demo-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/scoped-css.html
 [slice-demo-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/data-slices.html
+[for-each-demo]:  https://unpkg.com/@epa-wg/custom-element@0.0/demo/for-each.html
 [hex-grid-url]:   https://unpkg.com/@epa-wg/custom-element@0.0/demo/hex-grid.html
 [hex-grid-image]: https://unpkg.com/@epa-wg/custom-element@0.0.35/demo/hex-grid-transform.png
 [local-storage-demo]: https://unpkg.com/@epa-wg/custom-element@0.0/demo/local-storage.html
