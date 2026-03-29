@@ -801,6 +801,7 @@ CustomElement extends HTMLElement
                         processed[s] = ev;
                     }
                     Object.keys(processed).length !== 0 && transform();
+                    this.customElementRegistry?.initialize(this);
                 }
                 let timeoutID;
 
