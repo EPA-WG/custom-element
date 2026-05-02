@@ -399,11 +399,13 @@ xhrTemplate(src)
     const dom = await new Promise((resolve,reject)=>
     {   const xhr = new XMLHttpRequest();
         xhr.open("GET", src);
-        xhr.responseType = "document";
-        // xhr.overrideMimeType("text/xml");
         xhr.onload = () =>
         {   if( xhr.readyState === xhr.DONE && xhr.status === 200 )
-                resolve( xhr.responseXML?.body || xhr.responseXML ||  create('div', xhr.responseText ) )
+            {   const mime = xhr.getResponseHeader('content-type')?.includes('xml')
+                           ? 'text/xml' : 'text/html';
+                const doc = new DOMParser().parseFromString(xhr.responseText, mime);
+                resolve( doc.body || doc.documentElement )
+            }
             else
                 reject(`${xhr.statusText} - ${src}`)
         };
