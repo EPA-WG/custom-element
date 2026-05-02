@@ -297,7 +297,9 @@ createXsltFromDom( templateNode, S = 'xsl:stylesheet' )
 
     sanitizeProcessor.importStylesheet( sanitizeXsl );
 
-    const fr = sanitizeProcessor.transformToFragment(tc, document)
+    // Use a detached (no browsing context) document so Chrome does not eagerly
+    // load img/link resources from the intermediate XSLT fragment
+    const fr = sanitizeProcessor.transformToFragment(tc, document.implementation.createHTMLDocument(''))
     ,   $ = (e,css) => e.querySelector(css)
     ,   payload = $( xslDom, 'template[mode="payload"]');
     if( !fr )
