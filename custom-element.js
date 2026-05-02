@@ -406,7 +406,7 @@ xhrTemplate(src)
             {   const mime = xhr.getResponseHeader('content-type')?.includes('xml')
                            ? 'text/xml' : 'text/html';
                 const doc = new DOMParser().parseFromString(xhr.responseText, mime);
-                resolve( doc.body || doc.documentElement )
+                resolve( mime === 'text/html' ? doc.body : doc )
             }
             else
                 reject(`${xhr.statusText} - ${src}`)
