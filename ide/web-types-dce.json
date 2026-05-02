@@ -105,7 +105,7 @@
                 {
                     "name": "location-element",
                     "description": "get/set window URL parts or from SRC URL",
-                    "doc-url": "https://github.com/EPA-WG/custom-element",
+                    "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/location-element.html",
                     "attributes": [
                         {
                             "name": "href",
@@ -181,13 +181,13 @@
                 {
                     "name": "http-request",
                     "description": "Fetches data from a URL and exposes request, response, and parsed data via the value property. Supports JSON and XML response parsing.",
-                    "doc-url": "https://github.com/EPA-WG/custom-element",
+                    "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/http-request.html",
                     "attributes": [
                         {
                             "name": "url",
                             "description": "The URL to fetch data from. When changed, triggers a new fetch request.",
                             "required": false,
-                            "doc-url": "https://github.com/EPA-WG/custom-element",
+                            "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/http-request.html",
                             "value": {
                                 "type": "string"
                             }
@@ -240,7 +240,7 @@
                 {
                     "name": "local-storage",
                     "description": "Provides access to localStorage with reactive updates. Reads and writes values to localStorage by key.",
-                    "doc-url": "https://github.com/EPA-WG/custom-element",
+                    "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/local-storage.html",
                     "attributes": [
                         {
                             "name": "key",
@@ -255,7 +255,7 @@
                             "name": "type",
                             "description": "Value type: text, json, or input types (number, date). Defaults to text.",
                             "required": false,
-                            "doc-url": "https://github.com/EPA-WG/custom-element",
+                            "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/local-storage.html",
                             "value": {
                                 "type": "string"
                             }
@@ -264,7 +264,7 @@
                             "name": "value",
                             "description": "Initial value to set in localStorage. If omitted, reads existing value.",
                             "required": false,
-                            "doc-url": "https://github.com/EPA-WG/custom-element",
+                            "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/local-storage.html",
                             "value": {
                                 "type": "string"
                             }
@@ -273,7 +273,7 @@
                             "name": "live",
                             "description": "When present, monitors localStorage changes and updates reactively",
                             "required": false,
-                            "doc-url": "https://github.com/EPA-WG/custom-element",
+                            "doc-url": "https://unpkg.com/@epa-wg/custom-element@0/demo/local-storage.html",
                             "value": {
                                 "type": "boolean"
                             }
