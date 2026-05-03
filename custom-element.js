@@ -750,7 +750,6 @@ CustomElement extends HTMLElement
         {
             static get observedAttributes(){ return declaredAttributes; }
             #inTransform = 0;
-            #transformTimeoutId = 0;
             get dceExportedAttributes(){ return dceExportedAttributes; }
             connectedCallback()
             {   let payload = sanitizeBlankText(this.childNodes);
@@ -818,7 +817,7 @@ CustomElement extends HTMLElement
                             timeoutID =0;
                         },1);
                 };
-                const executeTransform = ()=>
+                const transform = this.transform = ()=>
                 {   if(this.#inTransform){ debugger }
                     this.#inTransform = 1;
                     const renderModel = ()=>
@@ -937,10 +936,6 @@ CustomElement extends HTMLElement
                         }
                     });
                     this.#inTransform = 0;
-                };
-                const transform = this.transform = ()=>
-                {   clearTimeout(this.#transformTimeoutId);
-                    this.#transformTimeoutId = setTimeout(executeTransform, 1);
                 };
                 transform();
                 applySlices();
